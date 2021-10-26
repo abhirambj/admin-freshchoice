@@ -5,10 +5,9 @@ import viewOrdersById from "../pages/api/GET/ViewOrdersById";
 import { Visibility } from "@material-ui/icons";
 import { FormControl, MenuItem, TextField } from "@material-ui/core";
 import HashLoader from "react-spinners/HashLoader";
-import deleteItemsById from "../pages/api/DELETE/DeleteItems";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import updateStore from "../pages/api/PATCH/updateStore";
- 
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -34,21 +33,16 @@ const DashboardContent = () => {
       handleView(rowData.props.id);
     },
   };
-
   const updateStatus = (id,value) => {
     setLoading(true);
     updateStore({status:value},`${baseUrl}/order/${id}`)
     .then(() =>fetchOrders())
     .then(() => setLoading(false));
   }
-
   const columns = [
     "Order ID",
     "Time",
     "Name",
-    // "Mobile Number",
-    // "Address",
-    // "Status",
     "Locality",
     {
       label: "View",
@@ -80,7 +74,6 @@ const DashboardContent = () => {
               variant="outlined"
             >
               <TextField
-                placeholder="Status"
                 size="small"
                 id="outlined-basic"
                 label="Options"
@@ -89,6 +82,7 @@ const DashboardContent = () => {
                 value={userData.find(order => order.id === item2.rowData[0])?.status}
                 onChange={(ev) => updateStatus(item2.rowData[0],ev.target.value)}
               >
+                <MenuItem value="Pending">Pending</MenuItem>
                 <MenuItem value="Confirmed">Confirmed</MenuItem>
                 <MenuItem value="On way">Out For Delivery</MenuItem>
                 <MenuItem value="Delivered">Delivered</MenuItem>
@@ -118,9 +112,6 @@ const DashboardContent = () => {
         console.log("No DATA");
         setLoading(false);
       }
-    }).catch(err => {
-      console.log(err);
-      setViewData([]);
     });
   };
 
@@ -168,9 +159,7 @@ const DashboardContent = () => {
                     items.id,
                     new Date(items.time).toLocaleString(),
                     items.name,
-                    // items.mobile_number,
                     items.address.replace(',',''),
-                    // items.status,
                   ])
                 )
               }

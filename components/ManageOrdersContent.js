@@ -82,6 +82,7 @@ const ManageOrdersContent = () => {
                 value={userData.find(order => order.id === item2.rowData[0])?.status}
                 onChange={(ev) => updateStatus(item2.rowData[0],ev.target.value)}
               >
+                <MenuItem value="Pending">Pending</MenuItem>
                 <MenuItem value="Confirmed">Confirmed</MenuItem>
                 <MenuItem value="On way">Out For Delivery</MenuItem>
                 <MenuItem value="Delivered">Delivered</MenuItem>
