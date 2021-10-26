@@ -85,7 +85,7 @@ const Items = () => {
     console.info(item);
     setData({
       ...data,
-      name: item.name,
+      name: item.name || '',
       categoryId: categories.find((ct) => ct.name == item.categoryId).id,
       description: item.description,
       quantity: parseInt(item.quantity),
