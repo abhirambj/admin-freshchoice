@@ -286,7 +286,7 @@ const Sidebar = ({ open, handler }) => {
                 <div className="pl-2">Coupons</div>
               </div>
             </a>
-            {/* <a
+            <a
               href="/charges"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
             >
@@ -309,7 +309,7 @@ const Sidebar = ({ open, handler }) => {
                 </div>
                 <div className="pl-2">Charges</div>
               </div>
-            </a> */}
+            </a>
             <a
               href="/storeManager"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
