@@ -1,6 +1,6 @@
 import { getToken } from "../apiRequests";
 
-export const updateItems = (data, url) => {
+export const updateItems = async (data, url) => {
   let { user } = getToken();
   let { access_token } = JSON.parse(user);
   return await fetch(url, {
