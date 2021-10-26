@@ -7,7 +7,8 @@ import { FormControl, MenuItem, TextField } from "@material-ui/core";
 import HashLoader from "react-spinners/HashLoader";
 import deleteItemsById from "../pages/api/DELETE/DeleteItems";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-
+import updateStore from "../pages/api/PATCH/updateStore";
+ 
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -29,22 +30,32 @@ const DashboardContent = () => {
     selectableRows: false,
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
-    onCellClick: (rowData, rowMeta) => handleView(rowMeta.dataIndex + 1),
+    onCellClick: (rowData) => {
+      handleView(rowData.props.id);
+    },
   };
+
+  const updateStatus = (id,value) => {
+    setLoading(true);
+    updateStore({status:value},`${baseUrl}/order/${id}`)
+    .then(() =>fetchOrders())
+    .then(() => setLoading(false));
+  }
 
   const columns = [
     "Order ID",
     "Time",
     "Name",
-    "Mobile Number",
-    "Address",
-    "Status",
+    // "Mobile Number",
+    // "Address",
+    // "Status",
+    "Locality",
     {
-      label: "Action",
+      label: "View",
       options: {
-        customBodyRender: (va) => {
+        customBodyRender: (_,item) => {
           return (
-            <div className="flex flex-row justify-center">
+            <div id={item.rowData[0]} className="flex flex-row justify-center">
               <div
                 onClick={() => {
                   setShowModal(true);
@@ -60,7 +71,7 @@ const DashboardContent = () => {
     {
       label: "Manage",
       options: {
-        customBodyRender: (item) => {
+        customBodyRender: (_,item2) => {
           return (
             <FormControl
               size="small"
@@ -75,10 +86,11 @@ const DashboardContent = () => {
                 label="Options"
                 variant="outlined"
                 select
-                onChange={ev => console.log(ev.target.value)}
+                value={userData.find(order => order.id === item2.rowData[0])?.status}
+                onChange={(ev) => updateStatus(item2.rowData[0],ev.target.value)}
               >
                 <MenuItem value="Confirmed">Confirmed</MenuItem>
-                <MenuItem value="On way">On way</MenuItem>
+                <MenuItem value="On way">Out For Delivery</MenuItem>
                 <MenuItem value="Delivered">Delivered</MenuItem>
                 <MenuItem value="Canceled">Cancelled</MenuItem>
               </TextField>
@@ -111,11 +123,13 @@ const DashboardContent = () => {
       setViewData([]);
     });
   };
-  const updateOrderStatus = () => {
-    // fetch(`${baseUrl}`)
-  }
+
   useEffect(() => {
     setLoading(true);
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = () => {
     getOrders(baseUrl + "/order/?status=1").then((data) => {
       if (data) {
         if (data.error || data.detail) {
@@ -131,7 +145,7 @@ const DashboardContent = () => {
         setLoading(false);
       }
     });
-  }, []);
+  }
 
   return (
     <>
@@ -154,9 +168,9 @@ const DashboardContent = () => {
                     items.id,
                     new Date(items.time).toLocaleString(),
                     items.name,
-                    items.mobile_number,
-                    items.address,
-                    items.status,
+                    // items.mobile_number,
+                    items.address.replace(',',''),
+                    // items.status,
                   ])
                 )
               }
@@ -178,34 +192,34 @@ const DashboardContent = () => {
                       {!viewData ? (
                         <div>loading..</div>
                       ) : (
-                        <div>
-                          <div class="max-w-4xl mt-4 p-0 bg-white w-max rounded-lg shadow-xl">
-                            <div class="p-1 border-b">
-                              <h2 class="text-2xl ">{viewData.id}</h2>
+                        <div key={viewData.id}>
+                          <div className="max-w-4xl mt-0 p-0 bg-white w-max rounded-lg shadow-xl">
+                            <div className="p-4 border-b">
+                              <h2 className="text-2xl ">{viewData.id}</h2>
                             </div>
                             <div>
                               <div className="w-full items-center flex flex-row">
-                                <div class="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                  <p class="text-gray-600">Name</p>
+                                <div className="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                  <p className="text-gray-600">Name</p>
                                   <p>{viewData.name}</p>
                                 </div>
-                                <div class="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                  <p class="text-gray-600">Store Name</p>
+                                <div className="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                  <p className="text-gray-600">Store Name</p>
                                   <p>{viewData.area}</p>
                                 </div>
                               </div>
                               <div className="flex flex-row items-center">
-                                <div class="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                  <p class="text-gray-600">Pay Type</p>
+                                <div className="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                  <p className="text-gray-600">Pay Type</p>
                                   <p>{viewData.paytype || "card"}</p>
                                 </div>
-                                <div class="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                  <p class="text-gray-600">Delivery Type</p>
+                                <div className="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                  <p className="text-gray-600">Delivery Type</p>
                                   <p>{viewData.deliverytype}</p>
                                 </div>
                               </div>
-                              <div class="md:grid md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                <p class="text-gray-600">Pay ID</p>
+                              <div className="md:grid md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                <p className="text-gray-600">Pay ID</p>
                                 <p>{viewData.payid}</p>
                               </div>
                             </div>
