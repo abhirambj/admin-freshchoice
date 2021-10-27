@@ -34,7 +34,9 @@ const Navbar = () => {
               />
             </svg>
           </button>
-            <a href="/dashboard" className="block text-2xl no-underline text-white hover:text-red-300 pl-2">FreshChoice</a>
+          <Link href="/dashboard">
+            <a className="block text-2xl no-underline text-white hover:text-red-300 pl-2">FreshChoice</a>
+            </Link>
         </div>
         <div onClick={() => setIsActive(false)} className="space-y-6 md:space-x-2 md:space-y-0">
           <Dropdown />  
