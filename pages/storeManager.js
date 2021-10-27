@@ -474,4 +474,4 @@ export const getServerSideProps = requiresAuthentication((ctx) => {
   };
 });
 
-export default storeManager;
+export default StoreManager;
