@@ -47,6 +47,84 @@ const Sidebar = ({ open, handler }) => {
               </div>
             </a>
             <a
+              href="/orders"
+              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
+            >
+              <div className="flex flex-row">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                    />
+                  </svg>
+                </div>
+                <div className="pl-2">Orders</div>
+              </div>
+            </a>
+            <a
+              href="/area"
+              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
+            >
+              <div className="flex flex-row">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <div className="pl-2">Store Names</div>
+              </div>
+            </a>
+            <a
+              href="/storeManager"
+              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
+            >
+              <div className="flex flex-row">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+                    />
+                  </svg>
+                </div>
+                <div className="pl-2">Store Manager</div>
+              </div>
+            </a>
+            <a
               href="/categories"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
             >
@@ -68,30 +146,6 @@ const Sidebar = ({ open, handler }) => {
                   </svg>
                 </div>
                 <div className="pl-2">Category</div>
-              </div>
-            </a>
-            <a
-              href="/inventory"
-              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
-            >
-              <div className="flex flex-row">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
-                    />
-                  </svg>
-                </div>
-                <div className="pl-2">Inventory</div>
               </div>
             </a>
             <a
@@ -119,7 +173,7 @@ const Sidebar = ({ open, handler }) => {
               </div>
             </a>
             <a
-              href="/orders"
+              href="/inventory"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
             >
               <div className="flex flex-row">
@@ -135,11 +189,35 @@ const Sidebar = ({ open, handler }) => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                      d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
                     />
                   </svg>
                 </div>
-                <div className="pl-2">Orders</div>
+                <div className="pl-2">Inventory</div>
+              </div>
+            </a>
+            <a
+              href="/coupons"
+              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
+            >
+              <div className="flex flex-row">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div className="pl-2">Coupons</div>
               </div>
             </a>
             <a
@@ -163,11 +241,11 @@ const Sidebar = ({ open, handler }) => {
                     />
                   </svg>
                 </div>
-                <div className="pl-2">Users</div>
+                <div className="pl-2">Customers</div>
               </div>
             </a>
             <a
-              href="/notifications"
+              href="/deliveryBoy"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
             >
               <div className="flex flex-row">
@@ -179,15 +257,16 @@ const Sidebar = ({ open, handler }) => {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
+                    <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
                     />
                   </svg>
                 </div>
-                <div className="pl-2">Notification</div>
+                <div className="pl-2">Delivery Boy</div>
               </div>
             </a>
             <a
@@ -239,6 +318,30 @@ const Sidebar = ({ open, handler }) => {
               </div>
             </a>
             <a
+              href="/notifications"
+              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
+            >
+              <div className="flex flex-row">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    />
+                  </svg>
+                </div>
+                <div className="pl-2">Notification</div>
+              </div>
+            </a>
+            <a
               href="/banner"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
             >
@@ -262,31 +365,7 @@ const Sidebar = ({ open, handler }) => {
                 <div className="pl-2">Banners</div>
               </div>
             </a>
-            <a
-              href="/coupons"
-              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
-            >
-              <div className="flex flex-row">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-                <div className="pl-2">Coupons</div>
-              </div>
-            </a>
-            <a
+            {/* <a
               href="/charges"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
             >
@@ -309,86 +388,7 @@ const Sidebar = ({ open, handler }) => {
                 </div>
                 <div className="pl-2">Charges</div>
               </div>
-            </a>
-            <a
-              href="/storeManager"
-              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
-            >
-              <div className="flex flex-row">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
-                    />
-                  </svg>
-                </div>
-                <div className="pl-2">Store Manager</div>
-              </div>
-            </a>
-            <a
-              href="/deliveryBoy"
-              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
-            >
-              <div className="flex flex-row">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
-                    />
-                  </svg>
-                </div>
-                <div className="pl-2">Delivery Boy</div>
-              </div>
-            </a>
-            <a
-              href="/area"
-              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
-            >
-              <div className="flex flex-row">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
-                <div className="pl-2">Store Names</div>
-              </div>
-            </a>
+            </a> */}
           </nav>
         </div>
       </div>

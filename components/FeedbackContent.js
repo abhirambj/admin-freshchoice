@@ -40,7 +40,7 @@ const FeedbackContent = () => {
     },
   };
 
-  const columns = ["ID", "Feedback"];
+  const columns = ["Customer Name", "Item Name","Review"];
 
   useEffect(() => {
     setLoading(true);
@@ -78,7 +78,7 @@ const FeedbackContent = () => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [items.id, items.feedback])
+                  userData.map((items) => [items.customer_name, items.item_name,items.review])
                 )
               }
               columns={columns}

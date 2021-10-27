@@ -84,7 +84,7 @@ const CategoriesContent = ({ handler, getItem }) => {
 
   useEffect(() => {
     setLoading(true);
-    getAllCategories(baseUrl + "/category/").then((data) => {
+    getAllCategories(baseUrl + "/category/?disabled=false").then((data) => {
       if (data) {
         if (data.error || data.detail) {
           console.log("Error", data.err);
