@@ -24,7 +24,7 @@ const ItemsContent = ({ handler, getItem, items }) => {
 
   const initUpdate = (tableMeta) => {
     console.info(tableMeta);
-    handler(items.find((el) => el.id == tableMeta.rowData[0]));
+    handler(items.find((el) => el.id == tableMeta.rowData[0].props.id));
     getItem(tableMeta.rowData[0]);
   };
 
@@ -105,7 +105,7 @@ const ItemsContent = ({ handler, getItem, items }) => {
                 ) : (
                   items?.map((item) => [
                     // item.id,
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <td id={item.id} className="px-6 py-4 whitespace-nowrap text-center">
                       <img
                         width="100"
                         height="100"
