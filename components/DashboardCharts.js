@@ -129,7 +129,7 @@ const DashboardCharts = () => {
     });
   }, [selectStore]);
   return (
-    <>
+    <div>
       <div className="md:flex md:justify-end pb-2">
         <FormControl className="w-72" variant="outlined">
           <Select
@@ -140,8 +140,8 @@ const DashboardCharts = () => {
             onChange={({ target }) => setSelectStore(target.value)}
           >
             <MenuItem value="all">All stores</MenuItem>
-            {allStores.map((store) => (
-              <MenuItem value={store.id}>{store.title}</MenuItem>
+            {allStores.map((store,index) => (
+              <MenuItem key={index} value={store.id}>{store.title}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -184,18 +184,18 @@ const DashboardCharts = () => {
                     }}
                   />
                 </div>
-                <span className="block text-center font-bold text-2xl\">
+                <span className="block text-center font-bold text-2xl">
                   Percentage Of Orders In Each Category
                 </span>
               </div>
             )}
           </div>
-          <div className="flex-auto overflow-x-hidden bg-white shadow-lg rounded-lg p-2 mx-4">
-            {!monthlyAna && !yearlyAna ? (
-              <div className="flex items-center justify-center h-screen">
-                <HashLoader color={"FF0000"} loading={loading} size={150} />
+          <div className='flex-auto overflow-x-hidden bg-white shadow-lg rounded-lg p-2 mx-4'>
+            {(!monthlyAna && !yearlyAna) ?
+              <div className='flex items-center justify-center h-screen'>
+                <HashLoader color='FF0000' loading={loading} size={150} />
               </div>
-            ) : (
+             : 
               <div>
                 <div>
                   <Line
@@ -206,16 +206,16 @@ const DashboardCharts = () => {
                       labels: monthlyAna.months,
                       datasets: [
                         {
-                          label: "Monthly Orders",
+                          label: 'Monthly Orders',
                           data: monthlyAna.orders,
                           fill: false,
-                          borderColor: "rgb(75, 192, 192)",
+                          borderColor: 'rgb(75, 192, 192)',
                           tension: 0.1,
                         },
                         {
-                          label: "Yearly Orders",
+                          label: 'Yearly Orders',
                           data: yearlyAna.orders,
-                          borderColor: "red",
+                          borderColor: 'red',
                         },
                       ],
                       options: {
@@ -229,16 +229,16 @@ const DashboardCharts = () => {
                     height={350}
                   />
                 </div>
-                <span className="block text-center font-bold text-2xl\">
+                <span className='block text-center font-bold text-2xl'>
                   Monthly and Yearly Orders
                 </span>
               </div>
-            )}
+            }
           </div>
-          <div className="flex-auto overflow-x-hidden bg-white shadow-lg rounded-lg p-2">
+          <div className='flex-auto overflow-x-hidden bg-white shadow-lg rounded-lg p-2'>
             {!rating ? (
-              <div className="flex items-center justify-center h-screen">
-                <HashLoader color={"FF0000"} loading={loading} size={150} />
+              <div className='flex items-center justify-center h-screen'>
+                <HashLoader color='FF0000' loading={loading} size={150} />
               </div>
             ) : (
               <div>
@@ -251,10 +251,10 @@ const DashboardCharts = () => {
                       labels: rating.category,
                       datasets: [
                         {
-                          label: "Categories Average Rating",
+                          label: 'Categories Average Rating',
                           data: rating.ratings,
                           fill: true,
-                          borderColor: "red",
+                          borderColor: 'red',
                           tension: 0.1,
                         },
                       ],
@@ -269,7 +269,7 @@ const DashboardCharts = () => {
                     height={350}
                   />
                 </div>
-                <span className="block text-center font-bold text-2xl\">
+                <span className='block text-center font-bold text-2xl'>
                   Categories Average Rating
                 </span>
               </div>
@@ -277,7 +277,7 @@ const DashboardCharts = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

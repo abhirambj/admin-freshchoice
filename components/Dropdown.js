@@ -150,34 +150,34 @@ const Dropdown = () => {
                   </div>
                   {/*body*/}
                   <div className="relative p-6 flex-auto">
-                    <div class="mb-3 pt-0">
+                    <div className="mb-3 pt-0">
                       <input
                         type="password"
                         name="old_password"
                         onChange={handleChange("old_password")}
                         onBlur={handleBlur("ERRold_password")}
                         placeholder="Old Password"
-                        class="px-3 py-3 placeholder-black text-black relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                        className="px-3 py-3 placeholder-black text-black relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                       />
                     </div>
-                    <div class="mb-3 pt-0">
+                    <div className="mb-3 pt-0">
                       <input
                         type="password"
                         name="password"
                         onChange={handleChange("password")}
                         onBlur={handleBlur("ERRpassword")}
                         placeholder="New Password"
-                        class="px-3 py-3 placeholder-black text-black relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                        className="px-3 py-3 placeholder-black text-black relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                       />
                     </div>
-                    <div class="mb-3 pt-0">
+                    <div className="mb-3 pt-0">
                       <input
                         type="password"
                         name="password2"
                         onChange={handleChange("password2")}
                         onBlur={handleBlur("ERRpassword2")}
                         placeholder="Confirm Password"
-                        class="px-3 py-3 placeholder-black text-black relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
+                        className="px-3 py-3 placeholder-black text-black relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full"
                       />
                     </div>
                   </div>
@@ -216,7 +216,7 @@ const Dropdown = () => {
                   </div>
                   {/*body*/}
                   <div className="relative p-6 flex-auto">
-                    <div class="mb-3 pt-0">
+                    <div className="mb-3 pt-0">
                       <p className="text-red font-bold">
                         Do you wish to Logout of this account?
                       </p>

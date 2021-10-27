@@ -106,7 +106,7 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
                 ) : (
                   items?.map((item) => [
                     item.id,
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <td key={item.id} className="px-6 py-4 whitespace-nowrap text-center">
                       <img
                         width="100"
                         height="100"

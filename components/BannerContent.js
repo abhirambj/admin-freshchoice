@@ -80,7 +80,7 @@ const BannerContent = () => {
                 ) : (
                   userData.map((items) => [
                     items.id,
-                    <td className="px-6 py-4 whitespace-nowrap flex justify-center text-center">
+                    <td key={items.id} className="px-6 py-4 whitespace-nowrap flex justify-center text-center">
                       <img
                         width="100"
                         height="100"

@@ -105,7 +105,7 @@ const ItemsContent = ({ handler, getItem, items }) => {
                 ) : (
                   items?.map((item) => [
                     // item.id,
-                    <td id={item.id} className="px-6 py-4 whitespace-nowrap text-center">
+                    <td key={item.id} id={item.id} className="px-6 py-4 whitespace-nowrap text-center">
                       <img
                         width="100"
                         height="100"

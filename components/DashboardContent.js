@@ -223,8 +223,8 @@ const DashboardContent = () => {
                                 {!viewData ? (
                                   <div>loading..</div>
                                 ) : (
-                                  viewData.items.map((items) => (
-                                    <tr>
+                                  viewData.items.map((items,key) => (
+                                    <tr key={key}>
                                       <td className="border-2">{items.name}</td>
                                       <td className="border-2">
                                         {items.quantity}

@@ -341,7 +341,7 @@ const Items = () => {
                                       </div>
                                     ) : (
                                       categories.map((items) => (
-                                        <MenuItem value={items.id}>
+                                        <MenuItem key={item.id} value={items.id}>
                                           {items.name}
                                         </MenuItem>
                                       ))

@@ -166,7 +166,7 @@ const Coupons = () => {
 
                           <form>
                             <div className="md:relative md:p-3 md:flex-auto">
-                              <div class="md:mb-2 md:pt-0">
+                              <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="code"
                                   value={data.code}
@@ -181,11 +181,11 @@ const Coupons = () => {
                                   onChange={handleChange("code")}
                                   type="text"
                                   placeholder="Coupon Code"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRcode}</span>
-                              <div class="md:mb-5 md:pt-0">
+                              <div className="md:mb-5 md:pt-0">
                                 <input
                                   name="deduction"
                                   value={data.deduction}
@@ -200,7 +200,7 @@ const Coupons = () => {
                                   onChange={handleChange("deduction")}
                                   type="number"
                                   placeholder="Deduction Price"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">

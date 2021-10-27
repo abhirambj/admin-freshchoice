@@ -10,7 +10,7 @@ import swal from "sweetalert";
 import getAllStores from "./api/GET/GetAllStores";
 import { FormControl, MenuItem, TextField } from "@material-ui/core";
 
-const deliveryBoy = () => {
+const DeliveryBoy = () => {
   const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -232,7 +232,7 @@ const deliveryBoy = () => {
 
                           <form>
                             <div className="md:relative md:p-5 md:flex-auto">
-                              <div class="md:mb-3 md:pt-0">
+                              <div className="md:mb-3 md:pt-0">
                                 <input
                                   name="name"
                                   value={data.name}
@@ -246,11 +246,11 @@ const deliveryBoy = () => {
                                   onChange={handleChange("name")}
                                   type="text"
                                   placeholder="Name"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRname}</span>
-                              <div class="md:mb-3 md:pt-0">
+                              <div className="md:mb-3 md:pt-0">
                                 <input
                                   name="mobile"
                                   value={data.mobile}
@@ -265,11 +265,11 @@ const deliveryBoy = () => {
                                   onChange={handleChange("mobile")}
                                   type="number"
                                   placeholder="Mobile Number"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRmobile}</span>
-                              <div class="md:mb-3 md:pt-0">
+                              <div className="md:mb-3 md:pt-0">
                                 <input
                                   name="username"
                                   value={data.username}
@@ -284,7 +284,7 @@ const deliveryBoy = () => {
                                   onChange={handleChange("username")}
                                   type="text"
                                   placeholder="Username"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">
@@ -310,7 +310,7 @@ const deliveryBoy = () => {
                                 />
                               </div>
                               <span className="text-red-600">{ERRemail}</span>
-                              <div class="md:mb-3 md:pt-0">
+                              <div className="md:mb-3 md:pt-0">
                                 <input
                                   name="password"
                                   value={data.password || ""}
@@ -325,7 +325,7 @@ const deliveryBoy = () => {
                                   onChange={handleChange("password")}
                                   type="password"
                                   placeholder="Password"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">
@@ -383,7 +383,7 @@ const deliveryBoy = () => {
                               <span className="text-red-600">
                                 {ERRstore_id}
                               </span>
-                              <div class="md:mb-3 md:pt-0">
+                              <div className="md:mb-3 md:pt-0">
                                 <input
                                   name="other_mobiles"
                                   value={data.other_mobiles}
@@ -398,7 +398,7 @@ const deliveryBoy = () => {
                                   onChange={handleChange("other_mobiles")}
                                   type="number"
                                   placeholder="Other Mobiles"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                             </div>
@@ -466,4 +466,4 @@ export const getServerSideProps = requiresAuthentication((ctx) => {
   };
 });
 
-export default deliveryBoy;
+export default DeliveryBoy;

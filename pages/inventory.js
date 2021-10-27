@@ -308,8 +308,8 @@ const Inventory = () => {
                                         />
                                       </div>
                                     ) : (
-                                      allStores.map((items) => (
-                                        <MenuItem value={items.id}>
+                                      allStores.map((items,key) => (
+                                        <MenuItem key={key} value={items.id}>
                                           {items.title}
                                         </MenuItem>
                                       ))

@@ -116,7 +116,7 @@ const Notification = () => {
 
                           <form>
                             <div className="md:relative md:p-5 md:flex-auto">
-                              <div class="md:mb-3 md:pt-0">
+                              <div className="md:mb-3 md:pt-0">
                                 <input
                                   name="title"
                                   onBlur={({ target }) =>
@@ -130,11 +130,11 @@ const Notification = () => {
                                   onChange={handleChange("title")}
                                   type="text"
                                   placeholder="Title"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRtitle}</span>
-                              <div class="md:mb-3 md:pt-0">
+                              <div className="md:mb-3 md:pt-0">
                                 <input
                                   name="description"
                                   onBlur={({ target }) =>
@@ -148,7 +148,7 @@ const Notification = () => {
                                   onChange={handleChange("description")}
                                   type="text"
                                   placeholder="Description"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">
