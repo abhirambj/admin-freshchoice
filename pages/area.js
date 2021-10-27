@@ -259,4 +259,4 @@ export const getServerSideProps = requiresAuthentication((ctx) => {
     props: {},
   };
 });
-export default area;
+export default Area;
