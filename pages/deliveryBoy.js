@@ -10,7 +10,7 @@ import swal from "sweetalert";
 import getAllStores from "./api/GET/GetAllStores";
 import { FormControl, MenuItem, TextField } from "@material-ui/core";
 
-const deliveryBoy = () => {
+const DeliveryBoy = () => {
   const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -468,4 +468,4 @@ export const getServerSideProps = requiresAuthentication((ctx) => {
   };
 });
 
-export default deliveryBoy;
+export default DeliveryBoy;
