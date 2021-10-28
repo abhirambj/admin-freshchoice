@@ -25,8 +25,10 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
-    handler(tableMeta.rowData[1], tableMeta.rowData[2], tableMeta.rowData[3]);
     getItem(tableMeta.rowData[0]);
+    const currentDeliveryBoy = userData.find(item => item.id===tableMeta.rowData[4]);
+    console.log(currentDeliveryBoy,userData);
+    handler(currentDeliveryBoy);
   };
 
   const options = {
@@ -133,6 +135,7 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
                     items.name,
                     items.mobile,
                     items.store==null ? "Unassigned" : items.store,
+                    items.id
                   ])
                 )
               }

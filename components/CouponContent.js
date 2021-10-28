@@ -27,23 +27,25 @@ const CouponContent = ({ handler, getItem }) => {
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
-    handler(tableMeta.rowData[1], tableMeta.rowData[2]);
-    getItem(tableMeta.rowData[0]);
+    const currentCoupon = userData.find(item => item.id===tableMeta.rowData[6]);
+    handler(currentCoupon);
+    getItem(tableMeta.rowData[6]);
   };
 
   const options = {
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
     onTableInit: (action, tableState) => setTableData(tableState.data),
-    onRowsDelete: (rows, rowData) => {
+    onRowsDelete: (rows, rowData,item1,item2) => {
+      console.log(rows, rowData,item1,item2,tableData);
       rows.data.map((data) => {
         const currentItem = tableData.find(
-          (row) => row.index == data.dataIndex
+          item => item.index === data.dataIndex
         ).data;
         console.info(currentItem);
-        deleteCouponsById(`${baseUrl}/coupon/${currentItem[0]}`)
-          .then(() => console.info("success"))
-          .catch((err) => console.info(err));
+        return deleteCouponsById(`${baseUrl}/coupon/${currentItem[currentItem.length-1]}`)
+          .then(() => true)
+          .catch((err) => false);
       });
     },
   };
@@ -142,7 +144,8 @@ const CouponContent = ({ handler, getItem }) => {
                     items.deduction,
                     items.description,
                     items.min_eligible_amount,
-                    items.max_discount
+                    items.max_discount,
+                    items.id
                   ])
                 )
               }

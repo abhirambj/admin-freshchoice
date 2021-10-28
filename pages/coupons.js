@@ -51,8 +51,8 @@ const Coupons = () => {
     setShowModal(true);
   };
 
-  const handleUpdate = (store_id,description,min_eligible_amount,max_discount,code, deduction) => {
-    setData({ ...data,store_id,description,min_eligible_amount,max_discount,code, deduction: parseFloat(deduction) });
+  const handleUpdate = ({store_id,description,min_eligible_amount,max_discount,code, deduction,id}) => {
+    setData({ ...data,store_id,description,min_eligible_amount,max_discount,code, deduction: parseFloat(deduction),id });
     setShowModal(true);
     setIsUpdate(true);
   };
@@ -101,7 +101,7 @@ const Coupons = () => {
     setLoading(true);
     updateCoupons(
       { store_id, description,min_eligible_amount,max_discount,code, deduction: parseFloat(deduction) },
-      baseUrl + "/coupon/" + itemID
+      baseUrl + "/coupon/" + data.id
     ).then((data) => {
       if (data) {
         if (data.error || data.detail) {
@@ -384,7 +384,7 @@ const Coupons = () => {
               </div>
               <CouponContent
                 getItem={(id) => setItemID(id)}
-                handler={(description,min_eligible_amount,max_discount,store_id ,code, deduction) => handleUpdate(code, deduction)}
+                handler={({description,min_eligible_amount,max_discount,store_id ,code, deduction,id}) => handleUpdate({description,min_eligible_amount,max_discount,store_id ,code, deduction,id})}
               />
             </main>
           </DashBoardContainer>

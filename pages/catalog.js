@@ -21,6 +21,7 @@ const Items = () => {
   const [apiError, setApiError] = useState("");
   const [data, setData] = useState({
     name: "",
+    id:"",
     image: "",
     categoryId: "",
     description: "",
@@ -68,6 +69,7 @@ const Items = () => {
     setData({
       ...data,
       name: "",
+      id: "",
       categoryId: "",
       description: "",
       quantity: "",
@@ -86,6 +88,7 @@ const Items = () => {
     setData({
       ...data,
       name: item.name,
+      id:item.id,
       categoryId: categories.find((ct) => ct.name == item.categoryId).id,
       description: item.description,
       quantity: parseInt(item.quantity),
@@ -227,7 +230,7 @@ const Items = () => {
         item !== "success" &&
         formdata.set(item, data[item])
     );
-    updateItems(formdata, baseUrl + "/item/" + itemID).then((data) => {
+    updateItems(formdata, baseUrl + "/item/" + data.id).then((data) => {
       if (data) {
         if (data.error || data.detail) {
           console.log("Error", data.err);

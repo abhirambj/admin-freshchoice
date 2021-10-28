@@ -19,6 +19,7 @@ const DeliveryBoy = () => {
   const [apiError, setApiError] = useState("");
   const [stores, setStores] = useState([]);
   const [data, setData] = useState({
+    id:"",
     name: "",
     mobile: "",
     username: "",
@@ -32,6 +33,7 @@ const DeliveryBoy = () => {
     setIsUpdate(false);
     setData({
       ...data,
+      id:"",
       name: "",
       mobile: "",
       username: "",
@@ -43,24 +45,9 @@ const DeliveryBoy = () => {
     setShowModal(true);
   };
   const handleUpdate = (
-    name,
-    mobile,
-    username,
-    email,
-    store_id,
-    password,
-    other_mobiles
+    data
   ) => {
-    setData({
-      ...data,
-      name,
-      mobile,
-      username,
-      email,
-      store_id,
-      password,
-      other_mobiles,
-    });
+    setData(data);
     setShowModal(true);
     setIsUpdate(true);
   };
@@ -135,12 +122,7 @@ const DeliveryBoy = () => {
   const updateItem = (ev) => {
     setLoading(true);
     ev.preventDefault();
-    let query = "";
-    //Send query parameters instead of request body
-    Object.entries(data).map(
-      (item) => (query = query + `${item[0]}=${item[1]}&`)
-    );
-    updateBoy(baseUrl + "/admin/deliveryboy/" + itemID + `?${query}`).then(
+    updateBoy(baseUrl + "/admin/deliveryboy/" + data.id,data).then(
       (data) => {
         if (data) {
           if (data.error || data.detail) {
@@ -450,8 +432,8 @@ const DeliveryBoy = () => {
               </div>
               <DeliveryBoyContent
                 getItem={(id) => setItemID(id)}
-                handler={(name, mobile,email, store_id, username, password, other_mobiles) =>
-                  handleUpdate(name, mobile, username,email, store_id, password, other_mobiles)
+                handler={(data) =>
+                  handleUpdate(data)
                 }
               />
             </main>

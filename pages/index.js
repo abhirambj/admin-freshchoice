@@ -102,8 +102,8 @@ export default function Login() {
                 apiError && "border-2 border-red-600"
               }`}
             >
-              <div className="items-center">
-                <Image className="h-36 block mx-auto" src="/logo.png" />
+              <div className="items-center text-center">
+                <Image width="100" height="100" className="h-36 block mx-auto" src="/logo.png" />
               </div>
               <p className="text-center text-red-600">{apiError}</p>
               <form className="space-y-5 mt-5" onSubmit={handleSubmit}>
