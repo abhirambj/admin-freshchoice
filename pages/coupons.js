@@ -246,7 +246,7 @@ const Coupons = () => {
                               <span className="text-red-600">
                                 {ERRstore_id}
                               </span>
-                              <div class="md:mb-2 md:pt-0">
+                              <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="code"
                                   value={data.code}
@@ -261,11 +261,11 @@ const Coupons = () => {
                                   onChange={handleChange("code")}
                                   type="text"
                                   placeholder="Coupon Code"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRcode}</span>
-                              <div class="md:mb-2 md:pt-0">
+                              <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="description"
                                   value={data.description}
@@ -280,11 +280,11 @@ const Coupons = () => {
                                   onChange={handleChange("description")}
                                   type="text"
                                   placeholder="Description"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRdescription}</span>
-                              <div class="md:mb-5 md:pt-0">
+                              <div className="md:mb-5 md:pt-0">
                                 <input
                                   name="deduction"
                                   value={data.deduction}
@@ -299,13 +299,13 @@ const Coupons = () => {
                                   onChange={handleChange("deduction")}
                                   type="number"
                                   placeholder="Deduction Price"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">
                                 {ERRdeduction}
                               </span>
-                              <div class="md:mb-2 md:pt-0">
+                              <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="min_eligible_amount"
                                   value={data.min_eligible_amount}
@@ -320,11 +320,11 @@ const Coupons = () => {
                                   onChange={handleChange("min_eligible_amount")}
                                   type="number"
                                   placeholder="Minimum Eligible Amount"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRmin_eligible_amount}</span>
-                              <div class="md:mb-2 md:pt-0">
+                              <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="max_discount"
                                   value={data.max_discount}
@@ -339,7 +339,7 @@ const Coupons = () => {
                                   onChange={handleChange("max_discount")}
                                   type="number"
                                   placeholder="Maximum Discount"
-                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRmax_discount}</span>
