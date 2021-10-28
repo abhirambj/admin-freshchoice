@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import deleteBannerById from "../pages/api/DELETE/DeleteBanner";
 import HashLoader from "react-spinners/HashLoader";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Image from 'next/image';
 
 const theme = createMuiTheme({
   palette: {
@@ -81,7 +82,7 @@ const BannerContent = () => {
                   userData.map((items) => [
                     items.id,
                     <td key={items.id} className="px-6 py-4 whitespace-nowrap flex justify-center text-center">
-                      <img
+                      <Image
                         width="100"
                         height="100"
                         src={`${baseUrl}` + items.image}

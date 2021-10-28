@@ -4,6 +4,8 @@ import getAllItems from "../pages/api/GET/GetAllItems";
 import HashLoader from "react-spinners/HashLoader";
 import deleteItemsById from "../pages/api/DELETE/DeleteItems";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Image from 'next/image';
+
 
 const theme = createMuiTheme({
   palette: {
@@ -107,7 +109,7 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
                   items?.map((item) => [
                     item.id,
                     <td key={item.id} className="px-6 py-4 whitespace-nowrap text-center">
-                      <img
+                      <Image 
                         width="100"
                         height="100"
                         src={`${baseUrl}` + item.image}

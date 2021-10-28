@@ -244,7 +244,6 @@ const Sidebar = ({ open, handler }) => {
             </Link>
             <Link href="/deliveryBoy">
             <a
-              href="/deliveryBoy"
               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-red-600 hover:text-white"
             >
               <div className="flex flex-row">

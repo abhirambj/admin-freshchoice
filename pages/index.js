@@ -6,6 +6,7 @@ import userSignIn from "./api/POST/LoginFunc";
 import { saveToken } from "../pages/api/apiRequests";
 import HashLoader from "react-spinners/HashLoader";
 import swal from "sweetalert";
+import Image from 'next/image';
 
 export default function Login() {
   const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
@@ -102,7 +103,7 @@ export default function Login() {
               }`}
             >
               <div className="items-center">
-                <img className="h-36 block mx-auto" src="/logo.png" />
+                <Image className="h-36 block mx-auto" src="/logo.png" />
               </div>
               <p className="text-center text-red-600">{apiError}</p>
               <form className="space-y-5 mt-5" onSubmit={handleSubmit}>

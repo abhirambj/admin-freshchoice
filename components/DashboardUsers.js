@@ -12,7 +12,7 @@ const DashboardUsers = ({ orders, items, messages, users }) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-5 mt-6 sm:grid-cols-2 lg:grid-cols-4">
-          <Link href="/orders">
+          <Link href="/orders" passHref>
             <div className="p-4 items-stretch content-between flex flex-col justify-between transition-shadow border rounded-lg shadow-sm hover:shadow-xl bg-red-700">
               <div className="flex items-center justify-between">
                 <div className="">
@@ -56,7 +56,7 @@ const DashboardUsers = ({ orders, items, messages, users }) => {
               </div>
             </div>
           </Link>
-          <Link href="/catalog">
+          <Link href="/catalog" passHref>
             <div className=" p-4 items-stretch content-between flex flex-col justify-between transition-shadow border rounded-lg shadow-sm hover:shadow-xl bg-red-700">
               <div className="flex items-center justify-between">
                 <div className="">
@@ -100,7 +100,7 @@ const DashboardUsers = ({ orders, items, messages, users }) => {
               </div>
             </div>
           </Link>
-          <Link href="/messages">
+          <Link href="/messages" passHref>
             <div className=" p-4 content-between items-stretch flex flex-col justify-between transition-shadow border rounded-lg shadow-sm hover:shadow-xl bg-red-700">
               <div className="flex items-center justify-between">
                 <div className="">
@@ -144,7 +144,7 @@ const DashboardUsers = ({ orders, items, messages, users }) => {
               </div>
             </div>
           </Link>
-          <Link href="/users">
+          <Link href="/users" passHref>
             <div className=" p-4 content-between items-stretch flex flex-col justify-between transition-shadow border rounded-lg shadow-sm hover:shadow-xl bg-red-700">
               <div className="flex items-center justify-between">
                 <div className="">
