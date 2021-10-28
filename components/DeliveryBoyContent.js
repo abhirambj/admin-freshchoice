@@ -70,7 +70,7 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
                 <button onClick={() => initUpdate(tableMeta)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
+                    class="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="green"
@@ -132,7 +132,7 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
                     // items.id,
                     items.name,
                     items.mobile,
-                    items.store,
+                    items.store==null ? "Unassigned" : items.store,
                   ])
                 )
               }

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import deleteCouponsById from "../pages/api/DELETE/DeleteCoupons";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import getAllStores from "../pages/api/GET/GetAllStores";
 
 const theme = createMuiTheme({
   palette: {
@@ -22,6 +23,7 @@ const CouponContent = ({ handler, getItem }) => {
   const [viewData, setViewData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [stores, setStores] = useState([]);
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
@@ -63,7 +65,7 @@ const CouponContent = ({ handler, getItem }) => {
                 <button onClick={() => initUpdate(tableMeta)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
+                    class="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="green"
@@ -86,6 +88,20 @@ const CouponContent = ({ handler, getItem }) => {
 
   useEffect(() => {
     setLoading(true);
+    getAllStores(baseUrl + "/stores/").then((data) => {
+      if (data) {
+        if (data.error || data.detail) {
+          console.log("Error", data.err);
+          setLoading(false);
+        } else {
+          console.log("Success", data);
+          setStores(data);
+        }
+      } else {
+        console.log("No DATA");
+        setLoading(false);
+      }
+    });
     getAllCoupons(baseUrl + "/coupon/").then((data) => {
       if (data) {
         if (data.error || data.detail) {
@@ -121,10 +137,10 @@ const CouponContent = ({ handler, getItem }) => {
                   </div>
                 ) : (
                   userData.map((items) => [
-                    items.id,
+                    stores.find(store => store.id===items.store_id)?.title || "",
                     items.code,
                     items.deduction,
-                    items.decription,
+                    items.description,
                     items.min_eligible_amount,
                     items.max_discount
                   ])

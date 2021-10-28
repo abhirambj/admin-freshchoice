@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import CouponContent from "../components/CouponContent";
 import DashBoardContainer from "../components/DashBoardContainer";
@@ -7,6 +7,8 @@ import HashLoader from "react-spinners/HashLoader";
 import { requiresAuthentication } from "../functions";
 import updateCoupons from "../pages/api/PATCH/updateCoupons";
 import swal from "sweetalert";
+import getAllStores from "./api/GET/GetAllStores";
+import { FormControl, MenuItem, TextField } from "@material-ui/core";
 
 const Coupons = () => {
   const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
@@ -15,33 +17,42 @@ const Coupons = () => {
   const [itemID, setItemID] = useState(1);
   const [isUpdate, setIsUpdate] = useState(false);
   const [apiError, setApiError] = useState("");
+  const [stores, setStores] = useState([]);
 
   const [data, setData] = useState({
+    store_id: "",
+    description: "",
+    min_eligible_amount:"",
+    max_discount:"",
     code: "",
     deduction: "",
     success: false,
   });
   const [error, setError] = useState({
-    ERRcode: true,
+    ERRstore_id: false,
+    ERRdescription:false,
+    ERRcode: false,
     ERRdeduction: false,
+    ERRmin_eligible_amount: false,
+    ERRmax_discount: false,
   });
-  const { ERRcode, ERRdeduction } = error;
+  const { ERRcode, ERRdeduction,ERRstore_id,ERRdescription,ERRmin_eligible_amount,ERRmax_discount  } = error;
 
   const handleBlur = (name) => (event) => {
     let simplifiedName = name.replace("ERR", "");
     console.log(simplifiedName, data[simplifiedName]);
     setError({ ...error, [name]: data[simplifiedName] ? true : false });
   };
-  const { code, deduction, success } = data;
+  const { store_id,code, deduction,description,min_eligible_amount,max_discount, success } = data;
 
   const InitAddItem = () => {
     setIsUpdate(false);
-    setData({ ...data, code: "", deduction: "" });
+    setData({ ...data,store_id:"",description:"",min_eligible_amount:"",max_discount:"",code: "", deduction: "" });
     setShowModal(true);
   };
 
-  const handleUpdate = (code, deduction) => {
-    setData({ ...data, code, deduction: parseFloat(deduction) });
+  const handleUpdate = (store_id,description,min_eligible_amount,max_discount,code, deduction) => {
+    setData({ ...data,store_id,description,min_eligible_amount,max_discount,code, deduction: parseFloat(deduction) });
     setShowModal(true);
     setIsUpdate(true);
   };
@@ -53,7 +64,7 @@ const Coupons = () => {
   const handleSubmit = (ev) => {
     ev.preventDefault();
     setLoading(true);
-    if (!code || !deduction) {
+    if ( !store_id || !description||!min_eligible_amount || !max_discount || !code || !deduction) {
       setApiError("Please Fill All The Required Fields");
       setLoading(false);
       return;
@@ -89,7 +100,7 @@ const Coupons = () => {
     ev.preventDefault();
     setLoading(true);
     updateCoupons(
-      { code, deduction: parseFloat(deduction) },
+      { store_id, description,min_eligible_amount,max_discount,code, deduction: parseFloat(deduction) },
       baseUrl + "/coupon/" + itemID
     ).then((data) => {
       if (data) {
@@ -116,6 +127,23 @@ const Coupons = () => {
       }
     });
   };
+
+  useEffect(() => {
+    getAllStores(baseUrl + "/stores/").then((data) => {
+      if (data) {
+        if (data.error || data.detail) {
+          console.log("Error", data.err);
+          setLoading(false);
+        } else {
+          console.log("Success", data);
+          setStores(data);
+        }
+      } else {
+        console.log("No DATA");
+        setLoading(false);
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -166,7 +194,59 @@ const Coupons = () => {
 
                           <form>
                             <div className="md:relative md:p-3 md:flex-auto">
-                              <div className="md:mb-2 md:pt-0">
+                            <div className="md:mb-3 md:pt-1">
+                                <FormControl
+                                  size="small"
+                                  fullWidth
+                                  className="w-full"
+                                  variant="outlined"
+                                >
+                                  <TextField
+                                    size="small"
+                                    name="store_id"
+                                    value={
+                                      stores.find(
+                                        (item) =>
+                                          item.title == data.store_id ||
+                                          item.id == data.store_id
+                                      )?.id || ""
+                                    }
+                                    onBlur={({ target }) =>
+                                      !target.value &&
+                                      setError({
+                                        ...error,
+                                        ERRstore_id:
+                                          "Store Name should not be empty",
+                                      })
+                                    }
+                                    onChange={handleChange("store_id")}
+                                    id="outlined-basic"
+                                    label="Store"
+                                    variant="outlined"
+                                    select
+                                  >
+                                    {!stores ? (
+                                      <div className="md:flex md:items-center md:justify-center md:h-screen">
+                                        <HashLoader
+                                          color={"FF0000"}
+                                          loading={loading}
+                                          size={150}
+                                        />
+                                      </div>
+                                    ) : (
+                                      stores.map((items, key) => (
+                                        <MenuItem value={items.id} key={key}>
+                                          {items.title}
+                                        </MenuItem>
+                                      ))
+                                    )}
+                                  </TextField>
+                                </FormControl>
+                              </div>
+                              <span className="text-red-600">
+                                {ERRstore_id}
+                              </span>
+                              <div class="md:mb-2 md:pt-0">
                                 <input
                                   name="code"
                                   value={data.code}
@@ -181,11 +261,30 @@ const Coupons = () => {
                                   onChange={handleChange("code")}
                                   type="text"
                                   placeholder="Coupon Code"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRcode}</span>
-                              <div className="md:mb-5 md:pt-0">
+                              <div class="md:mb-2 md:pt-0">
+                                <input
+                                  name="description"
+                                  value={data.description}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRdescription:
+                                        "Coupon Description should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("description")}
+                                  type="text"
+                                  placeholder="Description"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">{ERRdescription}</span>
+                              <div class="md:mb-5 md:pt-0">
                                 <input
                                   name="deduction"
                                   value={data.deduction}
@@ -200,12 +299,50 @@ const Coupons = () => {
                                   onChange={handleChange("deduction")}
                                   type="number"
                                   placeholder="Deduction Price"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">
                                 {ERRdeduction}
                               </span>
+                              <div class="md:mb-2 md:pt-0">
+                                <input
+                                  name="min_eligible_amount"
+                                  value={data.min_eligible_amount}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRmin_eligible_amount:
+                                        "Min. Eligible Amt. should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("min_eligible_amount")}
+                                  type="number"
+                                  placeholder="Minimum Eligible Amount"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">{ERRmin_eligible_amount}</span>
+                              <div class="md:mb-2 md:pt-0">
+                                <input
+                                  name="max_discount"
+                                  value={data.max_discount}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRmax_discount:
+                                        "Maximum Discount should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("max_discount")}
+                                  type="number"
+                                  placeholder="Maximum Discount"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">{ERRmax_discount}</span>
                             </div>
                           </form>
                           {/*footer*/}
@@ -223,7 +360,7 @@ const Coupons = () => {
                                 type="submit"
                                 onClick={handleSubmit}
                                 disabled={
-                                  ERRcode || ERRdeduction ? true : false
+                                  ERRdescription || ERRmax_discount || ERRmin_eligible_amount || ERRstore_id || ERRcode || ERRdeduction ? true : false
                                 }
                               >
                                 Add
@@ -247,7 +384,7 @@ const Coupons = () => {
               </div>
               <CouponContent
                 getItem={(id) => setItemID(id)}
-                handler={(code, deduction) => handleUpdate(code, deduction)}
+                handler={(description,min_eligible_amount,max_discount,store_id ,code, deduction) => handleUpdate(code, deduction)}
               />
             </main>
           </DashBoardContainer>

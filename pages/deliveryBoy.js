@@ -10,7 +10,7 @@ import swal from "sweetalert";
 import getAllStores from "./api/GET/GetAllStores";
 import { FormControl, MenuItem, TextField } from "@material-ui/core";
 
-const DeliveryBoy = () => {
+const deliveryBoy = () => {
   const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -232,7 +232,7 @@ const DeliveryBoy = () => {
 
                           <form>
                             <div className="md:relative md:p-5 md:flex-auto">
-                              <div className="md:mb-3 md:pt-0">
+                              <div class="md:mb-3 md:pt-0">
                                 <input
                                   name="name"
                                   value={data.name}
@@ -246,11 +246,11 @@ const DeliveryBoy = () => {
                                   onChange={handleChange("name")}
                                   type="text"
                                   placeholder="Name"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRname}</span>
-                              <div className="md:mb-3 md:pt-0">
+                              <div class="md:mb-3 md:pt-0">
                                 <input
                                   name="mobile"
                                   value={data.mobile}
@@ -265,11 +265,11 @@ const DeliveryBoy = () => {
                                   onChange={handleChange("mobile")}
                                   type="number"
                                   placeholder="Mobile Number"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">{ERRmobile}</span>
-                              <div className="md:mb-3 md:pt-0">
+                              <div class="md:mb-3 md:pt-0">
                                 <input
                                   name="username"
                                   value={data.username}
@@ -284,7 +284,7 @@ const DeliveryBoy = () => {
                                   onChange={handleChange("username")}
                                   type="text"
                                   placeholder="Username"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">
@@ -296,7 +296,7 @@ const DeliveryBoy = () => {
                                   value={data.email}
                                   onBlur={({ target }) =>
                                     target.value.length < 3 &&
-                                    target.includes("@freshchoice.com") &&
+                                    target.value.includes("@freshchoice.com") &&
                                     setError({
                                       ...error,
                                       ERRemail:
@@ -310,7 +310,7 @@ const DeliveryBoy = () => {
                                 />
                               </div>
                               <span className="text-red-600">{ERRemail}</span>
-                              <div className="md:mb-3 md:pt-0">
+                              <div class="md:mb-3 md:pt-0">
                                 <input
                                   name="password"
                                   value={data.password || ""}
@@ -325,7 +325,7 @@ const DeliveryBoy = () => {
                                   onChange={handleChange("password")}
                                   type="password"
                                   placeholder="Password"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                               <span className="text-red-600">
@@ -383,7 +383,7 @@ const DeliveryBoy = () => {
                               <span className="text-red-600">
                                 {ERRstore_id}
                               </span>
-                              <div className="md:mb-3 md:pt-0">
+                              <div class="md:mb-3 md:pt-0">
                                 <input
                                   name="other_mobiles"
                                   value={data.other_mobiles}
@@ -398,7 +398,7 @@ const DeliveryBoy = () => {
                                   onChange={handleChange("other_mobiles")}
                                   type="number"
                                   placeholder="Other Mobiles"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  class="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
                             </div>
@@ -418,6 +418,8 @@ const DeliveryBoy = () => {
                                 type="submit"
                                 onClick={handleSubmit}
                                 disabled={
+                                  ERRemail ||
+                                  ERRstore_id ||
                                   ERRname ||
                                   ERRmobile ||
                                   ERRpassword ||
@@ -448,8 +450,8 @@ const DeliveryBoy = () => {
               </div>
               <DeliveryBoyContent
                 getItem={(id) => setItemID(id)}
-                handler={(name, mobile, username, password, other_mobiles) =>
-                  handleUpdate(name, mobile, username, password, other_mobiles)
+                handler={(name, mobile,email, store_id, username, password, other_mobiles) =>
+                  handleUpdate(name, mobile, username,email, store_id, password, other_mobiles)
                 }
               />
             </main>
@@ -466,4 +468,4 @@ export const getServerSideProps = requiresAuthentication((ctx) => {
   };
 });
 
-export default DeliveryBoy;
+export default deliveryBoy;
