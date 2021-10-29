@@ -3,5 +3,4 @@ module.exports = {
         domains: ["immense-castle-52645.herokuapp.com"]
     },
     basePath: "/admin",
-    trailingSlash: true
 }
