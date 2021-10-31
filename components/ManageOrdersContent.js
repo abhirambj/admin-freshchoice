@@ -31,9 +31,7 @@ const ManageOrdersContent = () => {
     selectableRows: false,
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
-    onCellClick: (rowData) => {
-      handleView(rowData.props.id);
-    },
+    onRowClick:(rowData) => handleView(rowData[0])
   };
   const updateStatus = (id,value) => {
     setLoading(true);
@@ -114,6 +112,7 @@ const ManageOrdersContent = () => {
         } else {
           console.log("Success", data);
           setViewData(data);
+          setShowModal(true);
           setLoading(false);
         }
       } else {
@@ -140,7 +139,7 @@ const ManageOrdersContent = () => {
     });
     fetchOrders();
   }, []);
-
+console.log(stores);
   const fetchOrders = () => {
     getAllOrders(baseUrl + "/order/").then((data) => {
       if (data) {
@@ -182,7 +181,7 @@ const ManageOrdersContent = () => {
                     item.name,
                     item.mobile_number,
                     item.deliverytype,
-                    stores.find(items => items.id===viewData.store_id)?.title,
+                    stores.find(items => items.id===item.store_id)?.title,
                     item.rzpy_order_id,
                     item.rating,
                     item.delivered_time,
