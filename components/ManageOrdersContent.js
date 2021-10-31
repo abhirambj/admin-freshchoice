@@ -7,6 +7,7 @@ import { FormControl, MenuItem, TextField } from "@material-ui/core";
 import HashLoader from "react-spinners/HashLoader";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import updateStore from "../pages/api/PATCH/updateStore";
+import getAllStores from "../pages/api/GET/GetAllStores";
 
 const theme = createMuiTheme({
   palette: {
@@ -24,6 +25,7 @@ const ManageOrdersContent = () => {
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [stores, setStores] = useState([]);
 
   const options = {
     selectableRows: false,
@@ -43,7 +45,13 @@ const ManageOrdersContent = () => {
     "Order ID",
     "Time",
     "Name",
-    "Locality",
+    "Mobile Number",
+    "Chosen Delivery Time",
+    "Store Name",
+    "Razorpay ID",
+    "Rating",
+    "Delivered Time",
+    "Total",
     {
       label: "View",
       options: {
@@ -116,6 +124,20 @@ const ManageOrdersContent = () => {
   };
   useEffect(() => {
     setLoading(true);
+    getAllStores(baseUrl + "/stores/").then((data) => {
+      if (data) {
+        if (data.error || data.detail) {
+          console.log("Error", data.err);
+          setLoading(false);
+        } else {
+          console.log("Success", data);
+          setStores(data);
+        }
+      } else {
+        console.log("No DATA");
+        setLoading(false);
+      }
+    });
     fetchOrders();
   }, []);
 
@@ -154,11 +176,17 @@ const ManageOrdersContent = () => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [
-                    items.id,
-                    new Date(items.time).toLocaleString(),
-                    items.name,
-                    items.address.replace(',',''),
+                  userData.map((item) => [
+                    item.id,
+                    new Date(item.time).toLocaleString(),
+                    item.name,
+                    item.mobile_number,
+                    item.deliverytype,
+                    stores.find(items => items.id===viewData.store_id)?.title,
+                    item.rzpy_order_id,
+                    item.rating,
+                    item.delivered_time,
+                    item.total,
                   ])
                 )
               }
@@ -193,7 +221,7 @@ const ManageOrdersContent = () => {
                               </div>
                               <div className="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
                                 <p className="text-gray-600">Store Name</p>
-                                <p>{viewData.area}</p>
+                                <p>{stores.find(item => item.id===viewData.store_id)?.title|| "" }</p>
                               </div>
                               </div>
                               <div className="flex flex-row items-center">  
@@ -202,13 +230,13 @@ const ManageOrdersContent = () => {
                                 <p>{viewData.paytype|| "card"}</p>
                               </div>
                               <div className="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                <p className="text-gray-600">Delivery Type</p>
-                                <p>{viewData.deliverytype}</p>
+                                <p className="text-gray-600">Delivery Time</p>
+                                <p>{viewData.delivered_time}</p>
                               </div>
                               </div>
                               <div className="md:grid md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                <p className="text-gray-600">Pay ID</p>
-                                <p>{viewData.payid}</p>
+                                <p className="text-gray-600">RazorPay ID</p>
+                                <p>{viewData.rzpy_order_id}</p>
                               </div>
                             </div>
                             <table className="w-full my-6 text-center">
