@@ -24,7 +24,7 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
-    handler(tableMeta.rowData[1], tableMeta.rowData[2]);
+    handler(tableMeta.rowData[1], tableMeta.rowData[3],tableMeta.rowData[4]);
     getItem(tableMeta.rowData[0]);
   };
 
@@ -38,7 +38,7 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
           (row) => row.index == data.dataIndex
         ).data;
         console.info(currentItem);
-        deleteStoreById(`${baseUrl}/deliveryarea/${currentItem[0]}`)
+        deleteStoreById(`${baseUrl}/stores?store_id=${currentItem[0]}`)
           .then(() => console.info("success"))
           .catch((err) => console.info(err));
       });
