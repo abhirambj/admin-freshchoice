@@ -18,29 +18,39 @@ const Area = () => {
   const [data, setData] = useState({
     title: "",
     description: "",
+    pincode:"",
+    latitude:"",
+    longitude:"",
+    locality: "",
+    firebase_reg_token:"",
     success: false,
   });
   const InitAddItem = () => {
     setIsUpdate(false);
-    setData({ ...data, title: "", description: "" });
+    setData({ ...data, title: "", description: "", pincode: "", latitude:"", longitude:"", locality:"",firebase_reg_token:""});
     setShowModal(true);
   };
-  const handleUpdate = (title, description) => {
-    setData({ ...data, title, description });
+  const handleUpdate = (title, description,pincode,latitude,longitude, locality,firebase_reg_token) => {
+    setData({ ...data, title, description,pincode, latitude,longitude, locality,firebase_reg_token});
     setShowModal(true);
     setIsUpdate(true);
   };
   const [error, setError] = useState({
-    ERRtitle: true,
+    ERRtitle: false,
     ERRdescription: false,
+    ERRpincode: false,
+    ERRlatitude: false,
+    ERRlongitude: false,
+    ERRlocality: false,
+    ERRfirebase_reg_token: false,
   });
-  const { ERRtitle, ERRdescription } = error;
+  const { ERRtitle, ERRdescription, ERRpincode, ERRlatitude, ERRlongitude, ERRlocality, ERRfirebase_reg_token } = error;
   const handleBlur = (name) => (event) => {
     let simplifiedName = name.replace("ERR", "");
     console.log(simplifiedName, data[simplifiedName]);
     setError({ ...error, [name]: data[simplifiedName] ? true : false });
   };
-  const { title, description, success } = data;
+  const { title, description,pincode,latitude,longitude,locality,firebase_reg_token,success } = data;
   const handleChange = (name) => (event) => {
     setError({ ...error, ["ERR" + name]: "" });
     setData({ ...data, [name]: event.target.value.toString() });
@@ -49,13 +59,13 @@ const Area = () => {
     setApiError("");
     ev.preventDefault();
     setLoading(true);
-    if (!title || !description) {
+    if (!title || !description || !pincode || !latitude || !longitude || !locality) {
       setApiError("Please Fill All The Required Fields");
       setLoading(false);
-      console.log("No", title, description);
+      console.log("No", title, description,pincode);
       return;
     }
-    addDeliveryArea(data, baseUrl + "/deliveryarea/").then((data) => {
+    addDeliveryArea(data, baseUrl + "/stores/").then((data) => {
       if (data) {
         if (data.error || data.detail) {
           console.log("Error", data.err);
@@ -63,9 +73,8 @@ const Area = () => {
           setApiError(data.error || data.detail);
         } else {
           swal({
-            title: "Delivery Store Added Successful!!",
-            confirmButtonText: "OK",
-            animation: true,
+            title: "Store Added Successful!!",
+            button: "OK",
             icon: "success",
             timer: 2000,
           });
@@ -88,7 +97,7 @@ const Area = () => {
     Object.entries(data).map(
       (item) => (query = query + `${item[0]}=${item[1]}&`)
     );
-    updateStore(data, baseUrl + "/deliveryarea/" + itemID + `?${query}`).then(
+    updateStore(data, baseUrl + "/stores/" + itemID + `?${query}`).then(
       (data) => {
         if (data) {
           if (data.error || data.detail) {
@@ -98,8 +107,7 @@ const Area = () => {
           } else {
             swal({
               title: "Store Updated Successfully!!",
-              confirmButtonText: "OK",
-              animation: true,
+              button: "OK",
               icon: "success",
               timer: 2000,
             });
@@ -202,6 +210,101 @@ const Area = () => {
                               <span className="text-red-600">
                                 {ERRdescription}
                               </span>
+                              <div className="md:mb-2 md:pt-0">
+                                <input
+                                  name="pincode"
+                                  value={data.pincode.pincode}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRpincode:
+                                        "Store Pincode should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("pincode")}
+                                  type="number"
+                                  placeholder="Store Pincode"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">{ERRpincode}</span>
+                              <div className="md:mb-2 md:pt-0">
+                                <input
+                                  name="latitude"
+                                  value={(data.address).latitude}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRlatitude:
+                                        "Store Latitude should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("latitude")}
+                                  type="number"
+                                  placeholder="Store Latitude"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">{ERRlatitude}</span>
+                              <div className="md:mb-2 md:pt-0">
+                                <input
+                                  name="longitude"
+                                  value={(data.address).longitude}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRlongitude:
+                                        "Store Longitude should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("longitude")}
+                                  type="number"
+                                  placeholder="Store Longitude"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">{ERRlongitude}</span>
+                              <div className="md:mb-2 md:pt-0">
+                                <input
+                                  name="locality"
+                                  value={(data.address).locality}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRlocality:
+                                        "Store Locality should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("locality")}
+                                  type="text"
+                                  placeholder="Store Locality"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">{ERRlocality}</span>
+                              <div className="md:mb-2 md:pt-0">
+                                <input
+                                  name="firebase_reg_token"
+                                  value={data.firebase_reg_token}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRfirebase_reg_token:
+                                        "Firebase Token should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("firebase_reg_token")}
+                                  type="text"
+                                  placeholder="Store Firebase Token"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">{ERRlongitude}</span>
                             </div>
                           </form>
                           {/*footer*/}

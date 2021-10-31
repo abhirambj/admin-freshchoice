@@ -48,7 +48,9 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
   const columns = [
     "ID",
     "Name",
-    "Pincode",
+    "Location",
+    "Description",
+    "Firebase Token",
     {
       label: "Action",
       options: {
@@ -82,7 +84,7 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
 
   useEffect(() => {
     setLoading(true);
-    getDeliveryAreas(baseUrl + "/deliveryarea/").then((data) => {
+    getDeliveryAreas(baseUrl + "/stores/").then((data) => {
       if (data) {
         if (data.error || data.detail) {
           console.log("Error", data.err);
@@ -116,7 +118,7 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [items.id, items.name, items.pincode])
+                  userData.map((items) => [items.id, items.title, items.location, items.description, items.firebase_reg_token])
                 )
               }
               columns={columns}
