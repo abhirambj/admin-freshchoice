@@ -30,7 +30,7 @@ const UsersContent = () => {
 
   useEffect(() => {
     setLoading(true);
-    getAllUsers(baseUrl + "/customer/me").then((data) => {
+    getAllUsers(baseUrl + "/customer/all").then((data) => {
       if (data) {
         if (data.error || data.detail) {
           console.log("Error", data.err);
@@ -66,10 +66,10 @@ const UsersContent = () => {
                 ) : (
                   userData.map((items) => [
                     items.id,
-                    items.name,
+                    items.full_name,
                     items.email,
-                    items.mobile_number,
-                    items.address,
+                    items.mobile,
+                    items.default_address.locality.replace(',',''),
                   ])
                 )
               }
