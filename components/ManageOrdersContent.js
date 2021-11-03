@@ -8,6 +8,7 @@ import HashLoader from "react-spinners/HashLoader";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import updateStore from "../pages/api/PATCH/updateStore";
 import getAllStores from "../pages/api/GET/GetAllStores";
+import { processItems } from "../functions";
 
 const theme = createMuiTheme({
   palette: {
@@ -31,14 +32,14 @@ const ManageOrdersContent = () => {
     selectableRows: false,
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
-    onRowClick:(rowData) => handleView(rowData[0])
+    onRowClick: (rowData) => handleView(rowData[0]),
   };
-  const updateStatus = (id,value) => {
+  const updateStatus = (id, value) => {
     setLoading(true);
-    updateStore({status:value},`${baseUrl}/order/${id}`)
-    .then(() =>fetchOrders())
-    .then(() => setLoading(false));
-  }
+    updateStore({ status: value }, `${baseUrl}/order/${id}`)
+      .then(() => fetchOrders())
+      .then(() => setLoading(false));
+  };
   const columns = [
     "Order ID",
     "Time",
@@ -49,11 +50,12 @@ const ManageOrdersContent = () => {
     "Razorpay ID",
     "Rating",
     "Delivered Time",
+    "Items",
     "Total",
     {
       label: "View",
       options: {
-        customBodyRender: (_,item) => {
+        customBodyRender: (_, item) => {
           return (
             <div id={item.rowData[0]} className="flex flex-row justify-center">
               <div
@@ -71,7 +73,7 @@ const ManageOrdersContent = () => {
     {
       label: "Manage",
       options: {
-        customBodyRender: (_,item2) => {
+        customBodyRender: (_, item2) => {
           return (
             <FormControl
               size="small"
@@ -85,8 +87,13 @@ const ManageOrdersContent = () => {
                 label="Options"
                 variant="outlined"
                 select
-                value={userData.find(order => order.id === item2.rowData[0])?.status}
-                onChange={(ev) => updateStatus(item2.rowData[0],ev.target.value)}
+                value={
+                  userData.find((order) => order.id === item2.rowData[0])
+                    ?.status
+                }
+                onChange={(ev) =>
+                  updateStatus(item2.rowData[0], ev.target.value)
+                }
               >
                 <MenuItem value="Pending">Pending</MenuItem>
                 <MenuItem value="Confirmed">Confirmed</MenuItem>
@@ -139,7 +146,7 @@ const ManageOrdersContent = () => {
     });
     fetchOrders();
   }, []);
-console.log(stores);
+  console.log(stores);
   const fetchOrders = () => {
     getAllOrders(baseUrl + "/order/").then((data) => {
       if (data) {
@@ -156,7 +163,7 @@ console.log(stores);
         setLoading(false);
       }
     });
-  }
+  };
 
   return (
     <>
@@ -181,10 +188,11 @@ console.log(stores);
                     item.name,
                     item.mobile_number,
                     item.deliverytype,
-                    stores.find(items => items.id===item.store_id)?.title,
+                    stores.find((items) => items.id === item.store_id)?.title,
                     item.rzpy_order_id,
                     item.rating,
                     item.delivered_time,
+                    processItems(item.items || []),
                     item.total,
                   ])
                 )
@@ -214,24 +222,28 @@ console.log(stores);
                             </div>
                             <div>
                               <div className="w-full items-center flex flex-row">
-                              <div className="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                <p className="text-gray-600">Name</p>
-                                <p>{viewData.name}</p>
+                                <div className="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                  <p className="text-gray-600">Name</p>
+                                  <p>{viewData.name}</p>
+                                </div>
+                                <div className="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                  <p className="text-gray-600">Store Name</p>
+                                  <p>
+                                    {stores.find(
+                                      (item) => item.id === viewData.store_id
+                                    )?.title || ""}
+                                  </p>
+                                </div>
                               </div>
-                              <div className="md:grid md:grid-cols-1 w-full hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                <p className="text-gray-600">Store Name</p>
-                                <p>{stores.find(item => item.id===viewData.store_id)?.title|| "" }</p>
-                              </div>
-                              </div>
-                              <div className="flex flex-row items-center">  
-                              <div className="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                <p className="text-gray-600">Pay Type</p>
-                                <p>{viewData.paytype|| "card"}</p>
-                              </div>
-                              <div className="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
-                                <p className="text-gray-600">Delivery Time</p>
-                                <p>{viewData.delivered_time}</p>
-                              </div>
+                              <div className="flex flex-row items-center">
+                                <div className="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                  <p className="text-gray-600">Pay Type</p>
+                                  <p>{viewData.paytype || "card"}</p>
+                                </div>
+                                <div className="md:grid w-full md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
+                                  <p className="text-gray-600">Delivery Time</p>
+                                  <p>{viewData.delivered_time}</p>
+                                </div>
                               </div>
                               <div className="md:grid md:grid-cols-1 hover:bg-gray-50 md:space-y-0 space-y-1 p-2 border-b">
                                 <p className="text-gray-600">RazorPay ID</p>
@@ -249,7 +261,7 @@ console.log(stores);
                                 {!viewData ? (
                                   <div>loading..</div>
                                 ) : (
-                                  viewData.items.map((items,key) => (
+                                  viewData.items.map((items, key) => (
                                     <tr key={key}>
                                       <td className="border-2">{items.name}</td>
                                       <td className="border-2">
@@ -263,14 +275,13 @@ console.log(stores);
                                       </td>
                                     </tr>
                                   ))
-                                )}<tr>
-                                <td></td>
-                                <td></td>
-                                <td className="font-bold">Grand Total</td>
-                                <td className="border-2">
-                                      {viewData.total}
-                                    </td>
-                              </tr>
+                                )}
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td className="font-bold">Grand Total</td>
+                                  <td className="border-2">{viewData.total}</td>
+                                </tr>
                               </tbody>
                             </table>
                           </div>
