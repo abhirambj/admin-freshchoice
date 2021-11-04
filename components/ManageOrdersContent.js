@@ -1,4 +1,3 @@
-import getAllOrders from "../pages/api/GET/GetAllOrders";
 import { Visibility } from "@material-ui/icons";
 import MUIDataTable from "mui-datatables";
 import { useState, useEffect } from "react";
@@ -20,12 +19,12 @@ const theme = createMuiTheme({
     },
   },
 });
-const ManageOrdersContent = () => {
+const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
   const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
-  const [userData, setUserData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(data);
+  const [loading, setLoading] = useState(isLoading);
   const [stores, setStores] = useState([]);
 
   const options = {
@@ -52,24 +51,24 @@ const ManageOrdersContent = () => {
     "Delivered Time",
     "Items",
     "Total",
-    {
-      label: "View",
-      options: {
-        customBodyRender: (_, item) => {
-          return (
-            <div id={item.rowData[0]} className="flex flex-row justify-center">
-              <div
-                onClick={() => {
-                  setShowModal(true);
-                }}
-              >
-                <Visibility />
-              </div>
-            </div>
-          );
-        },
-      },
-    },
+    // {
+    //   label: "View",
+    //   options: {
+    //     customBodyRender: (_, item) => {
+    //       return (
+    //         <div id={item.rowData[0]} className="flex flex-row justify-center">
+    //           <div
+    //             onClick={() => {
+    //               setShowModal(true);
+    //             }}
+    //           >
+    //             <Visibility />
+    //           </div>
+    //         </div>
+    //       );
+    //     },
+    //   },
+    // },
     {
       label: "Manage",
       options: {
@@ -144,27 +143,11 @@ const ManageOrdersContent = () => {
         setLoading(false);
       }
     });
-    fetchOrders();
   }, []);
-  console.log(stores);
-  const fetchOrders = () => {
-    getAllOrders(baseUrl + "/order/").then((data) => {
-      if (data) {
-        if (data.error || data.detail) {
-          console.log("Error", data.err);
-          setLoading(false);
-        } else {
-          console.log("Success", data);
-          setUserData(data);
-          setLoading(false);
-        }
-      } else {
-        console.log("No DATA");
-        setLoading(false);
-      }
-    });
-  };
-
+  useEffect(() => {
+    setUserData(data);
+    setLoading(isLoading);
+  }, [data]);
   return (
     <>
       {loading ? (
@@ -187,7 +170,7 @@ const ManageOrdersContent = () => {
                     new Date(item.time).toLocaleString(),
                     item.name,
                     item.mobile_number,
-                    item.deliverytype,
+                    item["Chosen Delivery Time"] || "",
                     stores.find((items) => items.id === item.store_id)?.title,
                     item.rzpy_order_id,
                     item.rating,
