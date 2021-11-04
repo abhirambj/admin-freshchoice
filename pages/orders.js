@@ -13,6 +13,7 @@ import {
   MenuItem,
   Select,
   Typography,
+  Button,
 } from "@material-ui/core";
 import getAllOrders from "./api/GET/GetAllOrders";
 import { InputLabel } from "@material-ui/core";
@@ -120,6 +121,7 @@ const Orders = () => {
             year: finalTypes.year,
           });
           sortByDate(new Date().getDate());
+          setUserData(data);
           setLoading(false);
         }
       } else {
@@ -195,7 +197,17 @@ const Orders = () => {
     });
     setGrandTotal(total);
   };
-  console.log(filterTimeline, filterTypeCollection);
+  const resetFilters = () => {
+    setFilterTimeline({
+      ...filterTimeline,
+      date: "",
+      month: "",
+      year: "",
+      store: "",
+    });
+    setFiltered(userData);
+    getTotal(userData);
+  };
   return (
     <>
       <Head>
@@ -209,6 +221,18 @@ const Orders = () => {
               Manage Orders
             </h1>
           </div>
+          {filterTimeline.month ||
+            filterTimeline.year ||
+            filterTimeline.store ||
+            (filterTimeline.date && (
+              <button
+                className="bg-red-700 mb-4 text-white p-2 rounded-sm"
+                variant="contained"
+                onClick={resetFilters}
+              >
+                View All Orders
+              </button>
+            ))}
           <div className="flex flex-row justify-between my-3">
             <Box className="w-full mr-12">
               <FormControl fullWidth>
@@ -222,11 +246,14 @@ const Orders = () => {
                   value={filterTimeline.date}
                 >
                   <MenuItem value={new Date().getDate()}>Today</MenuItem>
-                  {filterTypeCollection.date.map((item, index) => (
-                    <MenuItem key={index} value={item.value}>
-                      {item.label}
-                    </MenuItem>
-                  ))}
+                  {filterTypeCollection.date.map(
+                    (item, index) =>
+                      item.value !== new Date().getDate() && (
+                        <MenuItem key={index} value={item.value}>
+                          {item.label}
+                        </MenuItem>
+                      )
+                  )}
                 </Select>
               </FormControl>
             </Box>
@@ -241,11 +268,15 @@ const Orders = () => {
                   }}
                   value={filterTimeline.month}
                 >
-                  {filterTypeCollection.month.map((item, index) => (
-                    <MenuItem key={index} value={item.value}>
-                      {item.label}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value={new Date().getMonth()}>This Month</MenuItem>
+                  {filterTypeCollection.month.map(
+                    (item, index) =>
+                      item.value !== new Date().getMonth() && (
+                        <MenuItem key={index} value={item.value}>
+                          {item.label}
+                        </MenuItem>
+                      )
+                  )}
                 </Select>
               </FormControl>
             </Box>
@@ -260,11 +291,17 @@ const Orders = () => {
                   }}
                   value={filterTimeline.year}
                 >
-                  {filterTypeCollection.year.map((item, index) => (
-                    <MenuItem key={index} value={item.value}>
-                      {item.label}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value={new Date().getFullYear()}>
+                    This Year
+                  </MenuItem>
+                  {filterTypeCollection.year.map(
+                    (item, index) =>
+                      item.value !== new Date().getFullYear() && (
+                        <MenuItem key={index} value={item.value}>
+                          {item.label}
+                        </MenuItem>
+                      )
+                  )}
                 </Select>
               </FormControl>
             </Box>
