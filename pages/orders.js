@@ -59,6 +59,7 @@ const Orders = () => {
     getAllOrders(baseUrl + "/order/").then((data) => {
       if (data) {
         if (data.error || data.detail) {
+          ``;
           console.log("Error", data.err);
           setLoading(false);
         } else {
@@ -118,7 +119,7 @@ const Orders = () => {
             month: finalTypes.month,
             year: finalTypes.year,
           });
-          setFiltered(data);
+          sortByDate(new Date().getDate());
           setLoading(false);
         }
       } else {
@@ -220,6 +221,7 @@ const Orders = () => {
                   }}
                   value={filterTimeline.date}
                 >
+                  <MenuItem value={new Date().getDate()}>Today</MenuItem>
                   {filterTypeCollection.date.map((item, index) => (
                     <MenuItem key={index} value={item.value}>
                       {item.label}
