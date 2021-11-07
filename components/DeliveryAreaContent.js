@@ -24,7 +24,7 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
-    handler(tableMeta.rowData[1], tableMeta.rowData[3],tableMeta.rowData[4]);
+    handler(tableMeta.rowData[1], tableMeta.rowData[3], tableMeta.rowData[4]);
     getItem(tableMeta.rowData[0]);
   };
 
@@ -50,7 +50,6 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
     "Name",
     "Location",
     "Description",
-    "Firebase Token",
     {
       label: "Action",
       options: {
@@ -84,7 +83,7 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
 
   useEffect(() => {
     setLoading(true);
-    getDeliveryAreas(baseUrl + "/stores/").then((data) => {
+    getDeliveryAreas(baseUrl + "/stores/v1").then((data) => {
       if (data) {
         if (data.error || data.detail) {
           console.log("Error", data.err);
@@ -118,7 +117,12 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [items.id, items.title, items.location, items.description, items.firebase_reg_token])
+                  userData.map((items) => [
+                    items.id,
+                    items.title,
+                    items.address.apartment_road_area,
+                    items.description,
+                  ])
                 )
               }
               columns={columns}
