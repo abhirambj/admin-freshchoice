@@ -22,37 +22,91 @@ const Coupons = () => {
   const [data, setData] = useState({
     store_id: "",
     description: "",
-    min_eligible_amount:"",
-    max_discount:"",
+    min_eligible_amount: "",
+    max_discount: "",
     code: "",
     deduction: "",
+    valid_from: "",
+    valid_to: "",
     success: false,
   });
   const [error, setError] = useState({
     ERRstore_id: false,
-    ERRdescription:false,
+    ERRdescription: false,
     ERRcode: false,
     ERRdeduction: false,
     ERRmin_eligible_amount: false,
     ERRmax_discount: false,
+    ERRvalid_from: false,
+    ERRvalid_to: false,
   });
-  const { ERRcode, ERRdeduction,ERRstore_id,ERRdescription,ERRmin_eligible_amount,ERRmax_discount  } = error;
+  const {
+    ERRcode,
+    ERRdeduction,
+    ERRstore_id,
+    ERRdescription,
+    ERRmin_eligible_amount,
+    ERRmax_discount,
+    ERRvalid_from,
+    ERRvalid_to,
+  } = error;
 
   const handleBlur = (name) => (event) => {
     let simplifiedName = name.replace("ERR", "");
     console.log(simplifiedName, data[simplifiedName]);
     setError({ ...error, [name]: data[simplifiedName] ? true : false });
   };
-  const { store_id,code, deduction,description,min_eligible_amount,max_discount, success } = data;
+  const {
+    store_id,
+    code,
+    deduction,
+    description,
+    min_eligible_amount,
+    max_discount,
+    valid_from,
+    valid_to,
+    success,
+  } = data;
 
   const InitAddItem = () => {
     setIsUpdate(false);
-    setData({ ...data,store_id:"",description:"",min_eligible_amount:"",max_discount:"",code: "", deduction: "" });
+    setData({
+      ...data,
+      store_id: "",
+      description: "",
+      min_eligible_amount: "",
+      max_discount: "",
+      code: "",
+      deduction: "",
+      valid_from: "",
+      valid_to: "",
+    });
     setShowModal(true);
   };
 
-  const handleUpdate = ({store_id,description,min_eligible_amount,max_discount,code, deduction,id}) => {
-    setData({ ...data,store_id,description,min_eligible_amount,max_discount,code, deduction: parseFloat(deduction),id });
+  const handleUpdate = ({
+    store_id,
+    description,
+    min_eligible_amount,
+    max_discount,
+    code,
+    deduction,
+    valid_from,
+    valid_to,
+    id,
+  }) => {
+    setData({
+      ...data,
+      store_id,
+      description,
+      min_eligible_amount,
+      max_discount,
+      code,
+      valid_from,
+      valid_to,
+      deduction: parseFloat(deduction),
+      id,
+    });
     setShowModal(true);
     setIsUpdate(true);
   };
@@ -64,7 +118,16 @@ const Coupons = () => {
   const handleSubmit = (ev) => {
     ev.preventDefault();
     setLoading(true);
-    if ( !store_id || !description||!min_eligible_amount || !max_discount || !code || !deduction) {
+    if (
+      !store_id ||
+      !description ||
+      !min_eligible_amount ||
+      !max_discount ||
+      !code ||
+      !deduction ||
+      !valid_from ||
+      !valid_to
+    ) {
       setApiError("Please Fill All The Required Fields");
       setLoading(false);
       return;
@@ -100,7 +163,16 @@ const Coupons = () => {
     ev.preventDefault();
     setLoading(true);
     updateCoupons(
-      { store_id, description,min_eligible_amount,max_discount,code, deduction: parseFloat(deduction) },
+      {
+        store_id,
+        description,
+        min_eligible_amount,
+        max_discount,
+        code,
+        valid_from,
+        valid_to,
+        deduction: parseFloat(deduction),
+      },
       baseUrl + "/coupon/" + data.id
     ).then((data) => {
       if (data) {
@@ -194,7 +266,7 @@ const Coupons = () => {
 
                           <form>
                             <div className="md:relative md:p-3 md:flex-auto">
-                            <div className="md:mb-3 md:pt-1">
+                              <div className="md:mb-3 md:pt-1">
                                 <FormControl
                                   size="small"
                                   fullWidth
@@ -283,7 +355,9 @@ const Coupons = () => {
                                   className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
-                              <span className="text-red-600">{ERRdescription}</span>
+                              <span className="text-red-600">
+                                {ERRdescription}
+                              </span>
                               <div className="md:mb-5 md:pt-0">
                                 <input
                                   name="deduction"
@@ -323,7 +397,9 @@ const Coupons = () => {
                                   className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
-                              <span className="text-red-600">{ERRmin_eligible_amount}</span>
+                              <span className="text-red-600">
+                                {ERRmin_eligible_amount}
+                              </span>
                               <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="max_discount"
@@ -342,7 +418,51 @@ const Coupons = () => {
                                   className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
-                              <span className="text-red-600">{ERRmax_discount}</span>
+                              <span className="text-red-600">
+                                {ERRmax_discount}
+                              </span>
+                              <div className="md:mb-2 md:pt-0">
+                                <input
+                                  name="valid_from"
+                                  value={data.valid_from}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRvalid_from:
+                                        "Coupon Start Date should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("valid_from")}
+                                  type="datetime-local"
+                                  placeholder="Valid From"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">
+                                {ERRvalid_from}
+                              </span>
+                              <div className="md:mb-2 md:pt-0">
+                                <input
+                                  name="valid_to"
+                                  value={data.valid_to}
+                                  onBlur={({ target }) =>
+                                    !target.value.length &&
+                                    setError({
+                                      ...error,
+                                      ERRvalid_to:
+                                        "Coupon End Date should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("valid_to")}
+                                  type="datetime-local"
+                                  placeholder="Valid To"
+                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
+                              </div>
+                              <span className="text-red-600">
+                                {ERRvalid_to}
+                              </span>
                             </div>
                           </form>
                           {/*footer*/}
@@ -360,7 +480,14 @@ const Coupons = () => {
                                 type="submit"
                                 onClick={handleSubmit}
                                 disabled={
-                                  ERRdescription || ERRmax_discount || ERRmin_eligible_amount || ERRstore_id || ERRcode || ERRdeduction ? true : false
+                                  ERRdescription ||
+                                  ERRmax_discount ||
+                                  ERRmin_eligible_amount ||
+                                  ERRstore_id ||
+                                  ERRcode ||
+                                  ERRdeduction
+                                    ? true
+                                    : false
                                 }
                               >
                                 Add
@@ -384,7 +511,25 @@ const Coupons = () => {
               </div>
               <CouponContent
                 getItem={(id) => setItemID(id)}
-                handler={({description,min_eligible_amount,max_discount,store_id ,code, deduction,id}) => handleUpdate({description,min_eligible_amount,max_discount,store_id ,code, deduction,id})}
+                handler={({
+                  description,
+                  min_eligible_amount,
+                  max_discount,
+                  store_id,
+                  code,
+                  deduction,
+                  id,
+                }) =>
+                  handleUpdate({
+                    description,
+                    min_eligible_amount,
+                    max_discount,
+                    store_id,
+                    code,
+                    deduction,
+                    id,
+                  })
+                }
               />
             </main>
           </DashBoardContainer>

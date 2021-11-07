@@ -27,7 +27,9 @@ const CouponContent = ({ handler, getItem }) => {
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
-    const currentCoupon = userData.find(item => item.id===tableMeta.rowData[6]);
+    const currentCoupon = userData.find(
+      (item) => item.id === tableMeta.rowData[6]
+    );
     handler(currentCoupon);
     getItem(tableMeta.rowData[6]);
   };
@@ -36,14 +38,16 @@ const CouponContent = ({ handler, getItem }) => {
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
     onTableInit: (action, tableState) => setTableData(tableState.data),
-    onRowsDelete: (rows, rowData,item1,item2) => {
-      console.log(rows, rowData,item1,item2,tableData);
+    onRowsDelete: (rows, rowData, item1, item2) => {
+      console.log(rows, rowData, item1, item2, tableData);
       rows.data.map((data) => {
         const currentItem = tableData.find(
-          item => item.index === data.dataIndex
+          (item) => item.index === data.dataIndex
         ).data;
         console.info(currentItem);
-        return deleteCouponsById(`${baseUrl}/coupon/${currentItem[currentItem.length-1]}`)
+        return deleteCouponsById(
+          `${baseUrl}/coupon/${currentItem[currentItem.length - 1]}`
+        )
           .then(() => true)
           .catch((err) => false);
       });
@@ -57,6 +61,8 @@ const CouponContent = ({ handler, getItem }) => {
     "Description",
     "Minimum Order Amount",
     "Maximum Discount",
+    "Valid From",
+    "Valid To",
     {
       label: "Action",
       options: {
@@ -139,13 +145,16 @@ const CouponContent = ({ handler, getItem }) => {
                   </div>
                 ) : (
                   userData.map((items) => [
-                    stores.find(store => store.id===items.store_id)?.title || "",
+                    stores.find((store) => store.id === items.store_id)
+                      ?.title || "",
                     items.code,
                     items.deduction,
                     items.description,
                     items.min_eligible_amount,
                     items.max_discount,
-                    items.id
+                    new Date(items.valid_from).toLocaleString(),
+                    new Date(items.valid_to).toLocaleString(),
+                    items.id,
                   ])
                 )
               }
