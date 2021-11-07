@@ -5,11 +5,11 @@ const updateStore = async (data, url) => {
   let { access_token } = JSON.parse(user);
   try {
     return await fetch(url, {
-      method: "PATCH",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "accept": "application/json",
-        "Authorization": `Bearer ${access_token}`,
+        accept: "application/json",
+        Authorization: `Bearer ${access_token}`,
       },
       body: JSON.stringify(data),
     }).then((res) => res.json());

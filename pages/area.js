@@ -5,7 +5,7 @@ import DashBoardContainer from "../components/DashBoardContainer";
 import addDeliveryArea from "./api/POST/AddDeliveryArea";
 import HashLoader from "react-spinners/HashLoader";
 import { requiresAuthentication } from "../functions";
-import updateStore from "./api/PATCH/updateStore";
+import updateStore from "./api/PUT/updateStore";
 import swal from "sweetalert";
 
 const Area = () => {
