@@ -1,1 +1,1 @@
-export const baseUrl = 'https://backend.freshchoicecarts.com'
+export const baseUrl = "https://backend.freshchoicecarts.com";

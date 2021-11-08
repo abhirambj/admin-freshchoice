@@ -112,9 +112,10 @@ const ItemsContent = ({ handler, getItem, items }) => {
                       className="px-6 py-4 whitespace-nowrap text-center"
                     >
                       <Image
+                        loader={({ src, width }) => `${src}?width=${width}`}
                         width="100"
                         height="100"
-                        src={`${baseUrl}` + item.image}
+                        src={item.image}
                       />
                     </td>,
                     item.name,

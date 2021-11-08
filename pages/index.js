@@ -108,6 +108,7 @@ export default function Login() {
                   height="100"
                   className="h-36 block mx-auto"
                   src="/logo.png"
+                  loader={({ src, width }) => `${src}?width=${width}`}
                 />
               </div>
               <p className="text-center text-red-600">{apiError}</p>
