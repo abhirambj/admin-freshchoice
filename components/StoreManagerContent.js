@@ -5,6 +5,7 @@ import HashLoader from "react-spinners/HashLoader";
 import deleteManagerById from "../pages/api/DELETE/DeleteManager";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import swal from "sweetalert";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -17,7 +18,6 @@ const theme = createMuiTheme({
   },
 });
 const StoreManagerContent = ({ handler, getItem }) => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [userData, setUserData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);

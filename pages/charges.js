@@ -7,9 +7,9 @@ import HashLoader from "react-spinners/HashLoader";
 import updateCharges from "../pages/api/PATCH/updateCharges";
 import { requiresAuthentication } from "../functions";
 import swal from "sweetalert";
+import { baseUrl } from "../constants";
 
 const Charges = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itemID, setItemID] = useState(1);

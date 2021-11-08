@@ -7,9 +7,9 @@ import dashIconAnalytics from "../pages/api/GET/DashContentAnalytics";
 import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import { requiresAuthentication } from "../functions";
+import { baseUrl } from "../constants";
 
 const Dashboard = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [analysis, setAnalysis] = useState({});
   const [loading, setLoading] = useState(false);
 

@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import deleteBannerById from "../pages/api/DELETE/DeleteBanner";
 import HashLoader from "react-spinners/HashLoader";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import Image from 'next/image';
+import Image from "next/image";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -18,7 +19,6 @@ const theme = createMuiTheme({
 });
 
 const BannerContent = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [userData, setUserData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -81,7 +81,10 @@ const BannerContent = () => {
                 ) : (
                   userData.map((items) => [
                     items.id,
-                    <td key={items.id} className="px-6 py-4 whitespace-nowrap flex justify-center text-center">
+                    <td
+                      key={items.id}
+                      className="px-6 py-4 whitespace-nowrap flex justify-center text-center"
+                    >
                       <Image
                         width="100"
                         height="100"

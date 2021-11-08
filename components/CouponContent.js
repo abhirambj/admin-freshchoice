@@ -5,6 +5,7 @@ import HashLoader from "react-spinners/HashLoader";
 import deleteCouponsById from "../pages/api/DELETE/DeleteCoupons";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import getAllStores from "../pages/api/GET/GetAllStores";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -17,7 +18,6 @@ const theme = createMuiTheme({
   },
 });
 const CouponContent = ({ handler, getItem }) => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [userData, setUserData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);

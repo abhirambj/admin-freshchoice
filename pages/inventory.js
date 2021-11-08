@@ -11,9 +11,9 @@ import { requiresAuthentication } from "../functions";
 import swal from "sweetalert";
 import { Select } from "@material-ui/core";
 import { getToken } from "../pages/api/apiRequests";
+import { baseUrl } from "../constants";
 
 const Inventory = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [catData, setCatData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -308,7 +308,7 @@ const Inventory = () => {
                                         />
                                       </div>
                                     ) : (
-                                      allStores.map((items,key) => (
+                                      allStores.map((items, key) => (
                                         <MenuItem key={key} value={items.id}>
                                           {items.title}
                                         </MenuItem>

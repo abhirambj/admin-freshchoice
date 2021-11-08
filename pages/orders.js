@@ -17,9 +17,9 @@ import {
 } from "@material-ui/core";
 import getAllOrders from "./api/GET/GetAllOrders";
 import { InputLabel } from "@material-ui/core";
+import { baseUrl } from "../constants";
 
 const Orders = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState([]);

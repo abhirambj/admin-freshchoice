@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import deleteMessageById from "../pages/api/DELETE/DeleteMessages";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -16,7 +17,6 @@ const theme = createMuiTheme({
   },
 });
 const MessageContent = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState([]);

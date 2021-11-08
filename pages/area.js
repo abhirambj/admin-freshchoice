@@ -7,9 +7,9 @@ import HashLoader from "react-spinners/HashLoader";
 import { requiresAuthentication } from "../functions";
 import updateStore from "./api/PUT/updateStore";
 import swal from "sweetalert";
+import { baseUrl } from "../constants";
 
 const Area = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itemID, setItemID] = useState(1);

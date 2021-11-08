@@ -9,9 +9,9 @@ import HashLoader from "react-spinners/HashLoader";
 import updateItems from "./api/PATCH/updateItems";
 import { requiresAuthentication } from "../functions";
 import swal from "sweetalert";
+import { baseUrl } from "../constants";
 
 const Items = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [catData, setCatData] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -21,7 +21,7 @@ const Items = () => {
   const [apiError, setApiError] = useState("");
   const [data, setData] = useState({
     name: "",
-    id:"",
+    id: "",
     image: "",
     categoryId: "",
     description: "",
@@ -88,7 +88,7 @@ const Items = () => {
     setData({
       ...data,
       name: item.name,
-      id:item.id,
+      id: item.id,
       categoryId: categories.find((ct) => ct.name == item.categoryId).id,
       description: item.description,
       quantity: parseInt(item.quantity),
@@ -344,7 +344,10 @@ const Items = () => {
                                       </div>
                                     ) : (
                                       categories.map((items) => (
-                                        <MenuItem key={items.id} value={items.id}>
+                                        <MenuItem
+                                          key={items.id}
+                                          value={items.id}
+                                        >
                                           {items.name}
                                         </MenuItem>
                                       ))

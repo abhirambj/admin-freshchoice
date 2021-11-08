@@ -9,9 +9,9 @@ import updateBoy from "./api/PATCH/updateBoy";
 import swal from "sweetalert";
 import getAllStores from "./api/GET/GetAllStores";
 import { FormControl, MenuItem, TextField } from "@material-ui/core";
+import { baseUrl } from "../constants";
 
 const DeliveryBoy = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itemID, setItemID] = useState(1);
@@ -19,7 +19,7 @@ const DeliveryBoy = () => {
   const [apiError, setApiError] = useState("");
   const [stores, setStores] = useState([]);
   const [data, setData] = useState({
-    id:"",
+    id: "",
     name: "",
     mobile: "",
     username: "",
@@ -33,7 +33,7 @@ const DeliveryBoy = () => {
     setIsUpdate(false);
     setData({
       ...data,
-      id:"",
+      id: "",
       name: "",
       mobile: "",
       username: "",
@@ -44,9 +44,7 @@ const DeliveryBoy = () => {
     });
     setShowModal(true);
   };
-  const handleUpdate = (
-    data
-  ) => {
+  const handleUpdate = (data) => {
     setData(data);
     setShowModal(true);
     setIsUpdate(true);
@@ -101,7 +99,9 @@ const DeliveryBoy = () => {
         if (data.error || data.detail) {
           console.log("Error", data.err);
           setLoading(false);
-          setApiError(JSON.stringify(data.error) || JSON.stringify(data.detail));
+          setApiError(
+            JSON.stringify(data.error) || JSON.stringify(data.detail)
+          );
         } else {
           swal({
             title: "Delivery Boy Added Successfully!!",
@@ -122,30 +122,28 @@ const DeliveryBoy = () => {
   const updateItem = (ev) => {
     setLoading(true);
     ev.preventDefault();
-    updateBoy(baseUrl + "/admin/deliveryboy/" + data.id,data).then(
-      (data) => {
-        if (data) {
-          if (data.error || data.detail) {
-            console.log("Error", data.err);
-            setLoading(false);
-            setApiError(data.error || data.detail);
-          } else {
-            swal({
-              title: "Delivery Boy Updated Successfully!!",
-              button: "OK",
-              icon: "success",
-              timer: 2000,
-            });
-            setLoading(false);
-            setShowModal(false);
-          }
-        } else {
-          setApiError("We are experiencing some problems, please try again");
-          console.log("No DATA");
+    updateBoy(baseUrl + "/admin/deliveryboy/" + data.id, data).then((data) => {
+      if (data) {
+        if (data.error || data.detail) {
+          console.log("Error", data.err);
           setLoading(false);
+          setApiError(data.error || data.detail);
+        } else {
+          swal({
+            title: "Delivery Boy Updated Successfully!!",
+            button: "OK",
+            icon: "success",
+            timer: 2000,
+          });
+          setLoading(false);
+          setShowModal(false);
         }
+      } else {
+        setApiError("We are experiencing some problems, please try again");
+        console.log("No DATA");
+        setLoading(false);
       }
-    );
+    });
   };
   useEffect(() => {
     getAllStores(baseUrl + "/stores/").then((data) => {
@@ -210,7 +208,9 @@ const DeliveryBoy = () => {
                             </h3>
                           </div>
                           {/*body*/}
-                          <p className="text-center text-red-600">{apiError||""}</p>
+                          <p className="text-center text-red-600">
+                            {apiError || ""}
+                          </p>
 
                           <form>
                             <div className="md:relative md:p-5 md:flex-auto">
@@ -432,9 +432,7 @@ const DeliveryBoy = () => {
               </div>
               <DeliveryBoyContent
                 getItem={(id) => setItemID(id)}
-                handler={(data) =>
-                  handleUpdate(data)
-                }
+                handler={(data) => handleUpdate(data)}
               />
             </main>
           </DashBoardContainer>

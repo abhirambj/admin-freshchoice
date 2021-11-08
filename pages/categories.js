@@ -7,9 +7,9 @@ import updateCategory from "../pages/api/PATCH/updateCategory";
 import HashLoader from "react-spinners/HashLoader";
 import { requiresAuthentication } from "../functions";
 import swal from "sweetalert";
+import { baseUrl } from "../constants";
 
 function Categories() {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itemID, setItemID] = useState(1);

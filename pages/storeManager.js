@@ -9,9 +9,9 @@ import updateManager from "../pages/api/PATCH/updateManager";
 import swal from "sweetalert";
 import getAllStores from "./api/GET/GetAllStores";
 import { FormControl, MenuItem, TextField } from "@material-ui/core";
+import { baseUrl } from "../constants";
 
 const StoreManager = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itemID, setItemID] = useState(1);

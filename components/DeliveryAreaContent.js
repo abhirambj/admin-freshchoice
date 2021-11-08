@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import deleteStoreById from "../pages/api/DELETE/DeleteStore";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -16,7 +17,6 @@ const theme = createMuiTheme({
   },
 });
 const DeliveryAreaContent = ({ handler, getItem }) => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);

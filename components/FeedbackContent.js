@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import deleteFeedbackById from "../pages/api/DELETE/DeleteFeedback";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -16,7 +17,6 @@ const theme = createMuiTheme({
   },
 });
 const FeedbackContent = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ const FeedbackContent = () => {
     },
   };
 
-  const columns = ["Customer Name", "Item Name","Review"];
+  const columns = ["Customer Name", "Item Name", "Review"];
 
   useEffect(() => {
     setLoading(true);
@@ -78,7 +78,11 @@ const FeedbackContent = () => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [items.customer_name, items.item_name,items.review])
+                  userData.map((items) => [
+                    items.customer_name,
+                    items.item_name,
+                    items.review,
+                  ])
                 )
               }
               columns={columns}

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import deleteDeliveryBoyById from "../pages/api/DELETE/DeleteDeliveryBoy";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -16,7 +17,6 @@ const theme = createMuiTheme({
   },
 });
 const DeliveryBoyContent = ({ handler, getItem }) => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [userData, setUserData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
@@ -26,8 +26,10 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
     getItem(tableMeta.rowData[0]);
-    const currentDeliveryBoy = userData.find(item => item.id===tableMeta.rowData[4]);
-    console.log(currentDeliveryBoy,userData);
+    const currentDeliveryBoy = userData.find(
+      (item) => item.id === tableMeta.rowData[4]
+    );
+    console.log(currentDeliveryBoy, userData);
     handler(currentDeliveryBoy);
   };
 
@@ -56,8 +58,8 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
 
   const columns = [
     {
-      name: 'Sl. No',
-      selector: 'serial'
+      name: "Sl. No",
+      selector: "serial",
     },
     "Name",
     "Mobile Number",
@@ -129,13 +131,13 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items,index) => [
-                    items.serial=index+1,
+                  userData.map((items, index) => [
+                    (items.serial = index + 1),
                     // items.id,
                     items.name,
                     items.mobile,
-                    items.store==null ? "Unassigned" : items.store,
-                    items.id
+                    items.store == null ? "Unassigned" : items.store,
+                    items.id,
                   ])
                 )
               }

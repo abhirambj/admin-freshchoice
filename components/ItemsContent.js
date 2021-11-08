@@ -4,8 +4,8 @@ import getAllItems from "../pages/api/GET/GetAllItems";
 import HashLoader from "react-spinners/HashLoader";
 import deleteItemsById from "../pages/api/DELETE/DeleteItems";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import Image from 'next/image';
-
+import Image from "next/image";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -19,7 +19,6 @@ const theme = createMuiTheme({
 });
 
 const ItemsContent = ({ handler, getItem, items }) => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [userData, setUserData] = useState(items);
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -107,8 +106,12 @@ const ItemsContent = ({ handler, getItem, items }) => {
                 ) : (
                   items?.map((item) => [
                     // item.id,
-                    <td key={item.id} id={item.id} className="px-6 py-4 whitespace-nowrap text-center">
-                      <Image 
+                    <td
+                      key={item.id}
+                      id={item.id}
+                      className="px-6 py-4 whitespace-nowrap text-center"
+                    >
+                      <Image
                         width="100"
                         height="100"
                         src={`${baseUrl}` + item.image}

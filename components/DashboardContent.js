@@ -7,6 +7,7 @@ import { FormControl, MenuItem, TextField } from "@material-ui/core";
 import HashLoader from "react-spinners/HashLoader";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import updateStore from "../pages/api/PATCH/updateStore";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -19,7 +20,6 @@ const theme = createMuiTheme({
   },
 });
 const DashboardContent = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [userData, setUserData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
@@ -33,12 +33,12 @@ const DashboardContent = () => {
       handleView(rowData.props.id);
     },
   };
-  const updateStatus = (id,value) => {
+  const updateStatus = (id, value) => {
     setLoading(true);
-    updateStore({status:value},`${baseUrl}/order/${id}`)
-    .then(() =>fetchOrders())
-    .then(() => setLoading(false));
-  }
+    updateStore({ status: value }, `${baseUrl}/order/${id}`)
+      .then(() => fetchOrders())
+      .then(() => setLoading(false));
+  };
   const columns = [
     "Order ID",
     "Time",
@@ -47,7 +47,7 @@ const DashboardContent = () => {
     {
       label: "View",
       options: {
-        customBodyRender: (_,item) => {
+        customBodyRender: (_, item) => {
           return (
             <div id={item.rowData[0]} className="flex flex-row justify-center">
               <div
@@ -65,7 +65,7 @@ const DashboardContent = () => {
     {
       label: "Manage",
       options: {
-        customBodyRender: (_,item2) => {
+        customBodyRender: (_, item2) => {
           return (
             <FormControl
               size="small"
@@ -79,8 +79,13 @@ const DashboardContent = () => {
                 label="Options"
                 variant="outlined"
                 select
-                value={userData.find(order => order.id === item2.rowData[0])?.status}
-                onChange={(ev) => updateStatus(item2.rowData[0],ev.target.value)}
+                value={
+                  userData.find((order) => order.id === item2.rowData[0])
+                    ?.status
+                }
+                onChange={(ev) =>
+                  updateStatus(item2.rowData[0], ev.target.value)
+                }
               >
                 <MenuItem value="Pending">Pending</MenuItem>
                 <MenuItem value="Confirmed">Confirmed</MenuItem>
@@ -136,7 +141,7 @@ const DashboardContent = () => {
         setLoading(false);
       }
     });
-  }
+  };
 
   return (
     <>
@@ -159,7 +164,7 @@ const DashboardContent = () => {
                     items.id,
                     new Date(items.time).toLocaleString(),
                     items.name,
-                    items.address.replace(',',''),
+                    items.address.replace(",", ""),
                   ])
                 )
               }
@@ -223,7 +228,7 @@ const DashboardContent = () => {
                                 {!viewData ? (
                                   <div>loading..</div>
                                 ) : (
-                                  viewData.items.map((items,key) => (
+                                  viewData.items.map((items, key) => (
                                     <tr key={key}>
                                       <td className="border-2">{items.name}</td>
                                       <td className="border-2">

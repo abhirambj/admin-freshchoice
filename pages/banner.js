@@ -6,9 +6,9 @@ import addBanner from "../pages/api/POST/AddBanner";
 import { requiresAuthentication } from "../functions";
 import HashLoader from "react-spinners/HashLoader";
 import swal from "sweetalert";
+import { baseUrl } from "../constants";
 
 const Banner = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [apiError, setApiError] = useState("");

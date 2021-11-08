@@ -8,6 +8,7 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import updateStore from "../pages/api/PATCH/updateStore";
 import getAllStores from "../pages/api/GET/GetAllStores";
 import { processItems } from "../functions";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -20,7 +21,6 @@ const theme = createMuiTheme({
   },
 });
 const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
   const [userData, setUserData] = useState(data);

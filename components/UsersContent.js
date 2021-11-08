@@ -3,6 +3,7 @@ import MUIDataTable from "mui-datatables";
 import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -23,7 +24,6 @@ const options = {
 const columns = ["ID", "Name", "Email", "Mobile Number", "Address"];
 
 const UsersContent = () => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [userData, setUserData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -69,7 +69,7 @@ const UsersContent = () => {
                     items.full_name,
                     items.email,
                     items.mobile,
-                    items.default_address.locality.replace(',',''),
+                    items.default_address.locality.replace(",", ""),
                   ])
                 )
               }

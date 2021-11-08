@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import deleteCategoryById from "../pages/api/DELETE/DeleteCategory";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import Image from 'next/image';
+import Image from "next/image";
+import { baseUrl } from "../constants";
 
 const theme = createMuiTheme({
   palette: {
@@ -17,7 +18,6 @@ const theme = createMuiTheme({
   },
 });
 const CategoriesContent = ({ handler, getItem }) => {
-  const [baseUrl] = useState("https://immense-castle-52645.herokuapp.com");
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -29,8 +29,8 @@ const CategoriesContent = ({ handler, getItem }) => {
 
   const columns = [
     {
-      name: 'Sl. No',
-      selector: 'serial'
+      name: "Sl. No",
+      selector: "serial",
     },
     "Image",
     "Name",
@@ -119,10 +119,13 @@ const CategoriesContent = ({ handler, getItem }) => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items,index) => [
-                    items.serial=index+1,
+                  userData.map((items, index) => [
+                    (items.serial = index + 1),
                     // items.id,
-                    <td key={index} className="px-6 py-4 whitespace-nowrap text-center">
+                    <td
+                      key={index}
+                      className="px-6 py-4 whitespace-nowrap text-center"
+                    >
                       <Image
                         width="100"
                         height="100"
