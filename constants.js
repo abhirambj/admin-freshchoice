@@ -1,1 +1,1 @@
-export const baseUrl = 'https://immense-castle-52645.herokuapp.com'
+export const baseUrl = 'https://backend.freshchoicecarts.com'
