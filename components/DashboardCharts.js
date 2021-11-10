@@ -11,6 +11,7 @@ import { Select, MenuItem } from "@material-ui/core";
 import { FormControl } from "@material-ui/core";
 import { getToken } from "../pages/api/apiRequests";
 import { baseUrl } from "../constants";
+import getAllStores from "../pages/api/GET/GetAllStores";
 
 const DashboardCharts = () => {
   const [loading, setLoading] = useState(false);
@@ -33,18 +34,18 @@ const DashboardCharts = () => {
     category: [],
   });
   useEffect(() => {
-    let { user } = getToken();
-    let { access_token } = JSON.parse(user);
-    const getAllStores = async () => {
-      fetch(baseUrl + "/stores", {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => setAllStores(data));
-    };
-    getAllStores();
+    // let { user } = getToken();
+    // let { access_token } = JSON.parse(user);
+    // const getAllStoresss = async () => {
+    //   fetch(baseUrl + "/stores/", {
+    //     headers: {
+    //       Authorization: `Bearer ${access_token}`,
+    //     },
+    //   })
+    //     .then((res) => res.json())
+    //     .then((data) => setAllStores(data));
+    // };
+    getAllStores(baseUrl + "/stores/").then((data) => setAllStores(data));
   }, []);
   useEffect(() => {
     setLoading(true);

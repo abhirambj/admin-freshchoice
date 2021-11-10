@@ -112,8 +112,30 @@ const Coupons = () => {
   };
 
   const handleChange = (name) => (event) => {
-    setError({ ...error, ["ERR" + name]: "" });
+    if (name === "max_discount") {
+      if (event.target.value > 0 && !(event.target.value < 100)) {
+        setError({
+          ...error,
+          ERRmax_discount: "Max Discount should be less than 100",
+        });
+      } else {
+        setError({ ...error, ERRmax_discount: "" });
+      }
+    }
+    if (name === "deduction") {
+      if (event.target.value > 0 && !(event.target.value < 100)) {
+        setError({
+          ...error,
+          ERRdeduction: "Deduction Percentage should be less than 100",
+        });
+      } else {
+        setError({ ...error, ERRdeduction: "" });
+      }
+    }
     setData({ ...data, [name]: event.target.value });
+    if (name !== "max_discount" && name !== "deduction") {
+      setError({ ...error, ["ERR" + name]: "" });
+    }
   };
   const handleSubmit = (ev) => {
     ev.preventDefault();
@@ -372,7 +394,7 @@ const Coupons = () => {
                                   }
                                   onChange={handleChange("deduction")}
                                   type="number"
-                                  placeholder="Deduction Price"
+                                  placeholder="Deduction Percentage"
                                   className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
@@ -384,7 +406,7 @@ const Coupons = () => {
                                   name="min_eligible_amount"
                                   value={data.min_eligible_amount}
                                   onBlur={({ target }) =>
-                                    !target.value.length &&
+                                    !target.value.toString().length &&
                                     setError({
                                       ...error,
                                       ERRmin_eligible_amount:
@@ -414,7 +436,7 @@ const Coupons = () => {
                                   }
                                   onChange={handleChange("max_discount")}
                                   type="number"
-                                  placeholder="Maximum Discount"
+                                  placeholder="Maximum Discount Percentage"
                                   className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>

@@ -129,8 +129,10 @@ const CategoriesContent = ({ handler, getItem }) => {
                       <Image
                         width="100"
                         height="100"
-                        loader={({ src, width }) => `${src}?width=${width}`}
-                        src={`${baseUrl}` + items.image}
+                        loader={({ src, width }) =>
+                          `${baseUrl}${src}?width=${width}`
+                        }
+                        src={items.image}
                       />
                     </td>,
                     items.name,

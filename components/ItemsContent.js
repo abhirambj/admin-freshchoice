@@ -112,7 +112,9 @@ const ItemsContent = ({ handler, getItem, items }) => {
                       className="px-6 py-4 whitespace-nowrap text-center"
                     >
                       <Image
-                        loader={({ src, width }) => `${src}?width=${width}`}
+                        loader={({ src, width }) =>
+                          `${baseUrl}${src}?width=${width}`
+                        }
                         width="100"
                         height="100"
                         src={item.image}

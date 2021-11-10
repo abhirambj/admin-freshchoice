@@ -114,8 +114,10 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
                       <Image
                         width="100"
                         height="100"
-                        loader={({ src, width }) => `${src}?width=${width}`}
-                        src={`${baseUrl}` + item.image}
+                        loader={({ src, width }) =>
+                          `${baseUrl}${src}?width=${width}`
+                        }
+                        src={item.image}
                       />
                     </td>,
                     item.name,

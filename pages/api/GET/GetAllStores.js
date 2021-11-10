@@ -5,7 +5,7 @@ const getAllStores = async (url) => {
   let { access_token } = JSON.parse(user);
   try {
     return await fetch(url, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",

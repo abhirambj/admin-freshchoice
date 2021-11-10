@@ -8,6 +8,7 @@ import HashLoader from "react-spinners/HashLoader";
 import swal from "sweetalert";
 import Image from "next/image";
 import { baseUrl } from "../constants";
+import Logo from "../assets/logo.png";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -106,8 +107,9 @@ export default function Login() {
                 <Image
                   width="100"
                   height="100"
+                  alt="Logo"
                   className="h-36 block mx-auto"
-                  src="/logo.png"
+                  src={Logo}
                   loader={({ src, width }) => `${src}?width=${width}`}
                 />
               </div>
