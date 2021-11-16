@@ -73,7 +73,7 @@ const Inventory = () => {
     let { user } = getToken();
     let { access_token } = JSON.parse(user);
     const getAllStores = async () => {
-      fetch(baseUrl + "/stores", {
+      fetch(baseUrl + "/stores/", {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
