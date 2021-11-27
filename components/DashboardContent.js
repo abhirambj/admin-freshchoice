@@ -29,8 +29,9 @@ const DashboardContent = () => {
     selectableRows: false,
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
-    onCellClick: (rowData) => {
-      handleView(rowData.props.id);
+    onCellClick: (rowData, item1) => {
+      console.log(item1);
+      rowData.props && handleView(rowData.props.id);
     },
   };
   const updateStatus = (id, value) => {

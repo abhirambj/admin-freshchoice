@@ -25,12 +25,12 @@ const ItemsContent = ({ handler, getItem, items }) => {
 
   const initUpdate = (tableMeta) => {
     console.info(tableMeta);
-    handler(items.find((el) => el.id == tableMeta.rowData[0].props.id));
+    handler(items.find((el) => el.id == tableMeta.rowData[1].props.id));
     getItem(tableMeta.rowData[0]);
   };
 
   const columns = [
-    // "ID",
+    "ID",
     "Image",
     "Name",
     "Category",
@@ -105,7 +105,7 @@ const ItemsContent = ({ handler, getItem, items }) => {
                   </div>
                 ) : (
                   items?.map((item) => [
-                    // item.id,
+                    item.id,
                     <td
                       key={item.id}
                       id={item.id}

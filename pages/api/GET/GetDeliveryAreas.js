@@ -10,6 +10,7 @@ const getDeliveryAreas = async (url) => {
         accept: "application/json",
         Authorization: `Bearer ${access_token}`,
       },
+      method: "POST",
     }).then((res) => {
       return res.json();
     });

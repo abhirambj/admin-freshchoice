@@ -38,7 +38,7 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
           (row) => row.index == data.dataIndex
         ).data;
         console.info(currentItem);
-        deleteStoreById(`${baseUrl}/stores?store_id=${currentItem[0]}`)
+        deleteStoreById(`${baseUrl}/stores/?store_id=${currentItem[0]}`)
           .then(() => console.info("success"))
           .catch((err) => console.info(err));
       });

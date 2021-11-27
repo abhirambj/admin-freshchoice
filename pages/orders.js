@@ -40,7 +40,7 @@ const Orders = () => {
   });
   useEffect(() => {
     fetchOrders();
-    getAllOrders(baseUrl + "/stores").then((data) => {
+    getAllOrders(baseUrl + "/stores/").then((data) => {
       if (data) {
         if (data.error || data.detail) {
           console.log("Error", data.err);
@@ -221,18 +221,18 @@ const Orders = () => {
               Manage Orders
             </h1>
           </div>
-          {filterTimeline.month ||
-            filterTimeline.year ||
-            filterTimeline.store ||
-            (filterTimeline.date && (
-              <button
-                className="bg-red-700 mb-4 text-white p-2 rounded-sm"
-                variant="contained"
-                onClick={resetFilters}
-              >
-                View All Orders
-              </button>
-            ))}
+          {(!!filterTimeline.month ||
+            !!filterTimeline.year ||
+            !!filterTimeline.store ||
+            !!filterTimeline.date) && (
+            <button
+              className="bg-red-700 mb-4 text-white p-2 rounded-sm"
+              variant="contained"
+              onClick={resetFilters}
+            >
+              View All Orders
+            </button>
+          )}
           <div className="flex flex-row justify-between my-3">
             <Box className="w-full mr-12">
               <FormControl fullWidth>

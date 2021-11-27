@@ -7,9 +7,7 @@ const deleteStoreById = async (url) => {
     return await fetch(url, {
       method: "DELETE",
       headers: {
-        accept: "application/json",
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
       },
     }).then((res) => {
       return res.json();

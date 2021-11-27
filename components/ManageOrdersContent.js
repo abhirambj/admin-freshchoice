@@ -31,7 +31,6 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
     selectableRows: false,
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
-    onRowClick: (rowData) => handleView(rowData[0]),
   };
   const updateStatus = (id, value) => {
     setLoading(true);
@@ -98,7 +97,7 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
                 <MenuItem value="Confirmed">Confirmed</MenuItem>
                 <MenuItem value="On way">Out For Delivery</MenuItem>
                 <MenuItem value="Delivered">Delivered</MenuItem>
-                <MenuItem value="Cancelled">Cancelled</MenuItem>
+                <MenuItem value="Canceled">Cancelled</MenuItem>
               </TextField>
             </FormControl>
           );
@@ -108,41 +107,28 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
   ];
 
   const handleView = (id) => {
-    setLoading(true);
+    // setLoading(true);
     setViewData({});
-    viewOrdersById(baseUrl + "/order/orderid?orderID=" + id).then((data) => {
-      if (data) {
-        if (data.error || data.detail) {
-          console.log("Error", data.err);
-          setLoading(false);
-        } else {
-          console.log("Success", data);
-          setViewData(data);
-          setShowModal(true);
-          setLoading(false);
-        }
-      } else {
-        console.log("No DATA");
-        setLoading(false);
-      }
-    });
+    // viewOrdersById(baseUrl + "/order/orderid?orderID=" + id).then((data) => {
+    //   if (data) {
+    //     if (data.error || data.detail) {
+    //       console.log("Error", data.err);
+    //       setLoading(false);
+    //     } else {
+    //       console.log("Success", data);
+    //       setViewData(data);
+    //       setShowModal(true);
+    //       setLoading(false);
+    //     }
+    //   } else {
+    //     console.log("No DATA");
+    //     setLoading(false);
+    //   }
+    // });
   };
   useEffect(() => {
     setLoading(true);
-    getAllStores(baseUrl + "/stores/").then((data) => {
-      if (data) {
-        if (data.error || data.detail) {
-          console.log("Error", data.err);
-          setLoading(false);
-        } else {
-          console.log("Success", data);
-          setStores(data);
-        }
-      } else {
-        console.log("No DATA");
-        setLoading(false);
-      }
-    });
+    getAllStores(baseUrl + "/stores/").then((data) => setStores(data));
   }, []);
   useEffect(() => {
     setUserData(data);
