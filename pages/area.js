@@ -27,6 +27,7 @@ const Area = () => {
       city: "",
       house_no: "",
       name: "",
+      landmark: "",
     },
     firebase_reg_token: "",
   });
@@ -41,32 +42,72 @@ const Area = () => {
         latitude: "",
         longitude: "",
         locality: "",
-        aparment_road_area: "string",
-        house_no: "string",
-        name: "string",
+        aparment_road_area: "",
+        house_no: "",
+        name: "",
+        landmark: "",
+        city: "",
       },
       firebase_reg_token: "",
     });
     setShowModal(true);
   };
-  const handleUpdate = (title, description, firebase_reg_token) => {
-    setData({ ...data, title, description, firebase_reg_token });
+  const handleUpdate = (
+    title,
+    description,
+    name,
+    house_no,
+    apartment_road_area,
+    landmark,
+    locality,
+    city,
+    pincode,
+    latitude,
+    longitude,
+    firebase_reg_token
+  ) => {
+    setData({
+      ...data,
+      title,
+      description,
+      address: {
+        name,
+        house_no,
+        apartment_road_area,
+        landmark,
+        locality,
+        city,
+        pincode,
+        latitude,
+        longitude,
+      },
+      firebase_reg_token,
+    });
     setShowModal(true);
     setIsUpdate(true);
   };
   const [error, setError] = useState({
     ERRtitle: false,
     ERRdescription: false,
+    ERRname: false,
+    ERRcity: false,
+    ERRhouse_no: false,
+    ERRapartment_road_area: false,
+    ERRlandmark: false,
     ERRpincode: false,
     ERRlatitude: false,
     ERRlongitude: false,
     ERRlocality: false,
     ERRfirebase_reg_token: false,
-    ERRcity: "",
+    ERRcity: false,
   });
   const {
     ERRtitle,
     ERRdescription,
+    ERRname,
+    ERRhouse_no,
+    ERRapartment_road_area,
+    ERRlandmark,
     ERRpincode,
     ERRlatitude,
     ERRlongitude,
@@ -81,7 +122,17 @@ const Area = () => {
   const {
     title,
     description,
-    address: { pincode, longitude, locality, latitude },
+    address: {
+      name,
+      house_no,
+      apartment_road_area,
+      landmark,
+      city,
+      pincode,
+      longitude,
+      locality,
+      latitude,
+    },
   } = data;
   const handleChange = (name) => (event) => {
     setError({ ...error, ["ERR" + name]: "" });
@@ -107,6 +158,11 @@ const Area = () => {
     if (
       !title ||
       !description ||
+      !name ||
+      !house_no ||
+      !apartment_road_area ||
+      !landmark ||
+      !city ||
       !pincode ||
       !latitude ||
       !longitude ||
@@ -114,7 +170,20 @@ const Area = () => {
     ) {
       setApiError("Please Fill All The Required Fields");
       setLoading(false);
-      console.log("No", title, description, pincode);
+      console.log(
+        "No",
+        title,
+        description,
+        name,
+        house_no,
+        apartment_road_area,
+        landmark,
+        locality,
+        city,
+        pincode,
+        latitude,
+        longitude
+      );
       return;
     }
     addDeliveryArea(data, baseUrl + "/stores/").then((data) => {
@@ -147,6 +216,17 @@ const Area = () => {
     const body = {
       title: data.title,
       description: data.description,
+      address: {
+        name: data.address.name,
+        house_no: data.address.house_no,
+        apartment_road_area: data.address.apartment_road_area,
+        landmark: data.address.landmark,
+        city: data.address.city,
+        pincode: data.address.pincode,
+        longitude: data.address.longitude,
+        locality: data.address.locality,
+        latitude: data.address.latitude,
+      },
     };
     updateStore(body, baseUrl + "/stores?store_id=" + itemID).then((data) => {
       if (data) {
@@ -259,7 +339,76 @@ const Area = () => {
                               <span className="text-red-600">
                                 {ERRdescription}
                               </span>
-                              {!isUpdate && (
+                              {isUpdate && (
+                                <div className="md:mb-2 md:pt-0">
+                                  <input
+                                    name="name"
+                                    value={data.address.name}
+                                    onBlur={({ target }) =>
+                                      !target.value.length &&
+                                      setError({
+                                        ...error,
+                                        ERRname:
+                                          "Store Address Name should not be empty",
+                                      })
+                                    }
+                                    onChange={handleAddress("name")}
+                                    type="text"
+                                    placeholder="Store Address Name"
+                                    className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  />
+                                </div>
+                              )}
+                              <span className="text-red-600">{ERRname}</span>
+                              {isUpdate && (
+                                <div className="md:mb-2 md:pt-0">
+                                  <input
+                                    name="house_no"
+                                    value={data.address.house_no}
+                                    onBlur={({ target }) =>
+                                      !target.value.length &&
+                                      setError({
+                                        ...error,
+                                        ERRhouse_no:
+                                          "Store Address House Number should not be empty",
+                                      })
+                                    }
+                                    onChange={handleAddress("house_no")}
+                                    type="text"
+                                    placeholder="Store Address House Number"
+                                    className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  />
+                                </div>
+                              )}
+                              <span className="text-red-600">
+                                {ERRhouse_no}
+                              </span>
+                              {isUpdate && (
+                                <div className="md:mb-2 md:pt-0">
+                                  <input
+                                    name="apartment_road_area"
+                                    value={data.address.apartment_road_area}
+                                    onBlur={({ target }) =>
+                                      !target.value.length &&
+                                      setError({
+                                        ...error,
+                                        ERRapartment_road_area:
+                                          "Store Apartment Area should not be empty",
+                                      })
+                                    }
+                                    onChange={handleAddress(
+                                      "apartment_road_area"
+                                    )}
+                                    type="text"
+                                    placeholder="Store Apartment Area"
+                                    className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  />
+                                </div>
+                              )}
+                              <span className="text-red-600">
+                                {ERRapartment_road_area}
+                              </span>
+                              {isUpdate && (
                                 <div className="md:mb-5 md:pt-0">
                                   <input
                                     name="city"
@@ -280,7 +429,7 @@ const Area = () => {
                                 </div>
                               )}
                               <span className="text-red-600">{ERRcity}</span>
-                              {!isUpdate && (
+                              {isUpdate && (
                                 <div className="md:mb-2 md:pt-0">
                                   <input
                                     name="pincode"
@@ -301,7 +450,7 @@ const Area = () => {
                                 </div>
                               )}
                               <span className="text-red-600">{ERRpincode}</span>
-                              {!isUpdate && (
+                              {isUpdate && (
                                 <div className="md:mb-2 md:pt-0">
                                   <input
                                     name="latitude"
@@ -324,7 +473,7 @@ const Area = () => {
                               <span className="text-red-600">
                                 {ERRlatitude}
                               </span>
-                              {!isUpdate && (
+                              {isUpdate && (
                                 <div className="md:mb-2 md:pt-0">
                                   <input
                                     name="longitude"
@@ -347,7 +496,7 @@ const Area = () => {
                               <span className="text-red-600">
                                 {ERRlongitude}
                               </span>
-                              {!isUpdate && (
+                              {isUpdate && (
                                 <div className="md:mb-2 md:pt-0">
                                   <input
                                     name="locality"
@@ -370,6 +519,29 @@ const Area = () => {
                               <span className="text-red-600">
                                 {ERRlocality}
                               </span>
+                              {isUpdate && (
+                                <div className="md:mb-2 md:pt-0">
+                                  <input
+                                    name="landmark"
+                                    value={data.address.landmark}
+                                    onBlur={({ target }) =>
+                                      !target.value.length &&
+                                      setError({
+                                        ...error,
+                                        ERRlandmark:
+                                          "Store landmark should not be empty",
+                                      })
+                                    }
+                                    onChange={handleAddress("landmark")}
+                                    type="text"
+                                    placeholder="Store landmark"
+                                    className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  />
+                                </div>
+                              )}
+                              <span className="text-red-600">
+                                {ERRlandmark}
+                              </span>
                             </div>
                           </form>
                           {/*footer*/}
@@ -381,7 +553,7 @@ const Area = () => {
                             >
                               Close
                             </button>
-                            {!isUpdate ? (
+                            {isUpdate ? (
                               <button
                                 className="button bg-red-700 disabled:opacity-50 text-white active:bg-red-600 font-bold uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
                                 type="submit"
