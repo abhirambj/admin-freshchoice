@@ -39,7 +39,23 @@ const MessageContent = () => {
       });
     },
   };
-  const columns = ["ID", "Name", "Mobile Number", "Message"];
+  const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
+    "ID",
+    "Name",
+    "Mobile Number",
+    "Message",
+  ];
   useEffect(() => {
     setLoading(true);
     getAllMessages(baseUrl + "/messages/").then((data) => {
@@ -49,6 +65,7 @@ const MessageContent = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setUserData(data);
           setLoading(false);
         }
@@ -77,6 +94,7 @@ const MessageContent = () => {
                   </div>
                 ) : (
                   userData.map((items) => [
+                    "",
                     items.id,
                     items.name,
                     items.mobile_number,

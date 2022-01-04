@@ -6,6 +6,7 @@ import deleteCategoryById from "../pages/api/DELETE/DeleteCategory";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Image from "next/image";
 import { baseUrl } from "../constants";
+import swal from "sweetalert";
 
 const theme = createMuiTheme({
   palette: {
@@ -23,15 +24,24 @@ const CategoriesContent = ({ handler, getItem }) => {
   const [tableData, setTableData] = useState([]);
 
   const initUpdate = (tableMeta) => {
-    handler(tableMeta.rowData[2], tableMeta.rowData[3]);
-    getItem(tableMeta.rowData[0]);
+    console.log(tableMeta.rowData);
+    handler(tableMeta.rowData[3], tableMeta.rowData[4]);
+    getItem(tableMeta.rowData[1]);
   };
 
   const columns = [
     {
-      name: "Sl. No",
-      selector: "serial",
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
     },
+    "ID",
     "Image",
     "Name",
     "Description",
@@ -76,8 +86,8 @@ const CategoriesContent = ({ handler, getItem }) => {
           (row) => row.index == data.dataIndex
         ).data;
         console.info(currentItem);
-        deleteCategoryById(`${baseUrl}/category/${currentItem[0]}`)
-          .then(() => console.info("success"))
+        deleteCategoryById(`${baseUrl}/category/${currentItem[1]}`)
+          .then(() => swal({ title: "Deleted Succefffully!!", button: "OK" }))
           .catch((err) => console.info(err));
       });
     },
@@ -91,6 +101,7 @@ const CategoriesContent = ({ handler, getItem }) => {
           console.log("Error", data.err);
           setLoading(false);
         } else {
+          data.reverse();
           console.log("Success", data);
           setUserData(data);
           setLoading(false);
@@ -120,11 +131,11 @@ const CategoriesContent = ({ handler, getItem }) => {
                   </div>
                 ) : (
                   userData.map((items, index) => [
-                    (items.serial = index + 1),
-                    // items.id,
+                    "",
+                    items.id,
                     <td
                       key={index}
-                      className="px-6 py-4 whitespace-nowrap text-center"
+                      className="px-6 block mx-auto py-4 whitespace-nowrap text-center"
                     >
                       <Image
                         width="100"
@@ -133,6 +144,7 @@ const CategoriesContent = ({ handler, getItem }) => {
                           `${baseUrl}${src}?width=${width}`
                         }
                         src={items.image}
+                        alt=""
                       />
                     </td>,
                     items.name,

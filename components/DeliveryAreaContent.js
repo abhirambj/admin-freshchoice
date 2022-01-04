@@ -5,6 +5,8 @@ import HashLoader from "react-spinners/HashLoader";
 import deleteStoreById from "../pages/api/DELETE/DeleteStore";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { baseUrl } from "../constants";
+import swal from "sweetalert";
+import { Modal } from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
@@ -16,36 +18,70 @@ const theme = createMuiTheme({
     },
   },
 });
-const DeliveryAreaContent = ({ handler, getItem }) => {
+const DeliveryAreaContent = ({ handler, getItem, data, loadData }) => {
   const [showModal, setShowModal] = useState(false);
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState(data);
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
-    handler(tableMeta.rowData[1], tableMeta.rowData[3], tableMeta.rowData[4]);
-    getItem(tableMeta.rowData[0]);
+    handler(userData.find((item) => item.id === tableMeta.rowData[1]));
+    getItem(tableMeta.rowData[1]);
   };
 
   const options = {
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
-    onTableInit: (action, tableState) => setTableData(tableState.data),
+    onTableInit: (action, tableState) => console.log(action, tableState),
     onRowsDelete: (rows, rowData) => {
       rows.data.map((data) => {
-        const currentItem = tableData.find(
-          (row) => row.index == data.dataIndex
-        ).data;
-        console.info(currentItem);
-        deleteStoreById(`${baseUrl}/stores/?store_id=${currentItem[0]}`)
-          .then(() => console.info("success"))
-          .catch((err) => console.info(err));
+        console.log(tableData, 39, rows, 39, rowData, 39);
+        const currentItem = userData[data.dataIndex];
+        console.info(data, rows.data[0].dataIndex);
+        return deleteStoreById(
+          `${baseUrl}/stores/?store_id=${currentItem.id}`
+        ).then((res) => {
+          if (!res || !res.error) {
+            const currentData = userData.findIndex(
+              (item) => currentItem.id === item.id
+            );
+            const tempData = userData;
+            tempData.splice(currentData, 1);
+            setUserData(tempData);
+            swal({
+              title: "Store Deleted Successfully!!",
+              button: "OK",
+              icon: "success",
+              timer: 2000,
+            });
+            return true;
+          } else {
+            swal({
+              title: "Store couldn't be deleted!!",
+              button: "OK",
+              icon: "error",
+              timer: 2000,
+            });
+            return false;
+          }
+        });
       });
     },
   };
 
   const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
     "ID",
     "Name",
     "Location",
@@ -82,32 +118,20 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
   ];
 
   useEffect(() => {
-    setLoading(true);
-    getDeliveryAreas(baseUrl + "/stores/v1").then((data) => {
-      if (data) {
-        if (data.error || data.detail) {
-          console.log("Error", data.err);
-          setLoading(false);
-        } else {
-          console.log("Success", data);
-          setUserData(data);
-          setLoading(false);
-        }
-      } else {
-        console.log("No DATA");
-        setLoading(false);
-      }
-    });
-  }, []);
+    setUserData(data);
+  }, [data]);
 
   return (
     <>
-      {loading ? (
+      {!userData ? (
         <div className="flex items-center justify-center h-screen">
           <HashLoader color={"FF0000"} loading={loading} size={150} />
         </div>
       ) : (
         <div>
+          <Modal open={loading} className=" flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
           <MuiThemeProvider theme={theme}>
             <MUIDataTable
               title={""}
@@ -118,9 +142,13 @@ const DeliveryAreaContent = ({ handler, getItem }) => {
                   </div>
                 ) : (
                   userData.map((items) => [
+                    "",
                     items.id,
                     items.title,
-                    items.address.apartment_road_area,
+                    `${items.address.locality || items.address.city},${
+                      items.address.apartment_road_area ||
+                      (items.address.locality ? items.address.city : "")
+                    }`,
                     items.description,
                   ])
                 )

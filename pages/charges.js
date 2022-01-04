@@ -262,9 +262,4 @@ const Charges = () => {
     </>
   );
 };
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
 export default Charges;

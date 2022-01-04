@@ -25,11 +25,24 @@ const ItemsContent = ({ handler, getItem, items }) => {
 
   const initUpdate = (tableMeta) => {
     console.info(tableMeta);
-    handler(items.find((el) => el.id == tableMeta.rowData[1].props.id));
-    getItem(tableMeta.rowData[0]);
+    const ITEM_ID = tableMeta.rowData[2].props.id;
+    handler(items.find((el) => el.id == ITEM_ID));
+    getItem(ITEM_ID);
   };
+  useEffect(() => setUserData(items), [items]);
 
   const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
     "ID",
     "Image",
     "Name",
@@ -44,10 +57,15 @@ const ItemsContent = ({ handler, getItem, items }) => {
       label: "Actions",
       options: {
         customBodyRender: (val, tableMeta, updateTableRow) => {
+          // items && updateTableRow && updateTableRow(items);
           return (
-            <div className="flex flex-row justify-center">
+            <div className="flex z-0 flex-row justify-center">
               <div>
-                <button onClick={() => initUpdate(tableMeta)}>
+                <button
+                  onClick={() => {
+                    initUpdate(tableMeta);
+                  }}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -104,12 +122,13 @@ const ItemsContent = ({ handler, getItem, items }) => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  items?.map((item) => [
+                  userData?.map((item) => [
+                    "",
                     item.id,
                     <td
                       key={item.id}
                       id={item.id}
-                      className="px-6 py-4 whitespace-nowrap text-center"
+                      className="px-6 py-4 whitespace-nowrap block mx-auto text-center"
                     >
                       <Image
                         loader={({ src, width }) =>
@@ -118,6 +137,7 @@ const ItemsContent = ({ handler, getItem, items }) => {
                         width="100"
                         height="100"
                         src={item.image}
+                        alt=""
                       />
                     </td>,
                     item.name,

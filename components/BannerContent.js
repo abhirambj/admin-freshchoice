@@ -24,7 +24,21 @@ const BannerContent = () => {
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
 
-  const columns = ["ID", "Image"];
+  const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
+    "ID",
+    "Image",
+  ];
 
   const options = {
     filterType: "checkbox",
@@ -52,6 +66,7 @@ const BannerContent = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setUserData(data);
           setLoading(false);
         }
@@ -80,6 +95,7 @@ const BannerContent = () => {
                   </div>
                 ) : (
                   userData.map((items) => [
+                    "",
                     items.id,
                     <td
                       key={items.id}
@@ -92,6 +108,7 @@ const BannerContent = () => {
                         width="100"
                         height="100"
                         src={items.image}
+                        alt=""
                       />
                     </td>,
                   ])

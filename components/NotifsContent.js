@@ -39,7 +39,22 @@ const NotifsContent = () => {
     },
   };
 
-  const columns = ["ID", "Title", "Description"];
+  const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
+    "ID",
+    "Title",
+    "Description",
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -50,6 +65,7 @@ const NotifsContent = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setUserData(data);
           setLoading(false);
         }
@@ -78,6 +94,7 @@ const NotifsContent = () => {
                   </div>
                 ) : (
                   userData.map((items) => [
+                    "",
                     items.id,
                     items.title,
                     items.description,

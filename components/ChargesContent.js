@@ -47,6 +47,17 @@ const ChargesContent = ({ handler, getItem }) => {
   };
 
   const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
     "Order ID",
     "Up To Amount",
     "Shipment Cost",
@@ -90,6 +101,7 @@ const ChargesContent = ({ handler, getItem }) => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setUserData(data);
           setLoading(false);
         }

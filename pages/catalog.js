@@ -10,6 +10,7 @@ import updateItems from "./api/PATCH/updateItems";
 import { requiresAuthentication } from "../functions";
 import swal from "sweetalert";
 import { baseUrl } from "../constants";
+import { Modal } from "@material-ui/core";
 
 const Items = () => {
   const [showModal, setShowModal] = useState(false);
@@ -31,7 +32,6 @@ const Items = () => {
     // offer_price: "",
     displayAtHomepage: true,
     displayAtOfferpage: true,
-    available: false,
     formdata: "",
     success: false,
   });
@@ -43,7 +43,6 @@ const Items = () => {
     ERRdescription: false,
     ERRquantity: false,
     ERRweight: false,
-    ERRavailable: false,
     ERRprice: false,
     // ERRoffer_price: false,
     ERRdisplayAtHomepage: false,
@@ -58,7 +57,6 @@ const Items = () => {
     ERRquantity,
     ERRweight,
     ERRprice,
-    ERRavailable,
     // ERRoffer_price,
     ERRdisplayAtHomepage,
     ERRdisplayAtOfferpage,
@@ -76,7 +74,6 @@ const Items = () => {
       weight: "",
       price: "",
       // offer_price: "",
-      available: false,
       displayAtHomepage: true,
       displayAtOfferpage: true,
     });
@@ -94,7 +91,6 @@ const Items = () => {
       quantity: parseInt(item.quantity),
       weight: item.weight,
       price: parseFloat(item.price),
-      available: item.available,
       // offer_price: parseFloat(item.offer_price),
       displayAtHomepage: item.displayAtHomepage,
       displayAtOfferpage: item.displayAtOfferpage,
@@ -116,6 +112,7 @@ const Items = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setCatData(data);
         }
       } else {
@@ -134,6 +131,7 @@ const Items = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setCategories(data);
         }
       } else {
@@ -151,7 +149,6 @@ const Items = () => {
     quantity,
     weight,
     price,
-    available,
     // offer_price,
     displayAtHomepage,
     displayAtOfferpage,
@@ -211,7 +208,6 @@ const Items = () => {
           });
           setLoading(false);
           setShowModal(false);
-          getCategories();
         }
       } else {
         setApiError("We are experiencing some problems, please try again");
@@ -224,6 +220,7 @@ const Items = () => {
   const updateItem = (ev) => {
     ev.preventDefault();
     setLoading(true);
+    setShowModal(false);
     Object.keys(data).map(
       (item) =>
         item !== "formdata" &&
@@ -245,7 +242,14 @@ const Items = () => {
             timer: 2000,
           });
           setLoading(false);
-          getCategories();
+          const currentData = [...catData];
+          const currentItem = catData.findIndex((item) => item.id === data.id);
+          const temData = { ...data };
+          temData.categoryId = categories.find(
+            (ct) => ct.id === data.categoryId
+          ).name;
+          currentData.splice(currentItem, 1, temData);
+          setCatData(() => currentData);
           setShowModal(false);
         }
       } else {
@@ -257,7 +261,7 @@ const Items = () => {
   };
   return (
     <>
-      {loading ? (
+      {!catData ? (
         <div className="md:flex md:items-center md:justify-center md:h-screen">
           <HashLoader color={"FF0000"} loading={loading} size={150} />
         </div>
@@ -270,8 +274,11 @@ const Items = () => {
               content="width=device-width, initial-scale=1.0"
             />
           </Head>
+          <Modal open={loading} className="flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
           <DashBoardContainer>
-            <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
+            <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 relative md:pb-10 md:overflow-hidden md:overflow-y-auto">
               <div className="md:flex md:flex-row md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4 md:space-y-0  md:m-5">
                 <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap md:text-black">
                   Catalog
@@ -359,6 +366,7 @@ const Items = () => {
                                 {ERRcategoryId}
                               </span>
                               <div className="md:mb-3 md:pt-0">
+                                <label>Image</label>
                                 <input
                                   name="image"
                                   onBlur={({ target }) =>
@@ -376,6 +384,7 @@ const Items = () => {
                               </div>
                               <span className="text-red-600">{ERRimage}</span>
                               <div className="md:mb-3 md:pt-0">
+                                <label>Description</label>
                                 <input
                                   name="description"
                                   value={data.description}
@@ -397,6 +406,7 @@ const Items = () => {
                                 {ERRdescription}
                               </span>
                               <div className="md:mb-3 md:pt-0">
+                                <label>Weight</label>
                                 <input
                                   name="weight"
                                   value={data.weight}
@@ -415,9 +425,10 @@ const Items = () => {
                                 />
                               </div>
                               <span className="text-red-600">{ERRweight}</span>
-                              <div className="flex flex-row items-center">
+                              <div className="">
                                 <div className="flex flex-col mr-2">
                                   <div className="md:mb-3 md:pt-0">
+                                    <label>Name</label>
                                     <input
                                       name="name"
                                       value={data.name}
@@ -438,6 +449,7 @@ const Items = () => {
                                     {ERRname}
                                   </span>
                                   <div className="md:mb-3 md:pt-0">
+                                    <label>Quantity</label>
                                     <input
                                       name="quantity"
                                       value={data.quantity}
@@ -459,6 +471,7 @@ const Items = () => {
                                     {ERRquantity}
                                   </span>
                                   <div className="md:mb-3 md:pt-0">
+                                    <label>Your Price</label>
                                     <input
                                       name="price"
                                       value={data.price}
@@ -479,93 +492,6 @@ const Items = () => {
                                   <span className="text-red-600">
                                     {ERRprice}
                                   </span>
-                                </div>
-                                <div className="flex flex-col flex-1">
-                                  <div className="md:mb-3 md:pt-1">
-                                    <FormControl
-                                      size="small"
-                                      fullWidth
-                                      className="w-full"
-                                      variant="outlined"
-                                    >
-                                      <TextField
-                                        size="small"
-                                        name="displayAtHomepage"
-                                        value={
-                                          data.displayAtHomepage == "yes" ||
-                                          data.displayAtHomepage == true
-                                            ? true
-                                            : false
-                                        }
-                                        onChange={handleChange(
-                                          "displayAtHomepage"
-                                        )}
-                                        id="outlined-basic"
-                                        label="Homepage"
-                                        variant="outlined"
-                                        select
-                                      >
-                                        <MenuItem value={true}>Yes</MenuItem>
-                                        <MenuItem value={false}>No</MenuItem>
-                                      </TextField>
-                                    </FormControl>
-                                  </div>
-                                  <div className="md:mb-3 md:pt-1">
-                                    <FormControl
-                                      size="small"
-                                      fullWidth
-                                      className="w-full"
-                                      variant="outlined"
-                                    >
-                                      <TextField
-                                        size="small"
-                                        name="displayAtOfferpage"
-                                        value={
-                                          data.displayAtOfferpage == "yes" ||
-                                          data.displayAtOfferpage == true
-                                            ? true
-                                            : false
-                                        }
-                                        onChange={handleChange(
-                                          "displayAtOfferpage"
-                                        )}
-                                        id="outlined-basic"
-                                        label="Offerpage"
-                                        variant="outlined"
-                                        select
-                                      >
-                                        <MenuItem value={true}>Yes</MenuItem>
-                                        <MenuItem value={false}>No</MenuItem>
-                                      </TextField>
-                                    </FormControl>
-                                  </div>
-                                  <div className="md:mb-3 md:pt-1">
-                                    <FormControl
-                                      size="small"
-                                      fullWidth
-                                      className="w-full"
-                                      variant="outlined"
-                                    >
-                                      <TextField
-                                        size="small"
-                                        name="available"
-                                        value={
-                                          data.available == "yes" ||
-                                          data.available == true
-                                            ? true
-                                            : false
-                                        }
-                                        onChange={handleChange("available")}
-                                        id="outlined-basic"
-                                        label="Available"
-                                        variant="outlined"
-                                        select
-                                      >
-                                        <MenuItem value={true}>Yes</MenuItem>
-                                        <MenuItem value={false}>No</MenuItem>
-                                      </TextField>
-                                    </FormControl>
-                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -629,11 +555,4 @@ const Items = () => {
     </>
   );
 };
-
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
-
 export default Items;

@@ -24,10 +24,4 @@ const Feedback = () => {
   );
 };
 
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
-
 export default Feedback;

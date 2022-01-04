@@ -6,6 +6,7 @@ import deleteManagerById from "../pages/api/DELETE/DeleteManager";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import swal from "sweetalert";
 import { baseUrl } from "../constants";
+import { Modal } from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
@@ -17,8 +18,8 @@ const theme = createMuiTheme({
     },
   },
 });
-const StoreManagerContent = ({ handler, getItem }) => {
-  const [userData, setUserData] = useState([]);
+const StoreManagerContent = ({ handler, getItem, managers }) => {
+  const [userData, setUserData] = useState(managers);
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ const StoreManagerContent = ({ handler, getItem }) => {
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
-    handler(tableMeta.rowData[1], tableMeta.rowData[2], tableMeta.rowData[3]);
+    handler(userData.find((item) => item.id === tableMeta.rowData[0]));
     getItem(tableMeta.rowData[0]);
   };
 
@@ -41,6 +42,12 @@ const StoreManagerContent = ({ handler, getItem }) => {
         ).data;
         deleteManagerById(`${baseUrl}/admin/storemanager/${currentItem[0]}`)
           .then(() => {
+            const currentData = userData.findIndex(
+              (item) => currentItem.id === item.id
+            );
+            const tempData = userData;
+            tempData.splice(currentData, 1);
+            setUserData(tempData);
             swal({
               title: "Store Manager Deleted Successfully!!",
               button: "OK",
@@ -93,32 +100,20 @@ const StoreManagerContent = ({ handler, getItem }) => {
   ];
 
   useEffect(() => {
-    setLoading(true);
-    getStoreManager(baseUrl + "/admin/storemanager/").then((data) => {
-      if (data) {
-        if (data.error || data.detail) {
-          console.log("Error", data.err);
-          setLoading(false);
-        } else {
-          console.log("Success", data);
-          setUserData(data);
-          setLoading(false);
-        }
-      } else {
-        console.log("No DATA");
-        setLoading(false);
-      }
-    });
-  }, []);
+    setUserData(managers);
+  }, [managers]);
 
   return (
     <>
-      {loading ? (
+      {!userData ? (
         <div className="flex items-center justify-center h-screen">
           <HashLoader color={"FF0000"} loading={loading} size={150} />
         </div>
       ) : (
         <div>
+          <Modal open={loading} className="flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
           <MuiThemeProvider theme={theme}>
             <MUIDataTable
               title={""}

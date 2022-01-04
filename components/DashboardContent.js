@@ -41,6 +41,17 @@ const DashboardContent = () => {
       .then(() => setLoading(false));
   };
   const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
     "Order ID",
     "Time",
     "Name",
@@ -134,6 +145,7 @@ const DashboardContent = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setUserData(data);
           setLoading(false);
         }

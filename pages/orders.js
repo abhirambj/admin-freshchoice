@@ -349,10 +349,4 @@ const Orders = () => {
   );
 };
 
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
-
 export default Orders;

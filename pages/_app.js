@@ -14,12 +14,12 @@ function MyApp({ Component, pageProps }) {
   };
   console.info("%ccss in console", "color:white;background:blue;padding:5px");
   return (
-    <NavContextProvider>
-      <DropDownProvider>
+    <DropDownProvider>
       <IdleTimer onIdle={handleIdle} timeout={1000 * 500} />
-      <Component {...pageProps} />
-      </DropDownProvider>
-    </NavContextProvider>
+      <NavContextProvider>
+        <Component {...pageProps} />
+      </NavContextProvider>
+    </DropDownProvider>
   );
 }
 

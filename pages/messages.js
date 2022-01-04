@@ -23,10 +23,5 @@ const Messages = () => {
     </>
   );
 };
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
 
 export default Messages;

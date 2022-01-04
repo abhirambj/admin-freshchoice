@@ -80,10 +80,4 @@ const Dashboard = () => {
   );
 };
 
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
-
 export default Dashboard;

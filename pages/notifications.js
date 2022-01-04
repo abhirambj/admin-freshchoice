@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import NotifsContent from "../components/NotifsContent";
 import DashBoardContainer from "../components/DashBoardContainer";
@@ -7,32 +7,59 @@ import HashLoader from "react-spinners/HashLoader";
 import { requiresAuthentication } from "../functions";
 import swal from "sweetalert";
 import { baseUrl } from "../constants";
+import getAllStores from "./api/GET/GetAllStores";
+import { FormControl } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
+import { MenuItem } from "@material-ui/core";
 
 const Notification = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState("");
+  const [stores, setStores] = useState([]);
   const [data, setData] = useState({
     title: "",
     description: "",
+    datetime: new Date(),
+    to: `store_${0}`,
+    type: "customer",
     success: false,
   });
   const [error, setError] = useState({
     ERRtitle: true,
     ERRdescription: false,
+    ERRto: false,
+    ERRtype: false,
   });
-  const { ERRtitle, ERRdescription } = error;
-
+  const { ERRtitle, ERRdescription, ERRto, ERRtype } = error;
+  useEffect(() => {
+    getAllStores(baseUrl + "/stores/").then((res) => {
+      if (res) {
+        if (res.error || res.detail) {
+          console.log("Error", res.err);
+          setLoading(false);
+        } else {
+          console.log("Success", res);
+          setData({ ...data, to: res[0].id });
+          setStores(res);
+        }
+      } else {
+        console.log("No DATA");
+        setLoading(false);
+      }
+    });
+  }, []);
   const handleBlur = (name) => (event) => {
     let simplifiedName = name.replace("ERR", "");
     console.log(simplifiedName, data[simplifiedName]);
     setError({ ...error, [name]: data[simplifiedName] ? true : false });
   };
-  const { title, description, success } = data;
+  const { title, description, success, to, type, datetime } = data;
 
   const handleChange = (name) => (event) => {
     setError({ ...error, ["ERR" + name]: "" });
-    setData({ ...data, [name]: event.target.value.toString() });
+    setData({ ...data, [name]: event.target.value });
+    console.log(data);
   };
   const handleSubmit = (ev) => {
     ev.preventDefault();
@@ -42,26 +69,23 @@ const Notification = () => {
       setLoading(false);
       return;
     }
-    addNotifications(data, baseUrl + "/notifications/").then((data) => {
-      if (data) {
-        if (data.error || data.detail) {
-          console.log("Error", data.err);
-          setLoading(false);
-          setApiError(data.error || data.detail);
-        } else {
-          swal({
-            title: "Notification Added Successfully!!",
-            confirmButtonText: "OK",
-            animation: true,
-            icon: "success",
-            timer: 2000,
-          });
-          setLoading(false);
-        }
+    addNotifications(
+      { title, description, to: `store_${to}`, datetime },
+      baseUrl + "/notifications/topic?app=" + type
+    ).then((data) => {
+      if ((data !== null && data?.error) || data?.detail) {
+        console.log("Error", data.err);
+        setLoading(false);
+        setApiError(data.error || data.detail);
       } else {
-        setApiError("We are experiencing some problems, please try again");
-
-        console.log("No DATA");
+        setShowModal(false);
+        swal({
+          title: "Notification Added Successfully!!",
+          confirmButtonText: "OK",
+          animation: true,
+          icon: "success",
+          timer: 2000,
+        });
         setLoading(false);
       }
     });
@@ -84,10 +108,13 @@ const Notification = () => {
           </Head>
           <DashBoardContainer>
             <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
-              <div className="md:flex md:flex-row md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4  md:items-center md:space-y-0 md:flex-row md:m-5">
+              <div className="md:flex md:justify-between md:pb-6 md:pt-10 md:space-y-4  md:items-start md:space-y-0 md:flex-col md:m-5">
                 <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap">
                   Notifications
                 </h1>
+                <p className="py-3">
+                  Notifications are sent to the customer only.
+                </p>
                 <button
                   className="md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
                   type="button"
@@ -154,6 +181,94 @@ const Notification = () => {
                               <span className="text-red-600">
                                 {ERRdescription}
                               </span>
+
+                              <div className="md:mb-3 md:pt-1">
+                                <label>From Store</label>
+                                <FormControl
+                                  size="small"
+                                  fullWidth
+                                  className="w-full"
+                                  variant="outlined"
+                                >
+                                  <TextField
+                                    size="small"
+                                    name="to"
+                                    value={
+                                      stores.find((item) => item.id === data.to)
+                                        ?.id || ""
+                                    }
+                                    onBlur={({ target }) =>
+                                      !target.value &&
+                                      setError({
+                                        ...error,
+                                        ERRto: "Store Name should not be empty",
+                                      })
+                                    }
+                                    onChange={handleChange("to")}
+                                    id="outlined-basic"
+                                    label="Store"
+                                    variant="outlined"
+                                    select
+                                  >
+                                    {!stores ? (
+                                      <div className="md:flex md:items-center md:justify-center md:h-screen">
+                                        <HashLoader
+                                          color={"FF0000"}
+                                          loading={loading}
+                                          size={150}
+                                        />
+                                      </div>
+                                    ) : (
+                                      stores.map((items, key) => (
+                                        <MenuItem value={items.id} key={key}>
+                                          {items.title}
+                                        </MenuItem>
+                                      ))
+                                    )}
+                                  </TextField>
+                                </FormControl>
+                              </div>
+                              <span className="text-red-600">{ERRto}</span>
+
+                              {/* <div className="md:mb-3 md:pt-1">
+                                <label>Send the notification to:</label>
+                                <FormControl
+                                  size="small"
+                                  fullWidth
+                                  className="w-full"
+                                  variant="outlined"
+                                >
+                                  <TextField
+                                    size="small"
+                                    name="type"
+                                    value={type}
+                                    onBlur={({ target }) =>
+                                      !target.value &&
+                                      setError({
+                                        ...error,
+                                        ERRtype:
+                                          "Store Name should not be empty",
+                                      })
+                                    }
+                                    onChange={handleChange("type")}
+                                    id="outlined-basic"
+                                    label="App"
+                                    variant="outlined"
+                                    select
+                                  >
+                                    <MenuItem value="customer">
+                                      Customer
+                                    </MenuItem>
+                                    <MenuItem value="storemanager">
+                                      Store Manager
+                                    </MenuItem>
+                                    <MenuItem value="deliveryboy">
+                                      Delivery Boy
+                                    </MenuItem>
+                                  </TextField>
+                                </FormControl>
+                              </div> */}
+                              <span className="text-red-600">{ERRto}</span>
                             </div>
                           </form>
                           {/*footer*/}
@@ -170,7 +285,9 @@ const Notification = () => {
                               type="button"
                               onClick={handleSubmit}
                               disabled={
-                                ERRtitle || ERRdescription ? true : false
+                                ERRtitle || ERRdescription || ERRto || ERRtype
+                                  ? true
+                                  : false
                               }
                             >
                               Add
@@ -191,11 +308,5 @@ const Notification = () => {
     </>
   );
 };
-
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
 
 export default Notification;

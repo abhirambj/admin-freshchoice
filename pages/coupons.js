@@ -122,16 +122,6 @@ const Coupons = () => {
         setError({ ...error, ERRmax_discount: "" });
       }
     }
-    if (name === "deduction") {
-      if (event.target.value > 0 && !(event.target.value < 100)) {
-        setError({
-          ...error,
-          ERRdeduction: "Deduction Percentage should be less than 100",
-        });
-      } else {
-        setError({ ...error, ERRdeduction: "" });
-      }
-    }
     setData({ ...data, [name]: event.target.value });
     if (name !== "max_discount" && name !== "deduction") {
       setError({ ...error, ["ERR" + name]: "" });
@@ -256,7 +246,7 @@ const Coupons = () => {
           </Head>
           <DashBoardContainer>
             <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
-              <div className="md:flex md:flex-row md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4  md:items-center md:space-y-0 md:flex-row md:m-5">
+              <div className="md:flex md:flex-row md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4   md:space-y-0 md:m-5">
                 <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap">
                   Coupons
                 </h1>
@@ -278,7 +268,7 @@ const Coupons = () => {
                           }`}
                         >
                           {/*header*/}
-                          <div className="md:flex md:items-start md:justify-between md:p-4  md:border-solid md:border-red-200 md:rounded-t">
+                          <div className="md:flex md:items-start md:justify-between md:p-3  md:border-solid md:border-red-200 md:rounded-t">
                             <h3 className="md:text-3xl md:font-semibold">
                               {isUpdate ? "Update Coupon" : "Add Coupon"}
                             </h3>
@@ -340,6 +330,7 @@ const Coupons = () => {
                               <span className="text-red-600">
                                 {ERRstore_id}
                               </span>
+                              <label className="block">Code</label>
                               <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="code"
@@ -360,6 +351,7 @@ const Coupons = () => {
                               </div>
                               <span className="text-red-600">{ERRcode}</span>
                               <div className="md:mb-2 md:pt-0">
+                                <label className="block">Description</label>
                                 <input
                                   name="description"
                                   value={data.description}
@@ -381,6 +373,9 @@ const Coupons = () => {
                                 {ERRdescription}
                               </span>
                               <div className="md:mb-5 md:pt-0">
+                                <label className="block">
+                                  Max Deduction Amount
+                                </label>
                                 <input
                                   name="deduction"
                                   value={data.deduction}
@@ -394,7 +389,7 @@ const Coupons = () => {
                                   }
                                   onChange={handleChange("deduction")}
                                   type="number"
-                                  placeholder="Deduction Percentage"
+                                  placeholder="Deduction Amount"
                                   className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
                                 />
                               </div>
@@ -402,6 +397,9 @@ const Coupons = () => {
                                 {ERRdeduction}
                               </span>
                               <div className="md:mb-2 md:pt-0">
+                                <label className="block">
+                                  Min Eligible Amount
+                                </label>
                                 <input
                                   name="min_eligible_amount"
                                   value={data.min_eligible_amount}
@@ -422,6 +420,9 @@ const Coupons = () => {
                               <span className="text-red-600">
                                 {ERRmin_eligible_amount}
                               </span>
+                              <label className="block">
+                                Discount in Percentage
+                              </label>
                               <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="max_discount"
@@ -443,6 +444,7 @@ const Coupons = () => {
                               <span className="text-red-600">
                                 {ERRmax_discount}
                               </span>
+                              <label className="block">Valid From</label>
                               <div className="md:mb-2 md:pt-0">
                                 <input
                                   name="valid_from"
@@ -465,6 +467,7 @@ const Coupons = () => {
                                 {ERRvalid_from}
                               </span>
                               <div className="md:mb-2 md:pt-0">
+                                <label className="block">Valid To</label>
                                 <input
                                   name="valid_to"
                                   value={data.valid_to}
@@ -540,6 +543,8 @@ const Coupons = () => {
                   store_id,
                   code,
                   deduction,
+                  valid_from,
+                  valid_to,
                   id,
                 }) =>
                   handleUpdate({
@@ -549,6 +554,8 @@ const Coupons = () => {
                     store_id,
                     code,
                     deduction,
+                    valid_from,
+                    valid_to,
                     id,
                   })
                 }
@@ -560,11 +567,5 @@ const Coupons = () => {
     </>
   );
 };
-
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
 
 export default Coupons;

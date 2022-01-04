@@ -1,10 +1,10 @@
-import getDeliveryBoys from "../pages/api/GET/GetDeliveryBoy";
 import MUIDataTable from "mui-datatables";
 import { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import deleteDeliveryBoyById from "../pages/api/DELETE/DeleteDeliveryBoy";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { baseUrl } from "../constants";
+import getAllStores from "../pages/api/GET/GetAllStores";
 
 const theme = createMuiTheme({
   palette: {
@@ -16,18 +16,23 @@ const theme = createMuiTheme({
     },
   },
 });
-const DeliveryBoyContent = ({ handler, getItem }) => {
-  const [userData, setUserData] = useState([]);
+const DeliveryBoyContent = ({
+  handler,
+  getItem,
+  userData,
+  setUserData,
+  loading,
+}) => {
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [stores, setStores] = useState([]);
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
     getItem(tableMeta.rowData[0]);
     const currentDeliveryBoy = userData.find(
-      (item) => item.id === tableMeta.rowData[4]
+      (item) => item.id === tableMeta.rowData[tableMeta.rowData.length - 1]
     );
     console.log(currentDeliveryBoy, userData);
     handler(currentDeliveryBoy);
@@ -42,8 +47,21 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
         const currentItem = tableData.find(
           (row) => row.index == data.dataIndex
         ).data;
-        deleteDeliveryBoyById(`${baseUrl}/admin/deliveryboy/${currentItem[0]}`)
+        console.log(currentItem);
+        deleteDeliveryBoyById(
+          `${baseUrl}/admin/deliveryboy/${
+            userData.find(
+              (item) => item.id === currentItem[currentItem.length - 1]
+            ).id
+          }`
+        )
           .then(() => {
+            const currentData = userData.findIndex(
+              (item) => currentItem.id === item.id
+            );
+            const tempData = userData;
+            tempData.splice(currentData, 1);
+            setUserData(tempData);
             swal({
               title: "Delivery Boy Deleted Successfully!!",
               button: "OK",
@@ -55,14 +73,40 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
       });
     },
   };
+  useEffect(() => {
+    getAllStores(baseUrl + "/stores/").then((data) => {
+      if (data) {
+        if (data.error || data.detail) {
+          console.log("Error", data.err);
+          setLoading(false);
+        } else {
+          console.log("Success", data);
+          data.reverse();
+          setStores(data);
+        }
+      } else {
+        console.log("No DATA");
+        setLoading(false);
+      }
+    });
+  }, []);
 
   const columns = [
     {
-      name: "Sl. No",
-      selector: "serial",
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
     },
     "Name",
+    "Username",
     "Mobile Number",
+    "Email",
     "Store",
     {
       label: "Action",
@@ -95,25 +139,6 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
     },
   ];
 
-  useEffect(() => {
-    setLoading(true);
-    getDeliveryBoys(baseUrl + "/admin/deliveryboy/").then((data) => {
-      if (data) {
-        if (data.error || data.detail) {
-          console.log("Error", data.err);
-          setLoading(false);
-        } else {
-          console.log("Success", data);
-          setUserData(data);
-          setLoading(false);
-        }
-      } else {
-        console.log("No DATA");
-        setLoading(false);
-      }
-    });
-  }, []);
-
   return (
     <>
       {loading ? (
@@ -132,11 +157,17 @@ const DeliveryBoyContent = ({ handler, getItem }) => {
                   </div>
                 ) : (
                   userData.map((items, index) => [
-                    (items.serial = index + 1),
+                    "",
                     // items.id,
                     items.name,
+                    items.username,
                     items.mobile,
-                    items.store == null ? "Unassigned" : items.store,
+                    items.email,
+                    items.store == null
+                      ? "Unassigned"
+                      : stores.find(
+                          (store) => store.id === parseInt(items.store)
+                        )?.title,
                     items.id,
                   ])
                 )

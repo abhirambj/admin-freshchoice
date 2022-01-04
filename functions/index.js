@@ -5,12 +5,14 @@ export const requiresAuthentication = (serverSideProp) => {
   return async ({ req, res }) => {
     let { user } = getToken(req);
     user = user ? JSON.parse(user) : undefined;
+    console.log(Date.now() >= parseInt(user.access_token.exp) * 1000, "EXP");
     if (
       !user ||
       !user.access_token ||
       typeof user.access_token == "undefined" ||
       user.access_token == undefined ||
-      user.access_token == "undefined"
+      user.access_token == "undefined" ||
+      Date.now() >= parseInt(user.access_token.exp) * 1000
     ) {
       console.log("yes");
       res.writeHead(302, {

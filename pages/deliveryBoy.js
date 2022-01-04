@@ -10,9 +10,11 @@ import swal from "sweetalert";
 import getAllStores from "./api/GET/GetAllStores";
 import { FormControl, MenuItem, TextField } from "@material-ui/core";
 import { baseUrl } from "../constants";
+import getDeliveryBoys from "./api/GET/GetDeliveryBoy";
 
 const DeliveryBoy = () => {
   const [showModal, setShowModal] = useState(false);
+  const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [itemID, setItemID] = useState(1);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -45,7 +47,7 @@ const DeliveryBoy = () => {
     setShowModal(true);
   };
   const handleUpdate = (data) => {
-    setData(data);
+    setData({ ...data, store_id: data.store });
     setShowModal(true);
     setIsUpdate(true);
   };
@@ -94,7 +96,41 @@ const DeliveryBoy = () => {
       setLoading(false);
       return;
     }
-    addDeliveryBoys(data, baseUrl + "/admin/deliveryboy/").then((data) => {
+    if (userData.find((item) => item.username === username)) {
+      setApiError("Username already exists");
+      swal({
+        title: "Username already exists",
+        button: "OK",
+        icon: "error",
+        timer: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    if (userData.find((item) => item.email === email)) {
+      setApiError("Email already exists");
+      swal({
+        title: "Email already exists",
+        button: "OK",
+        icon: "error",
+        timer: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    setShowModal(false);
+    addDeliveryBoys(
+      {
+        name,
+        mobile,
+        username,
+        email,
+        store_id: parseInt(store_id),
+        password,
+        other_mobiles,
+      },
+      baseUrl + "/admin/deliveryboy/"
+    ).then((data) => {
       if (data) {
         if (data.error || data.detail) {
           console.log("Error", data.err);
@@ -111,6 +147,7 @@ const DeliveryBoy = () => {
           });
           setLoading(false);
           setShowModal(false);
+          getAllDeliveryBoys();
         }
       } else {
         setApiError("We are experiencing some problems, please try again");
@@ -122,6 +159,32 @@ const DeliveryBoy = () => {
   const updateItem = (ev) => {
     setLoading(true);
     ev.preventDefault();
+    if (
+      userData.find((item) => item.username === username && item.id !== data.id)
+    ) {
+      setApiError("Username already exists");
+      swal({
+        title: "Username already exists",
+        button: "OK",
+        icon: "error",
+        timer: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    setApiError("");
+    if (userData.find((item) => item.email === email && item.id !== data.id)) {
+      setApiError("Email already exists");
+      swal({
+        title: "Email already exists",
+        button: "OK",
+        icon: "error",
+        timer: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    setShowModal(false);
     updateBoy(baseUrl + "/admin/deliveryboy/" + data.id, data).then((data) => {
       if (data) {
         if (data.error || data.detail) {
@@ -129,6 +192,7 @@ const DeliveryBoy = () => {
           setLoading(false);
           setApiError(data.error || data.detail);
         } else {
+          getAllDeliveryBoys();
           swal({
             title: "Delivery Boy Updated Successfully!!",
             button: "OK",
@@ -160,292 +224,322 @@ const DeliveryBoy = () => {
         setLoading(false);
       }
     });
+    getAllDeliveryBoys();
   }, []);
+  const getAllDeliveryBoys = () => {
+    setLoading(true);
+    getDeliveryBoys(baseUrl + "/admin/deliveryboy/").then((data) => {
+      if (data) {
+        if (data.error || data.detail) {
+          console.log("Error", data.err);
+          setLoading(false);
+        } else {
+          console.log("Success", data);
+          data.reverse();
+          setUserData(data);
+          setLoading(false);
+        }
+      } else {
+        console.log("No DATA");
+        setLoading(false);
+      }
+    });
+  };
   return (
     <>
-      {loading ? (
-        <div className="md:flex md:items-center md:justify-center md:h-screen">
-          {/* <HashLoader color={"FF0000"} loading={loading} size={150} /> */}
-        </div>
-      ) : (
-        <div>
-          <Head>
-            <title>Delivery Boy</title>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
-          </Head>
-          <DashBoardContainer>
-            <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
-              <div className="md:flex md:flex-row md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4 md:space-y-0 md:m-5">
-                <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap">
-                  Delivery Boys
-                </h1>
-                <button
-                  className="md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
-                  type="button"
-                  onClick={InitAddItem}
-                >
-                  Add
-                </button>
-                {showModal ? (
-                  <>
-                    <div className="md:justify-center md:items-center md:flex md:overflow-x-hidden md:overflow-y-auto md:fixed md:inset-0 md:z-50 md:outline-none focus:outline-none">
-                      <div className="md:relative md:w-auto md:my-3 md:mx-auto md:max-w-sm">
-                        {/*content*/}
-                        <div
-                          className={`md:border-0 md:rounded-lg md:shadow-lg md:relative md:flex md:flex-col md:w-full md:bg-white md:outline-none focus:outline-none ${
-                            apiError && "border-2 border-red-600"
-                          }`}
-                        >
-                          {/*header*/}
-                          <div className="md:flex md:items-start md:justify-between md:p-5 md:border-solid md:border-red-200 md:rounded-t">
-                            <h3 className="md:text-3xl md:font-semibold">
-                              {isUpdate
-                                ? "Update Delivery Boy"
-                                : "Add Delivery Boy"}
-                            </h3>
-                          </div>
-                          {/*body*/}
-                          <p className="text-center text-red-600">
-                            {apiError || ""}
-                          </p>
+      <div>
+        <Head>
+          <title>Delivery Boy</title>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+        </Head>
+        <DashBoardContainer>
+          <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
+            <div className="md:flex md:flex-col md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4 md:space-y-0 md:m-5">
+              <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap">
+                Delivery Boys
+              </h1>
+              <p className="py-3">
+                Usernames and Emails are unique, while creating new delivery
+                boys, make sure you do not use any existing Usernames or Emails
+              </p>
+              <button
+                className="md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
+                type="button"
+                onClick={InitAddItem}
+              >
+                Add
+              </button>
+              {showModal ? (
+                <>
+                  <div className="md:justify-center md:items-center md:flex md:overflow-x-hidden md:overflow-y-auto md:fixed md:inset-0 md:z-50 md:outline-none focus:outline-none">
+                    <div className="md:relative md:w-auto md:my-3 md:mx-auto md:max-w-sm">
+                      {/*content*/}
+                      <div
+                        className={`md:border-0 md:rounded-lg md:shadow-lg md:relative md:flex md:flex-col md:w-full md:bg-white md:outline-none focus:outline-none ${
+                          apiError && "border-2 border-red-600"
+                        }`}
+                      >
+                        {/*header*/}
+                        <div className="md:flex md:items-start md:justify-between md:p-5 md:border-solid md:border-red-200 md:rounded-t">
+                          <h3 className="md:text-3xl md:font-semibold">
+                            {isUpdate
+                              ? "Update Delivery Boy"
+                              : "Add Delivery Boy"}
+                          </h3>
+                        </div>
+                        {/*body*/}
+                        <p className="text-center text-red-600">
+                          {apiError || ""}
+                        </p>
 
-                          <form>
-                            <div className="md:relative md:p-5 md:flex-auto">
-                              <div className="md:mb-3 md:pt-0">
-                                <input
-                                  name="name"
-                                  value={data.name}
-                                  onBlur={({ target }) =>
-                                    !target.value.length &&
-                                    setError({
-                                      ...error,
-                                      ERRname: "Name should not be empty",
-                                    })
+                        <form>
+                          <div className="md:relative md:p-5 md:flex-auto">
+                            <div className="md:mb-3 md:pt-0">
+                              <label>Name</label>
+                              <input
+                                name="name"
+                                value={data.name}
+                                onBlur={({ target }) =>
+                                  !target.value.length &&
+                                  setError({
+                                    ...error,
+                                    ERRname: "Name should not be empty",
+                                  })
+                                }
+                                onChange={handleChange("name")}
+                                type="text"
+                                placeholder="Name"
+                                className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                              />
+                            </div>
+                            <span className="text-red-600">{ERRname}</span>
+                            <div className="md:mb-3 md:pt-0">
+                              <label>Mobile</label>
+                              <input
+                                name="mobile"
+                                value={data.mobile}
+                                onBlur={({ target }) =>
+                                  target.value.toString().length !== 10 &&
+                                  setError({
+                                    ...error,
+                                    ERRmobile:
+                                      "Mobile Number should be 10 digits",
+                                  })
+                                }
+                                onChange={handleChange("mobile")}
+                                type="number"
+                                placeholder="Mobile Number"
+                                className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                              />
+                            </div>
+                            <span className="text-red-600">{ERRmobile}</span>
+                            <div className="md:mb-3 md:pt-0">
+                              <label>Username</label>
+                              <input
+                                name="username"
+                                value={data.username}
+                                onBlur={({ target }) =>
+                                  target.value.length < 3 &&
+                                  setError({
+                                    ...error,
+                                    ERRusername:
+                                      "Username should be more than 3 Characters",
+                                  })
+                                }
+                                onChange={handleChange("username")}
+                                type="text"
+                                placeholder="Username"
+                                className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                              />
+                            </div>
+                            <span className="text-red-600">{ERRusername}</span>
+                            <div className="md:mb-5 md:pt-0">
+                              <label>Email</label>
+                              <input
+                                name="email"
+                                value={data.email}
+                                onBlur={({ target }) =>
+                                  target.value.length > 3 &&
+                                  !target.value.match(
+                                    /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
+                                  )?.length &&
+                                  setError({
+                                    ...error,
+                                    ERRemail:
+                                      "Email should be entered correctly.",
+                                  })
+                                }
+                                onChange={handleChange("email")}
+                                type="email"
+                                placeholder="Email"
+                                className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                              />
+                            </div>
+                            <span className="text-red-600">{ERRemail}</span>
+
+                            <div className="md:mb-3 md:pt-0">
+                              <label>Password</label>
+                              <input
+                                name="password"
+                                value={data.password || ""}
+                                onBlur={({ target }) =>
+                                  !target.value &&
+                                  setError({
+                                    ...error,
+                                    ERRpassword: "Password should not be empty",
+                                  })
+                                }
+                                onChange={handleChange("password")}
+                                type="password"
+                                placeholder="Password"
+                                className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                              />
+                            </div>
+
+                            <span className="text-red-600">{ERRpassword}</span>
+                            <div className="md:mb-3 md:pt-1">
+                              <label>Store Name</label>
+                              <FormControl
+                                size="small"
+                                fullWidth
+                                className="w-full"
+                                variant="outlined"
+                              >
+                                <TextField
+                                  size="small"
+                                  name="store_id"
+                                  value={
+                                    stores.find(
+                                      (item) =>
+                                        item.title == data.store ||
+                                        item.id == data.store_id
+                                    )?.id || ""
                                   }
-                                  onChange={handleChange("name")}
-                                  type="text"
-                                  placeholder="Name"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
-                                />
-                              </div>
-                              <span className="text-red-600">{ERRname}</span>
-                              <div className="md:mb-3 md:pt-0">
-                                <input
-                                  name="mobile"
-                                  value={data.mobile}
-                                  onBlur={({ target }) =>
-                                    target.value.toString().length !== 10 &&
-                                    setError({
-                                      ...error,
-                                      ERRmobile:
-                                        "Mobile Number should be 10 digits",
-                                    })
-                                  }
-                                  onChange={handleChange("mobile")}
-                                  type="number"
-                                  placeholder="Mobile Number"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
-                                />
-                              </div>
-                              <span className="text-red-600">{ERRmobile}</span>
-                              <div className="md:mb-3 md:pt-0">
-                                <input
-                                  name="username"
-                                  value={data.username}
-                                  onBlur={({ target }) =>
-                                    target.value.length < 3 &&
-                                    setError({
-                                      ...error,
-                                      ERRusername:
-                                        "Username should be more than 3 Characters",
-                                    })
-                                  }
-                                  onChange={handleChange("username")}
-                                  type="text"
-                                  placeholder="Username"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
-                                />
-                              </div>
-                              <span className="text-red-600">
-                                {ERRusername}
-                              </span>
-                              <div className="md:mb-5 md:pt-0">
-                                <input
-                                  name="email"
-                                  value={data.email}
-                                  onBlur={({ target }) =>
-                                    target.value.length < 3 &&
-                                    target.value.includes("@freshchoice.com") &&
-                                    setError({
-                                      ...error,
-                                      ERRemail:
-                                        "Email should be entered correctly.",
-                                    })
-                                  }
-                                  onChange={handleChange("email")}
-                                  type="email"
-                                  placeholder="Email"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
-                                />
-                              </div>
-                              <span className="text-red-600">{ERRemail}</span>
-                              <div className="md:mb-3 md:pt-0">
-                                <input
-                                  name="password"
-                                  value={data.password || ""}
                                   onBlur={({ target }) =>
                                     !target.value &&
                                     setError({
                                       ...error,
-                                      ERRpassword:
-                                        "Password should not be empty",
+                                      ERRstore_id:
+                                        "Store Name should not be empty",
                                     })
                                   }
-                                  onChange={handleChange("password")}
-                                  type="password"
-                                  placeholder="Password"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
-                                />
-                              </div>
-                              <span className="text-red-600">
-                                {ERRpassword}
-                              </span>
-                              <div className="md:mb-3 md:pt-1">
-                                <FormControl
-                                  size="small"
-                                  fullWidth
-                                  className="w-full"
+                                  onChange={handleChange("store_id")}
+                                  id="outlined-basic"
+                                  label="Store"
                                   variant="outlined"
+                                  select
                                 >
-                                  <TextField
-                                    size="small"
-                                    name="store_id"
-                                    value={
-                                      stores.find(
-                                        (item) =>
-                                          item.title == data.store_id ||
-                                          item.id == data.store_id
-                                      )?.id || ""
-                                    }
-                                    onBlur={({ target }) =>
-                                      !target.value &&
-                                      setError({
-                                        ...error,
-                                        ERRstore_id:
-                                          "Store Name should not be empty",
-                                      })
-                                    }
-                                    onChange={handleChange("store_id")}
-                                    id="outlined-basic"
-                                    label="Store"
-                                    variant="outlined"
-                                    select
-                                  >
-                                    {!stores ? (
-                                      <div className="md:flex md:items-center md:justify-center md:h-screen">
-                                        <HashLoader
-                                          color={"FF0000"}
-                                          loading={loading}
-                                          size={150}
-                                        />
-                                      </div>
-                                    ) : (
-                                      stores.map((items, key) => (
-                                        <MenuItem value={items.id} key={key}>
-                                          {items.title}
-                                        </MenuItem>
-                                      ))
-                                    )}
-                                  </TextField>
-                                </FormControl>
-                              </div>
-                              <span className="text-red-600">
-                                {ERRstore_id}
-                              </span>
-                              <div className="md:mb-3 md:pt-0">
-                                <input
-                                  name="other_mobiles"
-                                  value={data.other_mobiles}
-                                  onBlur={({ target }) =>
-                                    target.value != 10 &&
-                                    setError({
-                                      ...error,
-                                      ERRother_mobile:
-                                        "Mobile Number should be 10 digits",
-                                    })
-                                  }
-                                  onChange={handleChange("other_mobiles")}
-                                  type="number"
-                                  placeholder="Other Mobiles"
-                                  className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
-                                />
-                              </div>
+                                  {!stores ? (
+                                    <div className="md:flex md:items-center md:justify-center md:h-screen">
+                                      <HashLoader
+                                        color={"FF0000"}
+                                        loading={loading}
+                                        size={150}
+                                      />
+                                    </div>
+                                  ) : (
+                                    stores.map((items, key) => (
+                                      <MenuItem value={items.id} key={key}>
+                                        {items.title}
+                                      </MenuItem>
+                                    ))
+                                  )}
+                                </TextField>
+                              </FormControl>
                             </div>
-                          </form>
-                          {/*footer*/}
-                          <div className="md:flex md:items-center md:justify-end md:p-6 md:border-t md:border-solid md:border-red-200 md:rounded-b">
-                            <button
-                              className="md:text-red-500 md:background-transparent md:font-bold md:uppercase md:px-6 md:py-2 md:text-sm md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
-                              type="button"
-                              onClick={() => setShowModal(false)}
-                            >
-                              Close
-                            </button>
-                            {!isUpdate ? (
-                              <button
-                                className="md:button md:bg-red-700 disabled:opacity-50 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
-                                type="submit"
-                                onClick={handleSubmit}
-                                disabled={
-                                  ERRemail ||
-                                  ERRstore_id ||
-                                  ERRname ||
-                                  ERRmobile ||
-                                  ERRpassword ||
-                                  ERRusername ||
-                                  ERRother_mobiles
-                                    ? true
-                                    : false
+                            <span className="text-red-600">{ERRstore_id}</span>
+                            <div className="md:mb-3 md:pt-0">
+                              <label>Other Mobile Number</label>
+                              <input
+                                name="other_mobiles"
+                                value={data.other_mobiles}
+                                onBlur={({ target }) =>
+                                  target.value != 10 &&
+                                  setError({
+                                    ...error,
+                                    ERRother_mobile:
+                                      "Mobile Number should be 10 digits",
+                                  })
                                 }
-                              >
-                                Add
-                              </button>
-                            ) : (
-                              <button
-                                className="md:button md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
-                                type="submit"
-                                onClick={updateItem}
-                              >
-                                Update
-                              </button>
-                            )}
+                                onChange={handleChange("other_mobiles")}
+                                type="number"
+                                placeholder="Other Mobiles"
+                                className="md:px-5 md:py-5 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                              />
+                            </div>
                           </div>
+                        </form>
+                        {/*footer*/}
+                        <div className="md:flex md:items-center md:justify-end md:p-6 md:border-t md:border-solid md:border-red-200 md:rounded-b">
+                          <button
+                            className="md:text-red-500 md:background-transparent md:font-bold md:uppercase md:px-6 md:py-2 md:text-sm md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
+                            type="button"
+                            onClick={() => setShowModal(false)}
+                          >
+                            Close
+                          </button>
+                          {!isUpdate ? (
+                            <button
+                              className="md:button md:bg-red-700 disabled:opacity-50 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
+                              type="submit"
+                              onClick={handleSubmit}
+                              disabled={
+                                ERRemail ||
+                                ERRstore_id ||
+                                ERRname ||
+                                ERRmobile ||
+                                ERRpassword ||
+                                ERRusername ||
+                                ERRother_mobiles
+                                  ? true
+                                  : false
+                              }
+                            >
+                              Add
+                            </button>
+                          ) : (
+                            <button
+                              className="md:button md:bg-red-700 disabled:opacity-50 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
+                              type="submit"
+                              onClick={updateItem}
+                              disabled={
+                                ERRemail ||
+                                ERRstore_id ||
+                                ERRname ||
+                                ERRmobile ||
+                                ERRpassword ||
+                                ERRusername ||
+                                ERRother_mobiles
+                                  ? true
+                                  : false
+                              }
+                            >
+                              Update
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className="md:opacity-25 md:fixed md:inset-0 md:z-40 md:bg-black"></div>
-                  </>
-                ) : null}
-              </div>
-              <DeliveryBoyContent
-                getItem={(id) => setItemID(id)}
-                handler={(data) => handleUpdate(data)}
-              />
-            </main>
-          </DashBoardContainer>
-        </div>
-      )}
+                  </div>
+                  <div className="md:opacity-25 md:fixed md:inset-0 md:z-40 md:bg-black"></div>
+                </>
+              ) : null}
+            </div>
+            <DeliveryBoyContent
+              getItem={(id) => setItemID(id)}
+              handler={(data) => handleUpdate(data)}
+              userData={userData}
+              setUserData={setUserData}
+              loading={loading}
+            />
+          </main>
+        </DashBoardContainer>
+      </div>
     </>
   );
 };
-
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
 
 export default DeliveryBoy;

@@ -6,6 +6,7 @@ import deleteCouponsById from "../pages/api/DELETE/DeleteCoupons";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import getAllStores from "../pages/api/GET/GetAllStores";
 import { baseUrl } from "../constants";
+import swal from "sweetalert";
 
 const theme = createMuiTheme({
   palette: {
@@ -28,10 +29,10 @@ const CouponContent = ({ handler, getItem }) => {
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
     const currentCoupon = userData.find(
-      (item) => item.id === tableMeta.rowData[6]
+      (item) => item.id === tableMeta.rowData[tableMeta.rowData.length - 1]
     );
     handler(currentCoupon);
-    getItem(tableMeta.rowData[6]);
+    getItem(tableMeta.rowData[tableMeta.rowData.length - 1]);
   };
 
   const options = {
@@ -48,13 +49,31 @@ const CouponContent = ({ handler, getItem }) => {
         return deleteCouponsById(
           `${baseUrl}/coupon/${currentItem[currentItem.length - 1]}`
         )
-          .then(() => true)
+          .then(() =>
+            swal({
+              title: "Deleted Successfully",
+              button: "OK",
+              icon: "success",
+              timer: 2000,
+            })
+          )
           .catch((err) => false);
       });
     },
   };
 
   const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
     "Store Name",
     "Coupon Code",
     "Deduction Price",
@@ -103,6 +122,7 @@ const CouponContent = ({ handler, getItem }) => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setStores(data);
         }
       } else {
@@ -145,6 +165,7 @@ const CouponContent = ({ handler, getItem }) => {
                   </div>
                 ) : (
                   userData.map((items) => [
+                    "",
                     stores.find((store) => store.id === items.store_id)
                       ?.title || "",
                     items.code,

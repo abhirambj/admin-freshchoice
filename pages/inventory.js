@@ -87,29 +87,33 @@ const Inventory = () => {
     getAllStores();
   }, []);
 
-  useEffect(() => {
+  const getAllStoresItems = async () => {
     let { user } = getToken();
     let { access_token } = JSON.parse(user);
-    setLoading(true);
-    const getAllStoresItems = async () => {
-      console.log(typeof selectStore == "number", 157);
-      !isNaN(selectStore) &&
-        fetch(baseUrl + "/item/store/" + selectStore, {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
+    console.log(typeof selectStore == "number", 157);
+    !isNaN(selectStore) &&
+      fetch(baseUrl + "/item/store/" + selectStore, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+        .then((res) => {
+          setLoading(false);
+          return res.json();
         })
-          .then((res) => {
-            setLoading(false);
-            return res.json();
-          })
-          .then((data) => {
-            setStoreItems(data);
-            // getFirstStore();
-          })
+        .then((data) => {
+          data.reverse();
+          setStoreItems(data);
+          // getFirstStore();
+        })
 
-          .catch((err) => console.info(err, selectStore));
-    };
+        .catch((err) => {
+          setStoreItems([]);
+          setLoading(false);
+        });
+  };
+  useEffect(() => {
+    setLoading(true);
     getAllStoresItems();
   }, [selectStore]);
 
@@ -152,7 +156,7 @@ const Inventory = () => {
           setApiError(data.detail[0].msg);
         } else {
           swal({
-            title: "Item Added Successfully!!",
+            title: "Item Updated Successfully!!",
             confirmButtonText: "OK",
             animation: true,
             icon: "success",
@@ -161,7 +165,7 @@ const Inventory = () => {
           setLoading(false);
           setShowModal(false);
           setSelectStore(store_id);
-          window.location.reload();
+          getAllStoresItems();
         }
       } else {
         setApiError("We are experiencing some problems, please try again");
@@ -182,7 +186,12 @@ const Inventory = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${access_token}`,
       },
-      body: JSON.stringify({ item_id, offer_price }),
+      body: JSON.stringify({
+        item_id,
+        offer_price,
+        quantity: parseInt(quantity),
+        store_id,
+      }),
     }).then((data) => {
       if (data) {
         if (data.error || data.detail) {
@@ -198,8 +207,8 @@ const Inventory = () => {
             timer: 2000,
           });
           setLoading(false);
-          window.location.reload();
           setShowModal(false);
+          getAllStoresItems();
         }
       } else {
         setApiError("We are experiencing some problems, please try again");
@@ -320,9 +329,10 @@ const Inventory = () => {
                               <span className="text-red-600">
                                 {ERRstore_id}
                               </span>
-                              <div className="flex flex-row items-center">
+                              <div className="flex flex-row justify-between items-center">
                                 <div className="flex flex-col mr-2">
                                   <div className="md:mb-3 md:pt-0">
+                                    <label>Item / Product ID</label>
                                     <input
                                       name="item_id"
                                       value={item_id}
@@ -341,8 +351,9 @@ const Inventory = () => {
                                     />
                                   </div>
                                 </div>
-                                <div className="flex flex-col flex-1">
+                                <div className="flex flex-col">
                                   <div className="md:mb-3 md:pt-0">
+                                    <label>Quantity</label>
                                     <input
                                       name="quantity"
                                       value={data.quantity}
@@ -366,6 +377,7 @@ const Inventory = () => {
                               <span className="text-red-600">{ERRitem_id}</span>
                               <div className="flex flex-col flex-1">
                                 <div className="md:mb-3 md:pt-0">
+                                  <label>Offer Price</label>
                                   <input
                                     name="offer_price"
                                     value={data.offer_price}
@@ -441,11 +453,5 @@ const Inventory = () => {
     </>
   );
 };
-
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
 
 export default Inventory;

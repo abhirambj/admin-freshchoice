@@ -6,6 +6,8 @@ import deleteItemsById from "../pages/api/DELETE/DeleteItems";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { baseUrl } from "../constants";
 import Image from "next/image";
+import { FormControl, TextField, MenuItem } from "@material-ui/core";
+import updateItems from "../pages/api/PATCH/updateItems";
 
 const theme = createMuiTheme({
   palette: {
@@ -25,18 +27,29 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
 
   const initUpdate = (tableMeta) => {
     console.info(tableMeta);
-    handler(items.find((el) => el.id == tableMeta.rowData[0]));
+    handler(items.find((el) => el.id == tableMeta.rowData[0].props.id));
     getItem(tableMeta.rowData[0]);
   };
+  useEffect(() => setUserData(items), [items]);
 
   const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
     "ID",
     "Image",
     "Name",
     "Category",
     "Description",
     "Quantity",
-    // "Price",
     "Offer Price",
     "Available",
     {
@@ -69,6 +82,38 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
       },
     },
   ];
+
+  const updateStatus = (id, value) => {
+    const tempData = [...userData];
+    const currentData = tempData.find((item) => item.id === id);
+    currentData.available = value;
+    tempData.splice(tempData.indexOf(currentData), 1, currentData);
+    setUserData(tempData);
+    const formData = new FormData();
+    formData.set("available", value);
+    updateItems(formData, baseUrl + "/item/" + id).then((data) => {
+      if (data) {
+        if (data.error || data.detail) {
+          console.log("Error", data.err);
+          setLoading(false);
+          setApiError(data.error || data.detail);
+        } else {
+          swal({
+            title: "Item Updated Successfully!!",
+            confirmButtonText: "OK",
+            animation: true,
+            icon: "success",
+            timer: 2000,
+          });
+          setLoading(false);
+        }
+      } else {
+        setApiError("We are experiencing some problems, please try again");
+        console.log("No DATA");
+        setLoading(false);
+      }
+    });
+  };
 
   const options = {
     filterType: "checkbox",
@@ -105,11 +150,14 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  items?.map((item) => [
-                    item.id,
+                  userData?.map((item) => [
+                    <span id={item.id} key={item.id}>
+                      item.id
+                    </span>,
+                    <span key={item.id}>{item.id}</span>,
                     <td
                       key={item.id}
-                      className="px-6 py-4 whitespace-nowrap text-center"
+                      className="px-6 block mx-auto py-4 whitespace-nowrap text-center"
                     >
                       <Image
                         width="100"
@@ -118,6 +166,7 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
                           `${baseUrl}${src}?width=${width}`
                         }
                         src={item.image}
+                        alt=""
                       />
                     </td>,
                     item.name,
@@ -126,9 +175,32 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
                     item.quantity,
                     // item.price,
                     item.offer_price,
-                    item.available ? "Yes" : "No",
-                    item.displayAtHomepage ? "Yes" : "No",
-                    item.displayAtOfferpage ? "Yes" : "No",
+
+                    <FormControl
+                      size="small"
+                      fullWidth
+                      key={item.id}
+                      className="w-full"
+                      variant="outlined"
+                    >
+                      <TextField
+                        size="small"
+                        id="outlined-basic"
+                        label="Options"
+                        variant="outlined"
+                        select
+                        value={
+                          userData.find((data) => data.id === item.id)
+                            ?.available
+                        }
+                        onChange={(ev) =>
+                          updateStatus(item.id, ev.target.value)
+                        }
+                      >
+                        <MenuItem value={true}>Yes</MenuItem>
+                        <MenuItem value={false}>No</MenuItem>
+                      </TextField>
+                    </FormControl>,
                   ])
                 )
               }

@@ -40,7 +40,22 @@ const FeedbackContent = () => {
     },
   };
 
-  const columns = ["Customer Name", "Item Name", "Review"];
+  const columns = [
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          let rowIndex = Number(tableMeta.rowIndex) + 1;
+          return <span>{rowIndex}</span>;
+        },
+      },
+    },
+    "Customer Name",
+    "Item Name",
+    "Review",
+  ];
 
   useEffect(() => {
     setLoading(true);

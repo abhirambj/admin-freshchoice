@@ -21,7 +21,24 @@ const options = {
   rowsPerPageOptions: [10, 25, 50, 100],
 };
 
-const columns = ["ID", "Name", "Email", "Mobile Number", "Address"];
+const columns = [
+  {
+    name: "Sl No.",
+    label: "Sl. No",
+    options: {
+      filter: false,
+      customBodyRender: (value, tableMeta, update) => {
+        let rowIndex = Number(tableMeta.rowIndex) + 1;
+        return <span>{rowIndex}</span>;
+      },
+    },
+  },
+  // "ID",
+  "Name",
+  "Email",
+  "Mobile Number",
+  "Address",
+];
 
 const UsersContent = () => {
   const [userData, setUserData] = useState([]);
@@ -38,6 +55,7 @@ const UsersContent = () => {
         } else {
           console.log("Success", data);
           setUserData(data);
+          data.reverse();
           setLoading(false);
         }
       } else {
@@ -65,7 +83,8 @@ const UsersContent = () => {
                   </div>
                 ) : (
                   userData.map((items) => [
-                    items.id,
+                    "",
+                    // items.id,
                     items.full_name,
                     items.email,
                     items.mobile,

@@ -118,6 +118,7 @@ function Categories() {
         item !== "success" &&
         formdata.set(item, data[item])
     );
+    console.log(itemID);
     updateCategory(formdata, baseUrl + "/category/" + itemID).then((data) => {
       if (data) {
         if (data.error || data.detail) {
@@ -191,6 +192,7 @@ function Categories() {
                           <form>
                             <div className="md:relative md:p-5 md:pt-0 md:flex-auto">
                               <div className="md:mb-5 md:pt-0">
+                                <label>Name</label>
                                 <input
                                   name="name"
                                   type="text"
@@ -210,6 +212,7 @@ function Categories() {
                               </div>
                               <span className="text-red-600">{ERRname}</span>
                               <div className="md:mb-5 md:pt-0">
+                                <label>Description</label>
                                 <input
                                   name="description"
                                   type="text"
@@ -231,6 +234,7 @@ function Categories() {
                                 {ERRdescription}
                               </span>
                               <div className="md:mb-5 md:pt-0">
+                                <label>Image</label>
                                 <input
                                   name="image"
                                   type="file"
@@ -299,11 +303,5 @@ function Categories() {
     </>
   );
 }
-
-export const getServerSideProps = requiresAuthentication((ctx) => {
-  return {
-    props: {},
-  };
-});
 
 export default Categories;
