@@ -123,42 +123,36 @@ const DeliveryAreaContent = ({ handler, getItem, data, loadData }) => {
 
   return (
     <>
-      {!userData ? (
-        <div className="flex items-center justify-center h-screen">
+      <div>
+        <Modal open={loading} className=" flex justify-center items-center">
           <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
-        <div>
-          <Modal open={loading} className=" flex justify-center items-center">
-            <HashLoader color={"FF0000"} loading={loading} size={150} />
-          </Modal>
-          <MuiThemeProvider theme={theme}>
-            <MUIDataTable
-              title={""}
-              data={
-                !userData ? (
-                  <div className="flex items-center justify-center h-screen">
-                    <HashLoader color={"FF0000"} loading={loading} size={150} />
-                  </div>
-                ) : (
-                  userData.map((items) => [
-                    "",
-                    items.id,
-                    items.title,
-                    `${items.address.locality || items.address.city},${
-                      items.address.apartment_road_area ||
-                      (items.address.locality ? items.address.city : "")
-                    }`,
-                    items.description,
-                  ])
-                )
-              }
-              columns={columns}
-              options={options}
-            />
-          </MuiThemeProvider>
-        </div>
-      )}
+        </Modal>
+        <MuiThemeProvider theme={theme}>
+          <MUIDataTable
+            title={""}
+            data={
+              !userData ? (
+                <div className="flex items-center justify-center h-screen">
+                  <HashLoader color={"FF0000"} loading={loading} size={150} />
+                </div>
+              ) : (
+                userData.map((items, index) => [
+                  index,
+                  items.id,
+                  items.title,
+                  `${items.address.locality || items.address.city},${
+                    items.address.apartment_road_area ||
+                    (items.address.locality ? items.address.city : "")
+                  }`,
+                  items.description,
+                ])
+              )
+            }
+            columns={columns}
+            options={options}
+          />
+        </MuiThemeProvider>
+      </div>
     </>
   );
 };

@@ -57,9 +57,9 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
     "Mobile Number",
     "Chosen Delivery Time",
     "Store Name",
-    "Razorpay ID",
-    "Rating",
-    "Delivered Time",
+    "Payment Mode",
+    "Ratings",
+    // "Delivered Time",
     "Items",
     "Total",
     // {
@@ -140,7 +140,6 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
   useEffect(() => {
     setLoading(true);
     getAllStores(baseUrl + "/stores/").then((data) => {
-      data.reverse();
       setStores(data);
     });
   }, []);
@@ -163,20 +162,33 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
                   <HashLoader color={"FF0000"} loading={loading} size={150} />
                 </div>
               ) : (
-                userData.map((item) => [
-                  "",
-                  item.id,
-                  new Date(item.time).toLocaleString(),
-                  item.name,
-                  item.mobile_number,
-                  item["Chosen Delivery Time"] || "",
-                  stores.find((items) => items.id === item.store_id)?.title,
-                  item.rzpy_order_id,
-                  item.rating,
-                  item.delivered_time,
-                  processItems(item.items || []),
-                  item.total,
-                ])
+                userData
+                  .sort((item1, item2) => item2.id - item1.id)
+                  .map((item, index) => [
+                    index,
+                    item.id,
+                    new Date(
+                      new Date(item.time).getTime() -
+                        new Date(item.time).getTimezoneOffset() * 60000
+                    ).toLocaleString("en-US", {
+                      hour12: true,
+                    }),
+                    item.name,
+                    item.mobile_number,
+                    item["Chosen Delivery Time"] || "",
+                    stores.find((items) => items.id === item.store_id)?.title,
+                    item.paytype
+                      ? item.paytype === "RAZORPAY"
+                        ? "ONLINE"
+                        : "Cash on Delivery"
+                      : item.rzpy_order_id
+                      ? "ONLINE"
+                      : "Cash on Delivery",
+                    item.rating,
+                    // item.delivered_time,
+                    processItems(item.items || []),
+                    item.total,
+                  ])
               )
             }
             columns={columns}

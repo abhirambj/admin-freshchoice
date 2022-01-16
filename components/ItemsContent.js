@@ -6,6 +6,7 @@ import deleteItemsById from "../pages/api/DELETE/DeleteItems";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Image from "next/image";
 import { baseUrl } from "../constants";
+import { Modal } from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
@@ -107,58 +108,55 @@ const ItemsContent = ({ handler, getItem, items }) => {
 
   return (
     <>
-      {loading ? (
-        <div className="flex items-center justify-center h-screen">
-          <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
-        <div>
-          <MuiThemeProvider theme={theme}>
-            <MUIDataTable
-              title={""}
-              data={
-                !userData ? (
-                  <div className="flex items-center justify-center h-screen">
-                    <HashLoader color={"FF0000"} loading={loading} size={150} />
-                  </div>
-                ) : (
-                  userData?.map((item) => [
-                    "",
-                    item.id,
-                    <td
-                      key={item.id}
-                      id={item.id}
-                      className="px-6 py-4 whitespace-nowrap block mx-auto text-center"
-                    >
-                      <Image
-                        loader={({ src, width }) =>
-                          `${baseUrl}${src}?width=${width}`
-                        }
-                        width="100"
-                        height="100"
-                        src={item.image}
-                        alt=""
-                      />
-                    </td>,
-                    item.name,
-                    item.categoryId || 0,
-                    item.description,
-                    item.quantity,
-                    item.weight,
-                    item.price,
-                    // item.offer_price,
-                    item.available ? "Yes" : "No",
-                    item.displayAtHomepage ? "Yes" : "No",
-                    item.displayAtOfferpage ? "Yes" : "No",
-                  ])
-                )
-              }
-              columns={columns}
-              options={options}
-            />
-          </MuiThemeProvider>
-        </div>
-      )}
+      <div>
+        <MuiThemeProvider theme={theme}>
+          <Modal open={loading} className=" flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
+          <MUIDataTable
+            title={""}
+            data={
+              !userData ? (
+                <div className="flex items-center justify-center h-screen">
+                  <HashLoader color={"FF0000"} loading={loading} size={150} />
+                </div>
+              ) : (
+                userData?.map((item, index) => [
+                  index,
+                  item.id,
+                  <td
+                    key={item.id}
+                    id={item.id}
+                    className="px-6 py-4 whitespace-nowrap block mx-auto text-center"
+                  >
+                    <Image
+                      loader={({ src, width }) =>
+                        `${baseUrl}${src}?width=${width}`
+                      }
+                      width="100"
+                      height="100"
+                      src={item.image}
+                      alt=""
+                    />
+                  </td>,
+                  item.name,
+                  item.categoryId || 0,
+                  item.description,
+                  item.quantity,
+                  item.weight,
+                  item.price,
+                  // item.offer_price,
+                  item.available ? "Yes" : "No",
+                  item.displayAtHomepage ? "Yes" : "No",
+                  item.displayAtOfferpage ? "Yes" : "No",
+                ])
+              )
+            }
+            columns={columns}
+            options={options}
+          />
+        </MuiThemeProvider>
+      </div>
     </>
   );
 };

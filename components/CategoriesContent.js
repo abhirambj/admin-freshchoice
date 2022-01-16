@@ -7,6 +7,7 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Image from "next/image";
 import { baseUrl } from "../constants";
 import swal from "sweetalert";
+import { Modal } from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
@@ -115,49 +116,46 @@ const CategoriesContent = ({ handler, getItem }) => {
 
   return (
     <>
-      {loading ? (
-        <div className="flex items-center justify-center h-screen">
-          <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
-        <div>
-          <MuiThemeProvider theme={theme}>
-            <MUIDataTable
-              title={""}
-              data={
-                !userData ? (
-                  <div className="flex items-center justify-center h-screen">
-                    <HashLoader color={"FF0000"} loading={loading} size={150} />
-                  </div>
-                ) : (
-                  userData.map((items, index) => [
-                    "",
-                    items.id,
-                    <td
-                      key={index}
-                      className="px-6 block mx-auto py-4 whitespace-nowrap text-center"
-                    >
-                      <Image
-                        width="100"
-                        height="100"
-                        loader={({ src, width }) =>
-                          `${baseUrl}${src}?width=${width}`
-                        }
-                        src={items.image}
-                        alt=""
-                      />
-                    </td>,
-                    items.name,
-                    items.description,
-                  ])
-                )
-              }
-              columns={columns}
-              options={options}
-            />
-          </MuiThemeProvider>
-        </div>
-      )}
+      <div>
+        <MuiThemeProvider theme={theme}>
+          <Modal open={loading} className=" flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
+          <MUIDataTable
+            title={""}
+            data={
+              !userData ? (
+                <div className="flex items-center justify-center h-screen">
+                  <HashLoader color={"FF0000"} loading={loading} size={150} />
+                </div>
+              ) : (
+                userData.map((items, index) => [
+                  index,
+                  items.id,
+                  <td
+                    key={index}
+                    className="px-6 block mx-auto py-4 whitespace-nowrap text-center"
+                  >
+                    <Image
+                      width="100"
+                      height="100"
+                      loader={({ src, width }) =>
+                        `${baseUrl}${src}?width=${width}`
+                      }
+                      src={items.image}
+                      alt=""
+                    />
+                  </td>,
+                  items.name,
+                  items.description,
+                ])
+              )
+            }
+            columns={columns}
+            options={options}
+          />
+        </MuiThemeProvider>
+      </div>
     </>
   );
 };

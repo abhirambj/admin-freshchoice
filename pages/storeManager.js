@@ -127,6 +127,7 @@ const StoreManager = () => {
           });
           setLoading(false);
           setShowModal(false);
+          getAllStoreManagers();
         }
       } else {
         setApiError("We are experiencing some problems, please try again");
@@ -185,6 +186,7 @@ const StoreManager = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.reverse();
           setUserData(data);
           setLoading(false);
         }

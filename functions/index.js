@@ -34,7 +34,10 @@ export const processItems = (items) => {
   items.map(
     (item, index) =>
       (str =
-        str + `${item.name} - ${item.quantity} ${index < n - 1 ? `, ` : ""}`)
+        str +
+        `${item.name} - ${item.quantity} -- ${item.weight || "0 Kgs"} ${
+          index < n - 1 ? `, ` : ""
+        }`)
   );
   return str;
 };

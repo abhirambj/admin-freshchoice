@@ -11,6 +11,7 @@ import getAllStores from "./api/GET/GetAllStores";
 import { FormControl, MenuItem, TextField } from "@material-ui/core";
 import { baseUrl } from "../constants";
 import getDeliveryBoys from "./api/GET/GetDeliveryBoy";
+import { Modal } from "@material-ui/core";
 
 const DeliveryBoy = () => {
   const [showModal, setShowModal] = useState(false);
@@ -256,6 +257,9 @@ const DeliveryBoy = () => {
           />
         </Head>
         <DashBoardContainer>
+          <Modal open={loading} className=" flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
           <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
             <div className="md:flex md:flex-col md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4 md:space-y-0 md:m-5">
               <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap">

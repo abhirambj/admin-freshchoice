@@ -12,6 +12,8 @@ import swal from "sweetalert";
 import { Select } from "@material-ui/core";
 import { getToken } from "../pages/api/apiRequests";
 import { baseUrl } from "../constants";
+import { Modal } from "@material-ui/core";
+import { InputLabel } from "@material-ui/core";
 
 const Inventory = () => {
   const [showModal, setShowModal] = useState(false);
@@ -116,6 +118,7 @@ const Inventory = () => {
     setLoading(true);
     getAllStoresItems();
   }, [selectStore]);
+  console.log(selectStore);
 
   useEffect(() => {
     getAllCategories(baseUrl + "/category/").then((data) => {
@@ -177,6 +180,7 @@ const Inventory = () => {
 
   const updateItem = (ev) => {
     ev.preventDefault();
+    setShowModal(false);
     let { user } = getToken();
     let { access_token } = JSON.parse(user);
     setLoading(true);
@@ -219,138 +223,144 @@ const Inventory = () => {
   };
   return (
     <>
-      {loading ? (
-        <div className="md:flex md:items-center md:justify-center md:h-screen">
-          <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
-        <div>
-          <Head>
-            <title>Inventory</title>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
-          </Head>
-          <DashBoardContainer>
-            <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
-              <div className="md:flex md:flex-row md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4 md:space-y-0  md:m-5">
-                <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap md:text-black">
-                  Inventory
-                </h1>
-                <div className="md:flex md:justify-end pb-2">
-                  <FormControl className="w-72" variant="outlined">
-                    <Select
-                      value={selectStore}
-                      onChange={({ target }) => setSelectStore(target.value)}
-                    >
-                      {allStores.map((store, key) => (
-                        <MenuItem key={key} value={store.id}>
-                          {store.title}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-                <button
-                  className="md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
-                  type="button"
-                  onClick={InitAddItem}
+      <div>
+        <Head>
+          <title>Inventory</title>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+        </Head>
+        <DashBoardContainer>
+          <Modal open={loading} className=" flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
+          <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
+            <div className="md:flex md:flex-row md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4 md:space-y-0  md:m-5">
+              <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap md:text-black">
+                Inventory
+              </h1>
+              <div className="md:flex md:justify-end pb-2">
+                <FormControl
+                  className="store"
+                  hiddenLabel
+                  sx={{ m: 1, minWidth: 120, p: 0 }}
+                  variant="outlined"
                 >
-                  Add
-                </button>
-                {showModal ? (
-                  <>
-                    <div className="md:justify-center md:items-center md:flex md:overflow-x-hidden md:overflow-y-auto md:fixed md:inset-0 md:z-50 md:outline-none focus:outline-none">
-                      <div className="md:relative md:w-auto md:my-6 md:mx-auto md:max-w-sm">
-                        {/*content*/}
-                        <div
-                          className={`md:border-0 md:rounded-lg md:shadow-lg md:relative md:flex md:flex-col md:w-full md:bg-white md:outline-none focus:outline-none ${
-                            apiError && "border-2 border-red-600"
-                          }`}
-                        >
-                          {/*header*/}
-                          <div className="md:flex md:items-start md:justify-between md:px-5 md:py-2  md:border-solid md:border-red-200 md:rounded-t">
-                            <h3 className="md:text-2xl md:text-black md:font-semibold">
-                              {isUpdate ? "Update Item" : "Add Item"}
-                            </h3>
-                          </div>
-                          {/*body*/}
-                          <p className="text-center text-red-600">{apiError}</p>
-                          <form>
-                            <div className="md:relative md:p-6 md:flex-auto">
-                              <div className="md:mb-3 md:pt-1">
-                                <FormControl
+                  <InputLabel id="store">Store</InputLabel>
+                  <Select
+                    variant="outlined"
+                    labelWidth={0}
+                    id="store"
+                    value={selectStore || 1}
+                    onChange={({ target }) => setSelectStore(target.value)}
+                  >
+                    {allStores.map((store, key) => (
+                      <MenuItem key={key} value={store.id}>
+                        {store.title}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+              <button
+                className="md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
+                type="button"
+                onClick={InitAddItem}
+              >
+                Add
+              </button>
+              {showModal ? (
+                <>
+                  <div className="md:justify-center md:items-center md:flex md:overflow-x-hidden md:overflow-y-auto md:fixed md:inset-0 md:z-50 md:outline-none focus:outline-none">
+                    <div className="md:relative md:w-auto md:my-6 md:mx-auto md:max-w-sm">
+                      {/*content*/}
+                      <div
+                        className={`md:border-0 md:rounded-lg md:shadow-lg md:relative md:flex md:flex-col md:w-full md:bg-white md:outline-none focus:outline-none ${
+                          apiError && "border-2 border-red-600"
+                        }`}
+                      >
+                        {/*header*/}
+                        <div className="md:flex md:items-start md:justify-between md:px-5 md:py-2  md:border-solid md:border-red-200 md:rounded-t">
+                          <h3 className="md:text-2xl md:text-black md:font-semibold">
+                            {isUpdate ? "Update Item" : "Add Item"}
+                          </h3>
+                        </div>
+                        {/*body*/}
+                        <p className="text-center text-red-600">{apiError}</p>
+                        <form>
+                          <div className="md:relative md:p-6 md:flex-auto">
+                            <div className="md:mb-3 md:pt-1">
+                              <FormControl
+                                size="small"
+                                fullWidth
+                                className="w-full"
+                                variant="outlined"
+                              >
+                                <TextField
                                   size="small"
-                                  fullWidth
-                                  className="w-full"
+                                  name="store_id"
+                                  value={
+                                    allStores.find(
+                                      (item) => item.id == data.store_id
+                                    )?.id || ""
+                                  }
+                                  onBlur={({ target }) =>
+                                    !target.value &&
+                                    setError({
+                                      ...error,
+                                      ERRstore_id:
+                                        "Store Name should not be empty",
+                                    })
+                                  }
+                                  onChange={handleChange("store_id")}
+                                  id="outlined-basic"
+                                  label="Store Name"
                                   variant="outlined"
+                                  select
                                 >
-                                  <TextField
-                                    size="small"
-                                    name="store_id"
-                                    value={
-                                      allStores.find(
-                                        (item) => item.id == data.store_id
-                                      )?.id || ""
-                                    }
+                                  {!allStores ? (
+                                    <div className="md:flex md:items-center md:justify-center md:h-screen">
+                                      <HashLoader
+                                        color={"FF0000"}
+                                        loading={loading}
+                                        size={150}
+                                      />
+                                    </div>
+                                  ) : (
+                                    allStores.map((items, key) => (
+                                      <MenuItem key={key} value={items.id}>
+                                        {items.title}
+                                      </MenuItem>
+                                    ))
+                                  )}
+                                </TextField>
+                              </FormControl>
+                            </div>
+                            <span className="text-red-600">{ERRstore_id}</span>
+                            <div className="flex flex-row justify-between items-center">
+                              <div className="flex flex-col mr-2">
+                                <div className="md:mb-3 md:pt-0">
+                                  <label>Item / Product ID</label>
+                                  <input
+                                    name="item_id"
+                                    value={item_id}
                                     onBlur={({ target }) =>
                                       !target.value &&
                                       setError({
                                         ...error,
-                                        ERRstore_id:
-                                          "Store Name should not be empty",
+                                        ERRitem_id:
+                                          "ItemID should not be empty",
                                       })
                                     }
-                                    onChange={handleChange("store_id")}
-                                    id="outlined-basic"
-                                    label="Store Name"
-                                    variant="outlined"
-                                    select
-                                  >
-                                    {!allStores ? (
-                                      <div className="md:flex md:items-center md:justify-center md:h-screen">
-                                        <HashLoader
-                                          color={"FF0000"}
-                                          loading={loading}
-                                          size={150}
-                                        />
-                                      </div>
-                                    ) : (
-                                      allStores.map((items, key) => (
-                                        <MenuItem key={key} value={items.id}>
-                                          {items.title}
-                                        </MenuItem>
-                                      ))
-                                    )}
-                                  </TextField>
-                                </FormControl>
-                              </div>
-                              <span className="text-red-600">
-                                {ERRstore_id}
-                              </span>
-                              <div className="flex flex-row justify-between items-center">
-                                <div className="flex flex-col mr-2">
-                                  <div className="md:mb-3 md:pt-0">
-                                    <label>Item / Product ID</label>
-                                    <input
-                                      name="item_id"
-                                      value={item_id}
-                                      onBlur={({ target }) =>
-                                        !target.value &&
-                                        setError({
-                                          ...error,
-                                          ERRitem_id:
-                                            "ItemID should not be empty",
-                                        })
-                                      }
-                                      onChange={handleChange("item_id")}
-                                      type="text"
-                                      placeholder="Item ID"
-                                      className="md:px-3 md:py-3 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
-                                    />
-                                  </div>
+                                    onChange={handleChange("item_id")}
+                                    type="text"
+                                    placeholder="Item ID"
+                                    className="md:px-3 md:py-3 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                  />
                                 </div>
+                              </div>
+                              {!isUpdate && (
                                 <div className="flex flex-col">
                                   <div className="md:mb-3 md:pt-0">
                                     <label>Quantity</label>
@@ -372,84 +382,84 @@ const Inventory = () => {
                                     />
                                   </div>
                                 </div>
-                              </div>
+                              )}
+                            </div>
 
-                              <span className="text-red-600">{ERRitem_id}</span>
-                              <div className="flex flex-col flex-1">
-                                <div className="md:mb-3 md:pt-0">
-                                  <label>Offer Price</label>
-                                  <input
-                                    name="offer_price"
-                                    value={data.offer_price}
-                                    onBlur={({ target }) =>
-                                      (target.value <= 0 || !target.value) &&
-                                      setError({
-                                        ...error,
-                                        ERRoffer_price:
-                                          "Price should be greater than 0",
-                                      })
-                                    }
-                                    onChange={handleChange("offer_price")}
-                                    type="number"
-                                    placeholder="Offer Price"
-                                    className="md:px-3 md:py-3 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
-                                  />
-                                </div>
+                            <span className="text-red-600">{ERRitem_id}</span>
+                            <div className="flex flex-col flex-1">
+                              <div className="md:mb-3 md:pt-0">
+                                <label>Offer Price</label>
+                                <input
+                                  name="offer_price"
+                                  value={data.offer_price}
+                                  onBlur={({ target }) =>
+                                    (target.value <= 0 || !target.value) &&
+                                    setError({
+                                      ...error,
+                                      ERRoffer_price:
+                                        "Price should be greater than 0",
+                                    })
+                                  }
+                                  onChange={handleChange("offer_price")}
+                                  type="number"
+                                  placeholder="Offer Price"
+                                  className="md:px-3 md:py-3 md:placeholder-black md:text-black md:relative md:bg-white md:rounded md:text-sm md:shadow md:outline-none focus:outline-none focus:shadow-outline md:w-full"
+                                />
                               </div>
                             </div>
-                          </form>
-                          {/*footer*/}
-                          <div className="md:flex md:items-center md:justify-end md:px-6 md:py-2 md:border-t md:border-solid md:border-red-200 md:rounded-b">
-                            <button
-                              className="md:text-red-500 md:background-transparent md:font-bold md:uppercase md:px-6 md:py-2 md:text-sm md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
-                              type="button"
-                              onClick={() => setShowModal(false)}
-                            >
-                              Close
-                            </button>
-                            {!isUpdate ? (
-                              <button
-                                className="md:button disabled:opacity-50 md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
-                                type="submit"
-                                onClick={handleSubmit}
-                                disabled={
-                                  !(
-                                    !ERRitem_id &&
-                                    !ERRquantity &&
-                                    !ERRoffer_price &&
-                                    !ERRstore_id
-                                  )
-                                }
-                              >
-                                Add
-                              </button>
-                            ) : (
-                              <button
-                                className="md:button md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
-                                type="submit"
-                                onClick={updateItem}
-                              >
-                                Update
-                              </button>
-                            )}
                           </div>
+                        </form>
+                        {/*footer*/}
+                        <div className="md:flex md:items-center md:justify-end md:px-6 md:py-2 md:border-t md:border-solid md:border-red-200 md:rounded-b">
+                          <button
+                            className="md:text-red-500 md:background-transparent md:font-bold md:uppercase md:px-6 md:py-2 md:text-sm md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
+                            type="button"
+                            onClick={() => setShowModal(false)}
+                          >
+                            Close
+                          </button>
+                          {!isUpdate ? (
+                            <button
+                              className="md:button disabled:opacity-50 md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
+                              type="submit"
+                              onClick={handleSubmit}
+                              disabled={
+                                !(
+                                  !ERRitem_id &&
+                                  !ERRquantity &&
+                                  !ERRoffer_price &&
+                                  !ERRstore_id
+                                )
+                              }
+                            >
+                              Add
+                            </button>
+                          ) : (
+                            <button
+                              className="md:button md:bg-red-700 md:text-white active:bg-red-600 md:font-bold md:uppercase md:text-sm md:px-6 md:py-3 md:rounded md:shadow hover:shadow-lg md:outline-none focus:outline-none md:mr-1 md:mb-1 md:ease-linear md:transition-all md:duration-150"
+                              type="submit"
+                              onClick={updateItem}
+                            >
+                              Update
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className="md:opacity-25 md:fixed md:inset-0 md:z-40 md:bg-black"></div>
-                  </>
-                ) : null}
-              </div>
-              <InventoryContent
-                items={storeItems}
-                getItem={(id) => setItemID(id)}
-                handler={(item) => handleUpdate(item)}
-                selectedStore={selectStore}
-              />
-            </main>
-          </DashBoardContainer>
-        </div>
-      )}
+                  </div>
+                  <div className="md:opacity-25 md:fixed md:inset-0 md:z-40 md:bg-black"></div>
+                </>
+              ) : null}
+            </div>
+            <InventoryContent
+              items={storeItems}
+              getItem={(id) => setItemID(id)}
+              handler={(item) => handleUpdate(item)}
+              selectedStore={selectStore}
+            />
+          </main>
+        </DashBoardContainer>
+      </div>
     </>
   );
 };

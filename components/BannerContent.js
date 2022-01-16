@@ -6,6 +6,7 @@ import HashLoader from "react-spinners/HashLoader";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Image from "next/image";
 import { baseUrl } from "../constants";
+import swal from "sweetalert";
 
 const theme = createMuiTheme({
   palette: {
@@ -50,9 +51,21 @@ const BannerContent = () => {
           (row) => row.index == data.dataIndex
         ).data;
         console.info(currentItem);
-        deleteBannerById(`${baseUrl}/banner/${currentItem[0]}`)
-          .then(() => console.info("success"))
-          .catch((err) => console.info(err));
+        deleteBannerById(`${baseUrl}/banner/${currentItem[1]}`)
+          .then(() => {
+            swal({
+              title: "Banner Image Deleted Successfully!!",
+              timer: 3000,
+              icon: "success",
+            });
+          })
+          .catch((err) => {
+            swal({
+              title: "Banner Image not deleted",
+              timer: 3000,
+              icon: "error",
+            });
+          });
       });
     },
   };
@@ -94,8 +107,8 @@ const BannerContent = () => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [
-                    "",
+                  userData.map((items, index) => [
+                    index,
                     items.id,
                     <td
                       key={items.id}

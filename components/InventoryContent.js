@@ -8,6 +8,7 @@ import { baseUrl } from "../constants";
 import Image from "next/image";
 import { FormControl, TextField, MenuItem } from "@material-ui/core";
 import updateItems from "../pages/api/PATCH/updateItems";
+import { Modal } from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
@@ -50,6 +51,7 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
     "Category",
     "Description",
     "Quantity",
+    "Weight",
     "Offer Price",
     "Available",
     {
@@ -135,81 +137,75 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
 
   return (
     <>
-      {loading ? (
-        <div className="flex items-center justify-center h-screen">
-          <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
-        <div>
-          <MuiThemeProvider theme={theme}>
-            <MUIDataTable
-              title={""}
-              data={
-                !userData ? (
-                  <div className="flex items-center justify-center h-screen">
-                    <HashLoader color={"FF0000"} loading={loading} size={150} />
-                  </div>
-                ) : (
-                  userData?.map((item) => [
-                    <span id={item.id} key={item.id}>
-                      item.id
-                    </span>,
-                    <span key={item.id}>{item.id}</span>,
-                    <td
-                      key={item.id}
-                      className="px-6 block mx-auto py-4 whitespace-nowrap text-center"
-                    >
-                      <Image
-                        width="100"
-                        height="100"
-                        loader={({ src, width }) =>
-                          `${baseUrl}${src}?width=${width}`
-                        }
-                        src={item.image}
-                        alt=""
-                      />
-                    </td>,
-                    item.name,
-                    item.categoryId || 0,
-                    item.description,
-                    item.quantity,
-                    // item.price,
-                    item.offer_price,
+      <div>
+        <MuiThemeProvider theme={theme}>
+          <Modal open={loading} className=" flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
+          <MUIDataTable
+            title={""}
+            data={
+              !userData ? (
+                <div className="flex items-center justify-center h-screen">
+                  <HashLoader color={"FF0000"} loading={loading} size={150} />
+                </div>
+              ) : (
+                userData?.map((item) => [
+                  <span id={item.id} key={item.id}>
+                    item.id
+                  </span>,
+                  <span key={item.id}>{item.id}</span>,
+                  <td
+                    key={item.id}
+                    className="px-6 block mx-auto py-4 whitespace-nowrap text-center"
+                  >
+                    <Image
+                      width="100"
+                      height="100"
+                      loader={({ src, width }) =>
+                        `${baseUrl}${src}?width=${width}`
+                      }
+                      src={item.image}
+                      alt=""
+                    />
+                  </td>,
+                  item.name,
+                  item.categoryId || 0,
+                  item.description,
+                  item.quantity,
+                  item.variants.find((it) => it.id === item.id)?.weight || "",
+                  item.offer_price,
 
-                    <FormControl
+                  <FormControl
+                    size="small"
+                    fullWidth
+                    key={item.id}
+                    className="w-full"
+                    variant="outlined"
+                  >
+                    <TextField
                       size="small"
-                      fullWidth
-                      key={item.id}
-                      className="w-full"
+                      id="outlined-basic"
+                      label="Options"
                       variant="outlined"
+                      select
+                      value={
+                        userData.find((data) => data.id === item.id)?.available
+                      }
+                      onChange={(ev) => updateStatus(item.id, ev.target.value)}
                     >
-                      <TextField
-                        size="small"
-                        id="outlined-basic"
-                        label="Options"
-                        variant="outlined"
-                        select
-                        value={
-                          userData.find((data) => data.id === item.id)
-                            ?.available
-                        }
-                        onChange={(ev) =>
-                          updateStatus(item.id, ev.target.value)
-                        }
-                      >
-                        <MenuItem value={true}>Yes</MenuItem>
-                        <MenuItem value={false}>No</MenuItem>
-                      </TextField>
-                    </FormControl>,
-                  ])
-                )
-              }
-              columns={columns}
-              options={options}
-            />
-          </MuiThemeProvider>
-        </div>
-      )}
+                      <MenuItem value={true}>Yes</MenuItem>
+                      <MenuItem value={false}>No</MenuItem>
+                    </TextField>
+                  </FormControl>,
+                ])
+              )
+            }
+            columns={columns}
+            options={options}
+          />
+        </MuiThemeProvider>
+      </div>
     </>
   );
 };

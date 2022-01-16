@@ -5,6 +5,7 @@ import HashLoader from "react-spinners/HashLoader";
 import deleteNotifsById from "../pages/api/DELETE/DeleteNotifs";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { baseUrl } from "../constants";
+import { Modal } from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
@@ -78,35 +79,32 @@ const NotifsContent = () => {
 
   return (
     <>
-      {loading ? (
-        <div className="flex items-center justify-center h-screen">
-          <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
-        <div>
-          <MuiThemeProvider theme={theme}>
-            <MUIDataTable
-              title={""}
-              data={
-                !userData ? (
-                  <div className="flex items-center justify-center h-screen">
-                    <HashLoader color={"FF0000"} loading={loading} size={150} />
-                  </div>
-                ) : (
-                  userData.map((items) => [
-                    "",
-                    items.id,
-                    items.title,
-                    items.description,
-                  ])
-                )
-              }
-              columns={columns}
-              options={options}
-            />
-          </MuiThemeProvider>
-        </div>
-      )}
+      <div>
+        <MuiThemeProvider theme={theme}>
+          <Modal open={loading} className=" flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
+          <MUIDataTable
+            title={""}
+            data={
+              !userData ? (
+                <div className="flex items-center justify-center h-screen">
+                  <HashLoader color={"FF0000"} loading={loading} size={150} />
+                </div>
+              ) : (
+                userData.map((items, index) => [
+                  index,
+                  items.id,
+                  items.title,
+                  items.description,
+                ])
+              )
+            }
+            columns={columns}
+            options={options}
+          />
+        </MuiThemeProvider>
+      </div>
     </>
   );
 };

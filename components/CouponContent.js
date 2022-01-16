@@ -7,6 +7,7 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import getAllStores from "../pages/api/GET/GetAllStores";
 import { baseUrl } from "../constants";
 import swal from "sweetalert";
+import { Modal } from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
@@ -18,8 +19,8 @@ const theme = createMuiTheme({
     },
   },
 });
-const CouponContent = ({ handler, getItem }) => {
-  const [userData, setUserData] = useState([]);
+const CouponContent = ({ handler, getItem, coupons }) => {
+  const [userData, setUserData] = useState(coupons);
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -61,7 +62,9 @@ const CouponContent = ({ handler, getItem }) => {
       });
     },
   };
-
+  useEffect(() => {
+    setUserData(coupons);
+  }, [coupons]);
   const columns = [
     {
       name: "Sl No.",
@@ -81,6 +84,7 @@ const CouponContent = ({ handler, getItem }) => {
     "Minimum Order Amount",
     "Maximum Discount",
     "Valid From",
+    "user usage count",
     "Valid To",
     {
       label: "Action",
@@ -130,61 +134,41 @@ const CouponContent = ({ handler, getItem }) => {
         setLoading(false);
       }
     });
-    getAllCoupons(baseUrl + "/coupon/").then((data) => {
-      if (data) {
-        if (data.error || data.detail) {
-          console.log("Error", data.err);
-          setLoading(false);
-        } else {
-          console.log("Success", data);
-          setUserData(data);
-          setLoading(false);
-        }
-      } else {
-        console.log("No DATA");
-        setLoading(false);
-      }
-    });
   }, []);
 
   return (
     <>
-      {loading ? (
-        <div className="flex items-center justify-center h-screen">
-          <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
-        <div>
-          <MuiThemeProvider theme={theme}>
-            <MUIDataTable
-              title={""}
-              data={
-                !userData ? (
-                  <div className="flex items-center justify-center h-screen">
-                    <HashLoader color={"FF0000"} loading={loading} size={150} />
-                  </div>
-                ) : (
-                  userData.map((items) => [
+      <div>
+        <MuiThemeProvider theme={theme}>
+          <MUIDataTable
+            title={""}
+            data={
+              !userData ? (
+                <div className="flex items-center justify-center h-screen">
+                  <HashLoader color={"FF0000"} loading={loading} size={150} />
+                </div>
+              ) : (
+                userData.map((items, index) => [
+                  index,
+                  stores.find((store) => store.id === items.store_id)?.title ||
                     "",
-                    stores.find((store) => store.id === items.store_id)
-                      ?.title || "",
-                    items.code,
-                    items.deduction,
-                    items.description,
-                    items.min_eligible_amount,
-                    items.max_discount,
-                    new Date(items.valid_from).toLocaleString(),
-                    new Date(items.valid_to).toLocaleString(),
-                    items.id,
-                  ])
-                )
-              }
-              columns={columns}
-              options={options}
-            />
-          </MuiThemeProvider>
-        </div>
-      )}
+                  items.code,
+                  items.deduction,
+                  items.description,
+                  items.min_eligible_amount,
+                  items.max_discount,
+                  new Date(items.valid_from).toLocaleString(),
+                  items.count || 0,
+                  new Date(items.valid_to).toLocaleString(),
+                  items.id,
+                ])
+              )
+            }
+            columns={columns}
+            options={options}
+          />
+        </MuiThemeProvider>
+      </div>
     </>
   );
 };

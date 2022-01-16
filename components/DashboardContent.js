@@ -8,6 +8,8 @@ import HashLoader from "react-spinners/HashLoader";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import updateStore from "../pages/api/PATCH/updateStore";
 import { baseUrl } from "../constants";
+import { processItems } from "../functions";
+import getAllStores from "../pages/api/GET/GetAllStores";
 
 const theme = createMuiTheme({
   palette: {
@@ -24,19 +26,21 @@ const DashboardContent = () => {
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [stores, setStores] = useState([]);
 
   const options = {
     selectableRows: false,
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
     onCellClick: (rowData, item1) => {
-      console.log(item1);
-      rowData.props && handleView(rowData.props.id);
+      console.log(item1, rowData, userData[item1.dataIndex]);
+      rowData.props && handleView(userData[item1.dataIndex].id);
     },
   };
   const updateStatus = (id, value) => {
+    console.log(id, value, 39, 40);
     setLoading(true);
-    updateStore({ status: value }, `${baseUrl}/order/${id}`)
+    updateStore({ status: value }, `${baseUrl}/order/${parseInt(id)}`)
       .then(() => fetchOrders())
       .then(() => setLoading(false));
   };
@@ -48,7 +52,12 @@ const DashboardContent = () => {
         filter: false,
         customBodyRender: (value, tableMeta, update) => {
           let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return <span>{rowIndex}</span>;
+          return rowIndex;
+        },
+        sort: true,
+        sortOrder: {
+          name: "Sl No.",
+          direction: "asc",
         },
       },
     },
@@ -56,24 +65,14 @@ const DashboardContent = () => {
     "Time",
     "Name",
     "Locality",
-    {
-      label: "View",
-      options: {
-        customBodyRender: (_, item) => {
-          return (
-            <div id={item.rowData[0]} className="flex flex-row justify-center">
-              <div
-                onClick={() => {
-                  setShowModal(true);
-                }}
-              >
-                <Visibility />
-              </div>
-            </div>
-          );
-        },
-      },
-    },
+    "Mobile Number",
+    "Chosen Delivery Time",
+    "Store Name",
+    "Payment Mode",
+    "Ratings",
+    // "Delivered Time",
+    "Items",
+    "Total",
     {
       label: "Manage",
       options: {
@@ -92,11 +91,11 @@ const DashboardContent = () => {
                 variant="outlined"
                 select
                 value={
-                  userData.find((order) => order.id === item2.rowData[0])
+                  userData.find((order) => order.id === item2.rowData[1])
                     ?.status
                 }
                 onChange={(ev) =>
-                  updateStatus(item2.rowData[0], ev.target.value)
+                  updateStatus(item2.rowData[1], ev.target.value)
                 }
               >
                 <MenuItem value="Pending">Pending</MenuItem>
@@ -155,6 +154,11 @@ const DashboardContent = () => {
       }
     });
   };
+  useEffect(() => {
+    getAllStores(baseUrl + "/stores/").then((data) => {
+      setStores(data);
+    });
+  }, []);
 
   return (
     <>
@@ -173,12 +177,34 @@ const DashboardContent = () => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [
-                    items.id,
-                    new Date(items.time).toLocaleString(),
-                    items.name,
-                    items.address.replace(",", ""),
-                  ])
+                  userData
+                    .sort((item1, item2) => item2.id - item1.id)
+                    .map((items, index) => [
+                      index,
+                      items.id,
+                      new Date(
+                        new Date(items.time).getTime() -
+                          new Date(items.time).getTimezoneOffset() * 60000
+                      ).toLocaleString("en-US", {
+                        hour12: true,
+                      }),
+                      items.name,
+                      items.address.replace(",", ""),
+                      items.mobile_number,
+                      items["Chosen Delivery Time"] || "",
+                      stores.find((item) => item.id === items.store_id)?.title,
+                      items.paytype
+                        ? items.paytype === "RAZORPAY"
+                          ? "ONLINE"
+                          : "Cash on Delivery"
+                        : items.rzpy_order_id
+                        ? "ONLINE"
+                        : "Cash on Delivery",
+                      items.rating,
+                      // items.delivered_time,
+                      processItems(items.items || []),
+                      items.total,
+                    ])
                 )
               }
               columns={columns}

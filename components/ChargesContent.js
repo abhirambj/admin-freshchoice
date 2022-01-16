@@ -127,7 +127,8 @@ const ChargesContent = ({ handler, getItem }) => {
                 !userData ? (
                   <div>loading..</div>
                 ) : (
-                  userData.map((items) => [
+                  userData.map((items, index) => [
+                    index,
                     items.id,
                     items.upto_amount,
                     items.ship_cost,

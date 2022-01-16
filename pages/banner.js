@@ -7,6 +7,7 @@ import { requiresAuthentication } from "../functions";
 import HashLoader from "react-spinners/HashLoader";
 import swal from "sweetalert";
 import { baseUrl } from "../constants";
+import { Modal } from "@material-ui/core";
 
 const Banner = () => {
   const [loading, setLoading] = useState(false);
@@ -94,7 +95,11 @@ const Banner = () => {
             content="width=device-width, initial-scale=1.0"
           />
         </Head>
+
         <DashBoardContainer>
+          <Modal open={loading} className=" flex justify-center items-center">
+            <HashLoader color={"FF0000"} loading={loading} size={150} />
+          </Modal>
           <main className="md:flex-1 md:max-h-full md:pl-10 md:pr-10 md:pb-10 md:overflow-hidden md:overflow-y-auto">
             <div className="md:flex md:flex-row md:items-start md:justify-between md:pb-6 md:pt-10 md:space-y-4  md:items-center md:space-y-0 md:flex-row md:m-5">
               <h1 className="md:text-2xl md:font-semibold md:whitespace-nowrap">

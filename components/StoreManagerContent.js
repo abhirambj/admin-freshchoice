@@ -37,10 +37,9 @@ const StoreManagerContent = ({ handler, getItem, managers }) => {
     onTableInit: (action, tableState) => setTableData(tableState.data),
     onRowsDelete: (rows, rowData) => {
       rows.data.map((data) => {
-        const currentItem = tableData.find(
-          (row) => row.index == data.dataIndex
-        ).data;
-        deleteManagerById(`${baseUrl}/admin/storemanager/${currentItem[0]}`)
+        console.log(tableData, rowData, rows);
+        const currentItem = managers[data.dataIndex];
+        deleteManagerById(`${baseUrl}/admin/storemanager/${currentItem.id}`)
           .then(() => {
             const currentData = userData.findIndex(
               (item) => currentItem.id === item.id
@@ -105,41 +104,35 @@ const StoreManagerContent = ({ handler, getItem, managers }) => {
 
   return (
     <>
-      {!userData ? (
-        <div className="flex items-center justify-center h-screen">
+      <div>
+        <Modal open={loading} className="flex justify-center items-center">
           <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
-        <div>
-          <Modal open={loading} className="flex justify-center items-center">
-            <HashLoader color={"FF0000"} loading={loading} size={150} />
-          </Modal>
-          <MuiThemeProvider theme={theme}>
-            <MUIDataTable
-              title={""}
-              data={
-                !userData ? (
-                  <div className="flex items-center justify-center h-screen">
-                    <HashLoader color={"FF0000"} loading={loading} size={150} />
-                  </div>
-                ) : (
-                  userData.map((items) => [
-                    items.id,
-                    items.name,
-                    items.email,
-                    items.mobile,
-                    items.username,
-                    items.store,
-                    items.other_mobiles,
-                  ])
-                )
-              }
-              columns={columns}
-              options={options}
-            />
-          </MuiThemeProvider>
-        </div>
-      )}
+        </Modal>
+        <MuiThemeProvider theme={theme}>
+          <MUIDataTable
+            title={""}
+            data={
+              !userData ? (
+                <div className="flex items-center justify-center h-screen">
+                  <HashLoader color={"FF0000"} loading={loading} size={150} />
+                </div>
+              ) : (
+                userData.map((items) => [
+                  items.id,
+                  items.name,
+                  items.email,
+                  items.mobile,
+                  items.username,
+                  items.store,
+                  items.other_mobiles,
+                ])
+              )
+            }
+            columns={columns}
+            options={options}
+          />
+        </MuiThemeProvider>
+      </div>
     </>
   );
 };

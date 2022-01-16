@@ -5,6 +5,7 @@ import HashLoader from "react-spinners/HashLoader";
 import deleteFeedbackById from "../pages/api/DELETE/DeleteFeedback";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { baseUrl } from "../constants";
+import getAllItems from "../pages/api/GET/GetAllItems";
 
 const theme = createMuiTheme({
   palette: {
@@ -21,24 +22,23 @@ const FeedbackContent = () => {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [items, setItems] = useState([]);
 
   const options = {
     selectableRows: false,
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
     onTableInit: (action, tableState) => setTableData(tableState.data),
-    onRowsDelete: (rows, rowData) => {
-      rows.data.map((data) => {
-        const currentItem = tableData.find(
-          (row) => row.index == data.dataIndex
-        ).data;
-        console.info(currentItem);
-        deleteFeedbackById(`${baseUrl}/feedback/${currentItem[0]}`)
-          .then(() => console.info("success"))
-          .catch((err) => console.info(err));
-      });
-    },
   };
+  useEffect(() => {
+    if (userData.length) {
+      userData?.ratings?.map((item) =>
+        getAllItems(baseUrl + `/item/${item.store_id}`)
+          .then((data) => setItems({ ...i, [item.store_id]: data }))
+          .catch((err) => console.log(err))
+      );
+    }
+  }, [userData]);
 
   const columns = [
     {
@@ -52,9 +52,25 @@ const FeedbackContent = () => {
         },
       },
     },
-    "Customer Name",
-    "Item Name",
-    "Review",
+    "Order ID",
+    {
+      label: "Item - Ratings",
+      options: {
+        customBodyRender: (val, itemName) => {
+          val.map((item) =>
+            console.log(items.find((it) => it.id === item.item_id))
+          );
+          <ul>
+            {val.map((item, key) => (
+              <li key={key}>
+                {items.find((it) => it.id === item.item_id)?.name} {val.rating}
+              </li>
+            ))}
+          </ul>;
+        },
+      },
+    },
+    "Feedback",
   ];
 
   useEffect(() => {
@@ -93,10 +109,11 @@ const FeedbackContent = () => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [
-                    items.customer_name,
-                    items.item_name,
-                    items.review,
+                  userData.map((items, index) => [
+                    index,
+                    items.order_id,
+                    items.ratings,
+                    items.feedback,
                   ])
                 )
               }
