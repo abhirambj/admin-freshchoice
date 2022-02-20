@@ -6,9 +6,11 @@ import deleteItemsById from "../pages/api/DELETE/DeleteItems";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { baseUrl } from "../constants";
 import Image from "next/image";
-import { FormControl, TextField, MenuItem } from "@material-ui/core";
+import { FormControl, TextField, MenuItem, Select } from "@material-ui/core";
 import updateItems from "../pages/api/PATCH/updateItems";
 import { Modal } from "@material-ui/core";
+import swal from "sweetalert";
+import React from 'react';
 
 const theme = createMuiTheme({
   palette: {
@@ -20,48 +22,167 @@ const theme = createMuiTheme({
     },
   },
 });
-const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
+const InventoryContent = ({ handler, getItem, items, selectedStore,getNewItems }) => {
   const [userData, setUserData] = useState(items);
-  console.info(userData);
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [rowItem, setRowItem] = useState({ [Object.keys(items)[0]]: items[Object.keys(items)[0]] });
 
-  const initUpdate = (tableMeta) => {
-    console.info(tableMeta);
-    handler(items.find((el) => el.id == tableMeta.rowData[0].props.id));
-    getItem(tableMeta.rowData[0]);
+  const initUpdate = (id) => {
+    const upddateItem = items?.find(item => item.variants.find(v => v.id == id));
+    handler(upddateItem, id);
+    getItem(id);
   };
-  useEffect(() => setUserData(items), [items]);
+  useEffect(() => {
+    let finalData = [];
+    let allRowItems = {};
+    finalData = items.map((item, index) => {
+      item['sl-no'] = index;
+      allRowItems[item.name] = item.id;
+    });
+    setRowItem(allRowItems);
+    setUserData(items);
+  }, [items]);
 
-  const columns = [
-    {
-      name: "Sl No.",
-      label: "Sl. No",
+  const columns = React.useMemo(() => {
+    return [{
+      name: "sl-no",
+      label: "Sl no",
       options: {
-        filter: false,
-        customBodyRender: (value, tableMeta, update) => {
-          let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return <span>{rowIndex}</span>;
-        },
+        filter: true,
+        sort: true,
+        filterType: 'textField'
+      },
+    }, {
+      name: "id",
+      label: "ID",
+      options: {
+        filter: true,
+        sort: true,
+        filterType: 'textField'
+      },
+    }, {
+      name: "name",
+      label: "Name",
+      options: {
+        filter: true,
+        sort: true,
+        filterType: 'textField'
       },
     },
-    "ID",
-    "Image",
-    "Name",
-    "Category",
-    "Description",
-    "Quantity",
-    "Weight",
-    "Offer Price",
-    "Available",
+    {
+      name: "image",
+      label: "Image",
+      options: {
+        filter: false,
+        sort: true,
+        customBodyRender: (val) => <Image
+          loader={({ src, width }) =>
+            `${baseUrl}${src}?width=${width}`
+          }
+          width="100"
+          height="100"
+          src={val}
+          alt=""
+        />
+      }
+    },
+    {
+      name: "categoryId",
+      label: "Category",
+      options: {
+        filter: true,
+        sort: true,
+        filterType: 'checkbox'
+      },
+    },
+    {
+      name: "offer-price",
+      label: "offer Price",
+      options: {
+        filter: false,
+        sort: true,
+        customBodyRender: val => {
+          const current = val[0]?.find(item => item.id == rowItem[val[1]]);
+          return current?.offer_price || current?.price;
+        }
+      },
+    },
+    {
+      name: "weight",
+      label: "Weight",
+      options: {
+        filter: false,
+        sort: true,
+        customBodyRender: val => {
+          return !!(rowItem[val[1]]) && <Select
+            onChange={e => setRowItem({ ...rowItem, [val[1]]: e.target.value })}
+            value={rowItem[val[1]]}>
+            {
+              val[0]?.map(item => item && <MenuItem key={item.id} value={item.id}>{item.weight}</MenuItem>)
+            }
+          </Select>;
+        }
+      },
+    },
+    {
+      name: "quantity",
+      label: "Quantity",
+      options: {
+        filter: false,
+        sort: true,
+        customBodyRender: val => val[0]?.find(item => item.id == rowItem[val[1]])?.quantity
+      },
+    },
+    {
+      name: "available",
+      label: "Available",
+      options: {
+        filter: false,
+        customBodyRender: (val) => <FormControl
+          size="small"
+          fullWidth
+          className="w-full"
+          variant="outlined"
+        >
+          <TextField
+            size="small"
+            id="outlined-basic"
+            label="Options"
+            variant="outlined"
+            select
+            value={val[0]
+            }
+            onChange={(ev) => updateStatus(rowItem[val[1]], ev.target.value)}
+          >
+            <MenuItem value={true}>Yes</MenuItem>
+            <MenuItem value={false}>No</MenuItem>
+          </TextField>
+        </FormControl>
+      }
+    },
+    {
+      name: "description",
+      label: "Description",
+      options: {
+        filter: false,
+        sort: false,
+      },
+    },
     {
       label: "Actions",
       options: {
+        filter: false,
+        sort: false,
         customBodyRender: (val, tableMeta, updateTableRow) => {
           return (
-            <div className="flex flex-row justify-center">
+            <div className="flex z-0 flex-row justify-center">
               <div>
-                <button onClick={() => initUpdate(tableMeta)}>
+                <button
+                  onClick={() => {
+                    initUpdate(rowItem[val]);
+                  }}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -83,11 +204,12 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
         },
       },
     },
-  ];
+    ]
+  }, [items, rowItem]);
 
   const updateStatus = (id, value) => {
     const tempData = [...userData];
-    const currentData = tempData.find((item) => item.id === id);
+    const currentData = tempData.find((item) => item.variants.find(v => v.id==id));
     currentData.available = value;
     tempData.splice(tempData.indexOf(currentData), 1, currentData);
     setUserData(tempData);
@@ -121,18 +243,70 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
     onTableInit: (action, tableState) => setTableData(tableState.data),
-    onRowsDelete: (rows, rowData) => {
+    onRowsDelete: (rows, rowData,rowIndex) => {
       rows.data.map((data) => {
-        console.info(items[data.dataIndex], rowData);
-        const currentItem = items[data.dataIndex];
-        console.info(currentItem);
-        deleteItemsById(
-          `${baseUrl}/item/store/${selectedStore}/${currentItem.id}`
-        )
-          .then(() => console.info("success"))
-          .catch((err) => console.info(err));
+        const currentItem = items.find(it => it['sl-no']==data.dataIndex);
+        const info = items?.map(item => {
+          const currentVar = item?.variants.find(v=> v.id==rowItem[currentItem.name]);
+          item?.variants.splice(currentVar,1);
+          return item
+        });
+        let finalData = [];
+    let allRowItems = {};
+    finalData = info.map((item, index) => {
+      item['sl-no'] = index;
+      allRowItems[item.name] = item.id;
+    });
+    setRowItem(allRowItems);
+    getNewItems();
+    setUserData([]);
+    setUserData(info);
+         deleteItemsById(`${baseUrl}/item/${ rowItem[currentItem.name]}`)
+          .then(() => {
+            swal({
+              title: "Deleted Successfully",
+              button: 'OK',
+              icon:'success'
+            });
+            getNewItems();
+            return false;
+          })
+          .catch((err) => {
+            swal({
+            title:"Deletion failed",
+            button:"OK",
+            icon:"error",
+            timer:3000
+          });
+          return false;
+        });
       });
+      return false;
     },
+    downloadOptions: {
+      separator: '\n'
+    },
+    onDownload: (buildHead, buildBody, columns, data) => {
+      buildHead = () => {
+        return [...columns.map(col => col.name)]
+      }
+      buildBody = () => {
+        return [...items.map((item, index) => '\n' + String([
+          index,
+          rowItem[item.name],
+          item.name,
+          item.image,
+          item.categoryId || '',
+          item.variants.reduce((v, i) => v + String(String(i.offer_price) + ' '), ''),
+          item.variants.reduce((v, i) => v + String(i.weight) + ' ', ''),
+          item.variants.reduce((v, i) => v + String(i.quantity) + ' ', ''),
+          item.available ? 'yes' : 'no',
+          item.description
+        ]))];
+      }
+      console.log(buildHead(), buildBody())
+      return "\uFEFF" + buildHead() + buildBody();
+    }
   };
 
   return (
@@ -150,54 +324,18 @@ const InventoryContent = ({ handler, getItem, items, selectedStore }) => {
                   <HashLoader color={"FF0000"} loading={loading} size={150} />
                 </div>
               ) : (
-                userData?.map((item) => [
-                  <span id={item.id} key={item.id}>
-                    item.id
-                  </span>,
-                  <span key={item.id}>{item.id}</span>,
-                  <td
-                    key={item.id}
-                    className="px-6 block mx-auto py-4 whitespace-nowrap text-center"
-                  >
-                    <Image
-                      width="100"
-                      height="100"
-                      loader={({ src, width }) =>
-                        `${baseUrl}${src}?width=${width}`
-                      }
-                      src={item.image}
-                      alt=""
-                    />
-                  </td>,
+                userData && userData.map((item, index) => [
+                  index,
+                  rowItem[item.name],
                   item.name,
-                  item.categoryId || 0,
+                  item.image,
+                  item.categoryId || '',
+                  [item.variants, item.name],
+                  [item.variants, item.name],
+                  [item.variants, item.name],
+                  [item.available, item.name],
                   item.description,
-                  item.quantity,
-                  item.variants.find((it) => it.id === item.id)?.weight || "",
-                  item.offer_price,
-
-                  <FormControl
-                    size="small"
-                    fullWidth
-                    key={item.id}
-                    className="w-full"
-                    variant="outlined"
-                  >
-                    <TextField
-                      size="small"
-                      id="outlined-basic"
-                      label="Options"
-                      variant="outlined"
-                      select
-                      value={
-                        userData.find((data) => data.id === item.id)?.available
-                      }
-                      onChange={(ev) => updateStatus(item.id, ev.target.value)}
-                    >
-                      <MenuItem value={true}>Yes</MenuItem>
-                      <MenuItem value={false}>No</MenuItem>
-                    </TextField>
-                  </FormControl>,
+                  item.name
                 ])
               )
             }

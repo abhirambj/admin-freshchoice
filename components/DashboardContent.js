@@ -51,8 +51,7 @@ const DashboardContent = () => {
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, update) => {
-          let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return rowIndex;
+          return value+1;
         },
         sort: true,
         sortOrder: {

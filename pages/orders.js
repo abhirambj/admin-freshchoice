@@ -66,7 +66,6 @@ const Orders = () => {
             return date.getDate() === new Date().getDate();
           });
           // alert(JSON.stringify(filteredData));
-          setFiltered(filteredData);
           setUserData(data);
           const finalTypes = {
             date: [],
@@ -231,11 +230,12 @@ const Orders = () => {
               View All Orders
             </button>
           )}
-          <div className="flex flex-row justify-between my-3">
-            <Box className="w-full mr-12">
-              <FormControl fullWidth>
+          <div className="flex flex-row justify-between my-3" style={{position:'relative'}}>
+            <div className="w-full mr-12" style={{position:'relative'}}>
+              <FormControl fullWidth style={{position:'relative'}}>
                 <InputLabel id="sortByDate-label">Filter By Date</InputLabel>
                 <Select
+                 style={{position:'relative'}}
                   labelId="sortByDate-label"
                   id="sortByDate"
                   onChange={(ev) => {
@@ -254,8 +254,8 @@ const Orders = () => {
                   )}
                 </Select>
               </FormControl>
-            </Box>
-            <Box className="w-full mx-12">
+            </div>
+            <div className="w-full mx-12" style={{height:'auto'}}>
               <FormControl fullWidth>
                 <InputLabel id="sortByMonthLabel">Filter By Month</InputLabel>
                 <Select
@@ -277,8 +277,8 @@ const Orders = () => {
                   )}
                 </Select>
               </FormControl>
-            </Box>
-            <Box className="w-full mx-12">
+            </div>
+            <div className="w-full mx-12" style={{height:'auto'}}>
               <FormControl fullWidth>
                 <InputLabel id="sortByYearLabel">Filter By Year</InputLabel>
                 <Select
@@ -302,8 +302,8 @@ const Orders = () => {
                   )}
                 </Select>
               </FormControl>
-            </Box>
-            <Box className="w-full mx-12">
+            </div>
+            <div className="w-full mx-12" style={{height:'auto'}}>
               <FormControl fullWidth>
                 <InputLabel id="sortByStoresLabel">Filter By Stores</InputLabel>
                 <Select
@@ -321,7 +321,7 @@ const Orders = () => {
                   ))}
                 </Select>
               </FormControl>
-            </Box>
+            </div>
           </div>
           {!!grandTotal && typeof grandTotal === "number" && (
             <div className="my-4">
@@ -339,6 +339,7 @@ const Orders = () => {
               data={filtered}
               fetchOrders={fetchOrders}
               isLoading={loading}
+              resetFilters={resetFilters}
             />
           )}
         </main>

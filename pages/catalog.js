@@ -14,6 +14,7 @@ import { Modal } from "@material-ui/core";
 
 const Items = () => {
   const [showModal, setShowModal] = useState(false);
+  const [modifiedData,setModifiedData] = useState({});
   const [catData, setCatData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -80,17 +81,18 @@ const Items = () => {
     setShowModal(true);
   };
 
-  const handleUpdate = (item) => {
-    console.info(item);
+  const handleUpdate = (item,id) => {
+    // alert(id);
+    setItemID(id);
     setData({
       ...data,
       name: item.name,
       id: item.id,
-      categoryId: categories.find((ct) => ct.name == item.categoryId).id,
+      categoryId: categories.find((ct) => ct.name == item.categoryId)?.id,
       description: item.description,
-      quantity: parseInt(item.quantity),
-      weight: item.weight,
-      price: parseFloat(item.price),
+      quantity: parseInt(item.variants.find(vt => vt.id==id).quantity),
+      weight: item.variants.find(vt => vt.id==id).weight,
+      price: parseFloat(item.variants.find(vt => vt.id==id).price),
       // offer_price: parseFloat(item.offer_price),
       displayAtHomepage: item.displayAtHomepage,
       displayAtOfferpage: item.displayAtOfferpage,
@@ -111,9 +113,9 @@ const Items = () => {
           console.log("Error", data.err);
           setLoading(false);
         } else {
-          console.log("Success", data);
-          data.reverse();
+          data.sort((a,b) => b.id-a.id);
           setCatData(data);
+          setLoading(false);
         }
       } else {
         console.log("No DATA");
@@ -123,6 +125,7 @@ const Items = () => {
 
   useEffect(() => {
     setData({ ...data, formdata: new FormData() });
+    setLoading(true);
     getCategories();
     getAllCategories(baseUrl + "/category/").then((data) => {
       if (data) {
@@ -242,14 +245,7 @@ const Items = () => {
             timer: 2000,
           });
           setLoading(false);
-          const currentData = [...catData];
-          const currentItem = catData.findIndex((item) => item.id === data.id);
-          const temData = { ...data };
-          temData.categoryId = categories.find(
-            (ct) => ct.id === data.categoryId
-          ).name;
-          currentData.splice(currentItem, 1, temData);
-          setCatData(() => currentData);
+          getCategories();
           setShowModal(false);
         }
       } else {
@@ -261,11 +257,6 @@ const Items = () => {
   };
   return (
     <>
-      {!catData ? (
-        <div className="md:flex md:items-center md:justify-center md:h-screen">
-          <HashLoader color={"FF0000"} loading={loading} size={150} />
-        </div>
-      ) : (
         <div>
           <Head>
             <title>Catalog</title>
@@ -543,15 +534,15 @@ const Items = () => {
                   </>
                 ) : null}
               </div>
-              <ItemsContent
+             {catData && <ItemsContent
                 getItem={(id) => setItemID(id)}
                 items={catData}
-                handler={(item) => handleUpdate(item)}
-              />
+                handler={(item,id) => handleUpdate(item,id)}
+                getNewItems={getCategories}
+              />}
             </main>
           </DashBoardContainer>
         </div>
-      )}
     </>
   );
 };

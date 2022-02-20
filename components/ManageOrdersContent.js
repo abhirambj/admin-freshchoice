@@ -21,7 +21,7 @@ const theme = createMuiTheme({
     },
   },
 });
-const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
+const ManageOrdersContent = ({ data, fetchOrders, isLoading, resetFilters }) => {
   const [showModal, setShowModal] = useState(false);
   const [viewData, setViewData] = useState([]);
   const [userData, setUserData] = useState(data);
@@ -36,7 +36,10 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
   const updateStatus = (id, value) => {
     setLoading(true);
     updateStore({ status: value }, `${baseUrl}/order/${id}`)
-      .then(() => fetchOrders())
+      .then(() => {
+        resetFilters();
+        fetchOrders();
+      })
       .then(() => setLoading(false));
   };
   const columns = [
@@ -46,8 +49,7 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, update) => {
-          let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return <span>{rowIndex}</span>;
+          return <span>{value + 1}</span>;
         },
       },
     },
@@ -59,6 +61,8 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
     "Store Name",
     "Payment Mode",
     "Ratings",
+    "Address",
+    "Coordinates",
     // "Delivered Time",
     "Items",
     "Total",
@@ -149,7 +153,7 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
   }, [data]);
   return (
     <>
-      <div>
+      <div style={{overflowX:'scroll'}}>
         <Modal open={loading} className="flex justify-center items-center">
           <HashLoader color={"FF0000"} loading={loading} size={150} />
         </Modal>
@@ -169,7 +173,7 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
                     item.id,
                     new Date(
                       new Date(item.time).getTime() -
-                        new Date(item.time).getTimezoneOffset() * 60000
+                      new Date(item.time).getTimezoneOffset() * 60000
                     ).toLocaleString("en-US", {
                       hour12: true,
                     }),
@@ -182,10 +186,20 @@ const ManageOrdersContent = ({ data, fetchOrders, isLoading }) => {
                         ? "ONLINE"
                         : "Cash on Delivery"
                       : item.rzpy_order_id
-                      ? "ONLINE"
-                      : "Cash on Delivery",
+                        ? "ONLINE"
+                        : "Cash on Delivery",
                     item.rating,
+                    `${item.complete_address.house_no}
+                    ${item.complete_address.apartment_road_no ? ',':''} 
+                     ${item.complete_address.apartment_road_no?.length || ""}
+                     ${item.complete_address.locality?.length ? ',':''} 
+                     ${item.complete_address.locality || ""}
+                     ${item.complete_address.city?.length ? ',':''} 
+                     ${item.complete_address.city || ""}
+                     ${item.complete_address.pincode?.length ? ',':''} 
+                      ${item.complete_address.pincode || ""}`,
                     // item.delivered_time,
+                    `${item.complete_address.latitude}, ${item.complete_address.longitude}`,
                     processItems(item.items || []),
                     item.total,
                   ])

@@ -30,15 +30,6 @@ const FeedbackContent = () => {
     rowsPerPageOptions: [10, 25, 50, 100],
     onTableInit: (action, tableState) => setTableData(tableState.data),
   };
-  useEffect(() => {
-    if (userData.length) {
-      userData?.ratings?.map((item) =>
-        getAllItems(baseUrl + `/item/${item.store_id}`)
-          .then((data) => setItems({ ...i, [item.store_id]: data }))
-          .catch((err) => console.log(err))
-      );
-    }
-  }, [userData]);
 
   const columns = [
     {
@@ -47,26 +38,23 @@ const FeedbackContent = () => {
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, update) => {
-          let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return <span>{rowIndex}</span>;
+          return <span>{value+1}</span>;
         },
       },
     },
+    "Store",
     "Order ID",
     {
       label: "Item - Ratings",
       options: {
         customBodyRender: (val, itemName) => {
-          val.map((item) =>
-            console.log(items.find((it) => it.id === item.item_id))
-          );
-          <ul>
+          return (<ul>
             {val.map((item, key) => (
               <li key={key}>
-                {items.find((it) => it.id === item.item_id)?.name} {val.rating}
+                {item?.item_name} -- {item.rating}
               </li>
             ))}
-          </ul>;
+          </ul>);
         },
       },
     },
@@ -82,6 +70,7 @@ const FeedbackContent = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
+          data.sort((a,b) => b.id-a.id);
           setUserData(data);
           setLoading(false);
         }
@@ -111,7 +100,8 @@ const FeedbackContent = () => {
                 ) : (
                   userData.map((items, index) => [
                     index,
-                    items.order_id,
+                    items.store_name,
+                    items.id,
                     items.ratings,
                     items.feedback,
                   ])

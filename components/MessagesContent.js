@@ -47,8 +47,7 @@ const MessageContent = () => {
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, update) => {
-          let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return <span>{rowIndex}</span>;
+          return <span>{value+1}</span>;
         },
       },
     },
@@ -66,7 +65,7 @@ const MessageContent = () => {
           setLoading(false);
         } else {
           console.log("Success", data);
-          data.reverse();
+          data.sort((a,b) => b.id-a.id);
           setUserData(data);
           setLoading(false);
         }

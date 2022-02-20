@@ -28,8 +28,7 @@ const columns = [
     options: {
       filter: false,
       customBodyRender: (value, tableMeta, update) => {
-        let rowIndex = Number(tableMeta.rowIndex) + 1;
-        return <span>{rowIndex}</span>;
+        return <span>{value+1}</span>;
       },
     },
   },
@@ -38,6 +37,7 @@ const columns = [
   "Email",
   "Mobile Number",
   "Address",
+  "Coordinates"
 ];
 
 const UsersContent = () => {
@@ -82,13 +82,14 @@ const UsersContent = () => {
                     <HashLoader color={"FF0000"} loading={loading} size={150} />
                   </div>
                 ) : (
-                  userData.map((items) => [
-                    "",
+                  userData.map((items,index) => [
+                    index,
                     // items.id,
                     items.full_name,
                     items.email,
                     items.mobile,
-                    items.default_address.locality.replace(",", ""),
+                    `${items.default_address.house_no}, ${items.default_address.apartment_road_area}, ${items.default_address.city}, ${items.default_address.locality.replace(",", "")}`,
+                    `${items.default_address.latitude}, ${items.default_address.longitude}`
                   ])
                 )
               }

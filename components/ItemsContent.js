@@ -6,7 +6,9 @@ import deleteItemsById from "../pages/api/DELETE/DeleteItems";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Image from "next/image";
 import { baseUrl } from "../constants";
-import { Modal } from "@material-ui/core";
+import { Modal, Select, MenuItem } from "@material-ui/core";
+import swal from "sweetalert";
+import React from 'react';
 
 const theme = createMuiTheme({
   palette: {
@@ -19,52 +21,146 @@ const theme = createMuiTheme({
   },
 });
 
-const ItemsContent = ({ handler, getItem, items }) => {
+const ItemsContent = ({ handler, getItem, items, getNewItems }) => {
   const [userData, setUserData] = useState(items);
   const [loading, setLoading] = useState(false);
+  const [names,setNames] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [rowItem,setRowItem] = useState({[Object.keys(items)[0]]: items[Object.keys(items)[0]]});
 
-  const initUpdate = (tableMeta) => {
-    console.info(tableMeta);
-    const ITEM_ID = tableMeta.rowData[2].props.id;
-    handler(items.find((el) => el.id == ITEM_ID));
-    getItem(ITEM_ID);
+  const initUpdate = (id) => {
+    // alert(id)
+    const upddateItem = items?.find(item => item.variants.find(v => v.id==id));
+    handler(upddateItem,id);
+    getItem(id);
   };
-  useEffect(() => setUserData(items), [items]);
 
-  const columns = [
-    {
-      name: "Sl No.",
-      label: "Sl. No",
+  useEffect(() => {
+    let finalData = [];
+    let allRowItems = {};
+    finalData = items.map((item,index) => {
+      item['sl-no']=index;
+      allRowItems[item.name] = item.id;
+    });
+    setRowItem(allRowItems);
+  console.log(rowItem);
+    setUserData(items);
+  },[items]);
+
+
+  const columns = React.useMemo(() => {
+    return [ {
+      name: "sl-no",
+      label: "Sl no",
       options: {
-        filter: false,
-        customBodyRender: (value, tableMeta, update) => {
-          let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return <span>{rowIndex}</span>;
-        },
+        filter:true,
+        sort:true
+      },
+    }, {
+      name: "id",
+      label: "ID",
+      options: {
+        filter:true,
+        sort:true
+      },
+    }, {
+      name: "name",
+      label: "Name",
+      options: {
+        filter:true,
+        sort:true
       },
     },
-    "ID",
-    "Image",
-    "Name",
-    "Category",
-    "Description",
-    "Quantity",
-    "Weight",
-    "Price",
-    // "Offer Price",
-    "Available",
+      {
+      name: "image",
+      label: "Image",
+      options: {
+        filter:true,
+        sort:true,
+        customBodyRender:(val) => <Image
+        loader={({ src, width }) =>
+          `${baseUrl}${src}?width=${width}`
+        }
+        width="100"
+        height="100"
+        src={val}
+        alt=""
+      />
+      }
+    },
+      {
+      name: "categoryId",
+      label: "Category",
+      options: {
+        filter:true,
+        sort:true
+      },
+    },
+    {
+      name: "price",
+      label: "Price",
+      options: {
+        filter:true,
+        sort:true,
+        customBodyRender: val => {
+          const current = val[0]?.find(item => item.id==rowItem[val[1]]);
+          console.log(val[0],current,rowItem[val[1]]);
+          return current?.price || current?.offer_price;  
+        }
+      },
+    },
+      {
+        name: "weight",
+        label: "Weight",
+        options: {
+          filter:true,
+          sort:true,
+          customBodyRender: val => {
+          return !!(rowItem[val[1]]) && <Select
+           onChange={e => setRowItem({...rowItem,[val[1]]:e.target.value})}
+           value={rowItem[val[1]]}>
+            {
+              val[0]?.map(item => <MenuItem key={item.id} value={item.id}>{item.weight}</MenuItem>)
+            }
+          </Select>;
+        }
+        },
+    },
+    {
+      name: "quantity",
+      label: "Quantity",
+      options: {
+        filter:true,
+        sort:true,
+        customBodyRender: val => val[0]?.find(item => item.id==rowItem[val[1]])?.quantity
+      },
+    },
+    {
+      name: "available",
+      label: "Available",
+      options: {
+        customBodyRender:(val) => val ? "Yes":"No"
+      }
+    },
+    {
+      name: "description",
+      label: "Description",
+      options: {
+        filter:true,
+        sort:true,
+      },
+    },
     {
       label: "Actions",
       options: {
         customBodyRender: (val, tableMeta, updateTableRow) => {
-          // items && updateTableRow && updateTableRow(items);
+        // alert(val)
           return (
             <div className="flex z-0 flex-row justify-center">
               <div>
                 <button
                   onClick={() => {
-                    initUpdate(tableMeta);
+                    initUpdate(rowItem[val]);
                   }}
                 >
                   <svg
@@ -88,20 +184,41 @@ const ItemsContent = ({ handler, getItem, items }) => {
         },
       },
     },
-  ];
+    ]
+  },[items,rowItem]);
 
   const options = {
     filterType: "checkbox",
     rowsPerPageOptions: [10, 25, 50, 100],
     onTableInit: (action, tableState) => setTableData(tableState.data),
-    onRowsDelete: (rows, rowData) => {
+    onRowsDelete: (rows, rowData,rowIndex) => {
       rows.data.map((data) => {
-        console.info(items[data.dataIndex], rowData);
-        const currentItem = items[data.dataIndex];
-        console.info(currentItem);
-        deleteItemsById(`${baseUrl}/item/${currentItem.id}`)
-          .then(() => console.info("success"))
-          .catch((err) => console.info(err));
+        const currentItem = items.find(it => it['sl-no']==data.dataIndex);
+        const info = items?.map(item => {
+          const currentVar = item?.variants.find(v=> v.id==rowItem[currentItem.name]);
+          item?.variants.splice(currentVar,1);
+          return item
+        });
+        let finalData = [];
+    let allRowItems = {};
+    finalData = info.map((item, index) => {
+      item['sl-no'] = index;
+      allRowItems[item.name] = item.id;
+    });
+    setRowItem(allRowItems);
+    getNewItems();
+    setUserData([]);
+        return deleteItemsById(`${baseUrl}/item/${currentItem.id}`)
+          .then(() => {
+            swal({
+              title: "Deleted Successfully",
+              button: 'OK',
+              icon:'success'
+            });
+            getNewItems();
+            return true;
+          })
+          .catch((err) => false);
       });
     },
   };
@@ -121,34 +238,18 @@ const ItemsContent = ({ handler, getItem, items }) => {
                   <HashLoader color={"FF0000"} loading={loading} size={150} />
                 </div>
               ) : (
-                userData?.map((item, index) => [
-                  index,
-                  item.id,
-                  <td
-                    key={item.id}
-                    id={item.id}
-                    className="px-6 py-4 whitespace-nowrap block mx-auto text-center"
-                  >
-                    <Image
-                      loader={({ src, width }) =>
-                        `${baseUrl}${src}?width=${width}`
-                      }
-                      width="100"
-                      height="100"
-                      src={item.image}
-                      alt=""
-                    />
-                  </td>,
+               items && items.map((item, index) => [
+                 index,
+                  rowItem[item.name],
                   item.name,
-                  item.categoryId || 0,
-                  item.description,
-                  item.quantity,
-                  item.weight,
-                  item.price,
-                  // item.offer_price,
-                  item.available ? "Yes" : "No",
-                  item.displayAtHomepage ? "Yes" : "No",
-                  item.displayAtOfferpage ? "Yes" : "No",
+                  item.image,
+                  item.categoryId || '',
+                  [item.variants,item.name],
+                  [item.variants,item.name],
+                  [item.variants,item.name],
+                 item.available,
+                 item.description,
+                 item.name
                 ])
               )
             }

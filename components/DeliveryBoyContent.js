@@ -45,14 +45,12 @@ const DeliveryBoyContent = ({
     onTableInit: (action, tableState) => setTableData(tableState.data),
     onRowsDelete: (rows, rowData) => {
       rows.data.map((data) => {
-        const currentItem = tableData.find(
-          (row) => row.index == data.dataIndex
-        ).data;
+        const currentItem = userData[data.dataIndex];
         console.log(currentItem);
         deleteDeliveryBoyById(
           `${baseUrl}/admin/deliveryboy/${
             userData.find(
-              (item) => item.id === currentItem[currentItem.length - 1]
+              (item) => item.id === currentItem.id
             ).id
           }`
         )
@@ -70,7 +68,14 @@ const DeliveryBoyContent = ({
               timer: 2000,
             });
           })
-          .catch((err) => console.info(err));
+          .catch((err) => {
+            swal({
+              text:"Deletion Unsuccessful",
+              icon:'error',
+              button:'OK',
+              timer: 2000
+            })
+          });
       });
     },
   };
@@ -99,8 +104,7 @@ const DeliveryBoyContent = ({
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, update) => {
-          let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return <span>{rowIndex}</span>;
+          return <span>{value+1}</span>;
         },
       },
     },

@@ -53,18 +53,19 @@ const Inventory = () => {
     setShowModal(true);
   };
 
-  const handleUpdate = (item) => {
-    console.info(item);
+  const handleUpdate = (item,id) => {
+    setItemID(id);
     setData({
       ...data,
-      item_id: parseInt(item.id),
+      name: item.name,
+      item_id: id,
       store_id: selectStore,
-      quantity: parseInt(item.quantity),
-      offer_price: parseFloat(item.offer_price),
+      quantity: parseInt(item.variants.find(vt => vt.id==id)?.quantity),
+      offer_price: parseFloat(item.variants.find(vt => vt.id==id)?.offer_price),
     });
     setShowModal(true);
     setIsUpdate(true);
-  };
+  }
 
   const handleBlur = (name) => (event) => {
     let simplifiedName = name.replace("ERR", "");
@@ -156,7 +157,14 @@ const Inventory = () => {
         if (data.error || data.detail) {
           console.log("Error", data.err);
           setLoading(false);
-          setApiError(data.detail[0].msg);
+          setApiError(data?.detail?.[0]?.msg);
+          swal({
+            title: "Item not added",
+            confirmButtonText: "OK",
+            animation: true,
+            icon: "error",
+            timer: 2000,
+          });
         } else {
           swal({
             title: "Item Updated Successfully!!",
@@ -165,10 +173,10 @@ const Inventory = () => {
             icon: "success",
             timer: 2000,
           });
-          setLoading(false);
-          setShowModal(false);
           setSelectStore(store_id);
           getAllStoresItems();
+          setLoading(false);
+          setShowModal(false);
         }
       } else {
         setApiError("We are experiencing some problems, please try again");
@@ -212,6 +220,7 @@ const Inventory = () => {
           });
           setLoading(false);
           setShowModal(false);
+          setSelectStore(store_id);
           getAllStoresItems();
         }
       } else {
@@ -454,8 +463,9 @@ const Inventory = () => {
             <InventoryContent
               items={storeItems}
               getItem={(id) => setItemID(id)}
-              handler={(item) => handleUpdate(item)}
+              handler={(item,id) => handleUpdate(item,id)}
               selectedStore={selectStore}
+              getNewItems = {getAllStoresItems}
             />
           </main>
         </DashBoardContainer>

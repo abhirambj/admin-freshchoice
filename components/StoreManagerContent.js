@@ -27,8 +27,8 @@ const StoreManagerContent = ({ handler, getItem, managers }) => {
 
   const initUpdate = (tableMeta) => {
     console.log(tableMeta.rowData);
-    handler(userData.find((item) => item.id === tableMeta.rowData[0]));
-    getItem(tableMeta.rowData[0]);
+    handler(userData.find((item) => item.id === tableMeta.rowData[1]));
+    getItem(tableMeta.rowData[1]);
   };
 
   const options = {
@@ -60,7 +60,21 @@ const StoreManagerContent = ({ handler, getItem, managers }) => {
   };
 
   const columns = [
-    "ID",
+    {
+      name: "Sl No.",
+      label: "Sl. No",
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, update) => {
+          return <span>{value+1}</span>;
+        },
+      },
+    },
+    {label:"ID",
+    options: {
+      display:false
+    }
+  },
     "Name",
     "Email",
     "Mobile Number",
@@ -117,7 +131,8 @@ const StoreManagerContent = ({ handler, getItem, managers }) => {
                   <HashLoader color={"FF0000"} loading={loading} size={150} />
                 </div>
               ) : (
-                userData.map((items) => [
+                userData.map((items,index) => [
+                  index,
                   items.id,
                   items.name,
                   items.email,

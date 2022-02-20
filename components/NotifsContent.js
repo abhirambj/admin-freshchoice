@@ -47,8 +47,7 @@ const NotifsContent = () => {
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, update) => {
-          let rowIndex = Number(tableMeta.rowIndex) + 1;
-          return <span>{rowIndex}</span>;
+          return <span>{value+1}</span>;
         },
       },
     },
